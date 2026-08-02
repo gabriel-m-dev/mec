@@ -51,7 +51,7 @@ export function Hero() {
           alt=""
           fill
           priority
-          className="object-cover object-center"
+          className="object-contain object-center"
           sizes="100vw"
         />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(227,170,53,0.14),transparent_36%),linear-gradient(180deg,rgba(2,5,12,0.1)_0%,rgba(2,5,12,0.74)_55%,rgba(2,5,12,1)_100%)]" />
