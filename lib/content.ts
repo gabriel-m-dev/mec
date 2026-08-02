@@ -38,21 +38,29 @@ export const ministries = [
     name: "Alabanza y adoración",
     description:
       "Diseñamos atmósferas de adoración que elevan la presencia de Dios con excelencia.",
+    image: "/images/ministries/alabanza.jpg",
+    imageAlt: "Personas con las manos levantadas en un tiempo de adoración",
   },
   {
     name: "Juventud MEC",
     description:
       "Espacios para formación, comunidad y liderazgo con identidad firme.",
+    image: "/images/ministries/juventud.jpg",
+    imageAlt: "Grupo de jóvenes orando juntos al aire libre",
   },
   {
     name: "Niños y familias",
     description:
       "Formación bíblica creativa para sembrar fe sólida en cada hogar.",
+    image: "/images/ministries/ninos-familias.jpg",
+    imageAlt: "Familia jugando y compartiendo tiempo juntos en casa",
   },
   {
     name: "Intercesión y misericordia",
     description:
       "Oración estratégica, apoyo a necesitados y respuesta pastoral oportuna.",
+    image: "/images/ministries/intercesion.jpg",
+    imageAlt: "Primer plano de manos en oración con un rosario",
   },
 ];
 

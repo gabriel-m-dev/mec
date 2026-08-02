@@ -1,7 +1,10 @@
 ﻿import Link from "next/link";
 import Image from "next/image";
 import { AnimatedSection } from "@/components/animated-section";
+import { ChaplainCard } from "@/components/chaplain-card";
+import { EventCard } from "@/components/event-card";
 import { Hero } from "@/components/hero";
+import { MinistryCard } from "@/components/ministry-card";
 import { SectionHeading } from "@/components/section-heading";
 import {
   aboutStats,
@@ -89,14 +92,13 @@ export default function HomePage() {
 
           <div className="mt-14 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
             {ministries.map((ministry) => (
-              <article
+              <MinistryCard
                 key={ministry.name}
-                className="rounded-[1.75rem] border border-white/10 bg-white/4 p-6 shadow-luxe transition hover:-translate-y-1 hover:border-gold-300/25"
-              >
-                <div className="h-1.5 w-16 rounded-full bg-gradient-to-r from-gold-300 to-gold-500" />
-                <h3 className="mt-5 font-serif text-2xl text-white">{ministry.name}</h3>
-                <p className="mt-4 text-sm leading-7 text-slate-300">{ministry.description}</p>
-              </article>
+                name={ministry.name}
+                description={ministry.description}
+                image={ministry.image}
+                imageAlt={ministry.imageAlt}
+              />
             ))}
           </div>
         </div>
@@ -115,30 +117,12 @@ export default function HomePage() {
 
           <div className="mt-14 grid gap-5 lg:grid-cols-3">
             {chaplains.map((chaplain) => (
-              <article
+              <ChaplainCard
                 key={chaplain.name}
-                className="rounded-[1.75rem] border border-white/10 bg-ink-900/75 p-6 shadow-luxe"
-              >
-                <div className="flex items-center gap-4">
-                  <div className="grid h-14 w-14 place-items-center rounded-full border border-gold-300/30 bg-gold-400/10 font-serif text-2xl text-gold-200">
-                    {chaplain.name
-                      .split(" ")
-                      .filter((part) => !part.endsWith("."))
-                      .map((part) => part[0])
-                      .join("")
-                      .slice(0, 2)}
-                  </div>
-                  <div>
-                    <h3 className="font-serif text-2xl text-white">{chaplain.name}</h3>
-                    <p className="text-sm uppercase tracking-[0.24em] text-gold-300/90">
-                      {chaplain.role}
-                    </p>
-                  </div>
-                </div>
-                <p className="mt-5 text-sm leading-7 text-slate-300">
-                  {chaplain.description}
-                </p>
-              </article>
+                name={chaplain.name}
+                role={chaplain.role}
+                description={chaplain.description}
+              />
             ))}
           </div>
         </div>
@@ -204,16 +188,12 @@ export default function HomePage() {
 
           <div className="mt-14 grid gap-5 md:grid-cols-3">
             {events.map((event) => (
-              <article
+              <EventCard
                 key={event.title}
-                className="rounded-[1.75rem] border border-white/10 bg-ink-900/75 p-6 shadow-luxe"
-              >
-                <p className="text-sm font-semibold uppercase tracking-[0.28em] text-gold-300/90">
-                  {event.date}
-                </p>
-                <h3 className="mt-4 font-serif text-2xl text-white">{event.title}</h3>
-                <p className="mt-4 text-sm leading-7 text-slate-300">{event.description}</p>
-              </article>
+                date={event.date}
+                title={event.title}
+                description={event.description}
+              />
             ))}
           </div>
         </div>
