@@ -1,4 +1,4 @@
-﻿import type { Metadata } from "next";
+﻿import type { Metadata, Viewport } from "next";
 import { Inter, Cormorant_Garamond } from "next/font/google";
 import "./globals.css";
 import { SiteHeader } from "@/components/site-header";
@@ -48,6 +48,12 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: "#02050c",
 };
 
 export default function RootLayout({
