@@ -114,21 +114,21 @@ export const worshipServices = [
 
 export const events = [
   {
-    date: "12 Jun",
+    day: "Viernes",
     title: "Noche de adoración",
     description: "Un tiempo de ministración profunda y oración congregacional.",
     image: "/images/events/noche-adoracion.jpg",
     imageAlt: "Persona con las manos levantadas durante un tiempo de adoración",
   },
   {
-    date: "21 Jun",
+    day: "Domingo",
     title: "Encuentro de familias",
     description: "Herramientas prácticas para fortalecer el hogar y la fe.",
     image: "/images/events/encuentro-familias.jpg",
     imageAlt: "Familia sonriendo junta en la sala de su casa",
   },
   {
-    date: "04 Jul",
+    day: "Sábado",
     title: "Conferencia de liderazgo",
     description: "Formación para servidores, líderes y nuevos equipos.",
     image: "/images/events/conferencia-liderazgo.jpg",

@@ -180,7 +180,7 @@ export default function HomePage() {
             {events.map((event) => (
               <EventCard
                 key={event.title}
-                date={event.date}
+                day={event.day}
                 title={event.title}
                 description={event.description}
                 image={event.image}

@@ -1,14 +1,14 @@
 import Image from "next/image";
 
 type EventCardProps = {
-  date: string;
+  day: string;
   title: string;
   description: string;
   image: string;
   imageAlt: string;
 };
 
-export function EventCard({ date, title, description, image, imageAlt }: EventCardProps) {
+export function EventCard({ day, title, description, image, imageAlt }: EventCardProps) {
   return (
     <article className="group overflow-hidden rounded-[1.75rem] border border-white/10 bg-white/4 shadow-luxe transition hover:-translate-y-1 hover:border-gold-300/25">
       <div className="relative aspect-[4/5] w-full overflow-hidden">
@@ -24,7 +24,7 @@ export function EventCard({ date, title, description, image, imageAlt }: EventCa
 
         <div className="absolute inset-x-0 top-0 p-6">
           <p className="inline-flex rounded-full border border-gold-300/35 bg-ink-950/50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.28em] text-gold-200 backdrop-blur-sm">
-            {date}
+            {day}
           </p>
         </div>
 
