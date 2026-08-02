@@ -70,18 +70,24 @@ export const chaplains = [
     role: "Capellán general",
     description:
       "Lidera el cuidado espiritual, la escucha pastoral y el acompañamiento a familias.",
+    image: "/images/chaplains/daniel-medina.jpg",
+    imageAlt: "Retrato de un pastor con traje oscuro mirando a la cámara",
   },
   {
     name: "Lic. Andrea López",
     role: "Consejería y orientación",
     description:
       "Acompaña procesos emocionales y familiares con enfoque humano y bíblico.",
+    image: "/images/chaplains/andrea-lopez.jpg",
+    imageAlt: "Retrato de una consejera sonriendo con actitud profesional",
   },
   {
     name: "Pr. Esteban Ruiz",
     role: "Capellán de misión",
     description:
       "Coordina visitas, oración en territorio y soporte a equipos de servicio.",
+    image: "/images/chaplains/esteban-ruiz.jpg",
+    imageAlt: "Retrato de un pastor sonriendo con calidez",
   },
 ];
 
@@ -111,16 +117,22 @@ export const events = [
     date: "12 Jun",
     title: "Noche de adoración",
     description: "Un tiempo de ministración profunda y oración congregacional.",
+    image: "/images/events/noche-adoracion.jpg",
+    imageAlt: "Persona con las manos levantadas durante un tiempo de adoración",
   },
   {
     date: "21 Jun",
     title: "Encuentro de familias",
     description: "Herramientas prácticas para fortalecer el hogar y la fe.",
+    image: "/images/events/encuentro-familias.jpg",
+    imageAlt: "Familia sonriendo junta en la sala de su casa",
   },
   {
     date: "04 Jul",
     title: "Conferencia de liderazgo",
     description: "Formación para servidores, líderes y nuevos equipos.",
+    image: "/images/events/conferencia-liderazgo.jpg",
+    imageAlt: "Orador dirigiéndose a una audiencia desde un podio",
   },
 ];
 
@@ -130,11 +142,15 @@ export const news = [
     title: "Renovamos nuestras noches de oración con enfoque pastoral",
     summary:
       "Más acompañamiento, más escucha y una ruta clara para quien necesita apoyo espiritual.",
+    image: "/images/news/noches-oracion.jpg",
+    imageAlt: "Grupo de personas sosteniendo velas durante una noche de oración",
   },
   {
     category: "Comunidad",
     title: "Lanzamos una red de voluntariado para visitas y ayuda social",
     summary:
       "Servir mejor, llegar más lejos y responder con compasión donde hay necesidad.",
+    image: "/images/news/voluntariado.jpg",
+    imageAlt: "Voluntarios entregando agua y ayuda a personas en la calle",
   },
 ];

@@ -1,11 +1,12 @@
-﻿import Link from "next/link";
-import Image from "next/image";
+﻿import Image from "next/image";
 import { AnimatedSection } from "@/components/animated-section";
 import { ChaplainCard } from "@/components/chaplain-card";
 import { EventCard } from "@/components/event-card";
 import { Hero } from "@/components/hero";
 import { MinistryCard } from "@/components/ministry-card";
+import { NewsCard } from "@/components/news-card";
 import { SectionHeading } from "@/components/section-heading";
+import { WorshipServiceCard } from "@/components/worship-service-card";
 import {
   aboutStats,
   chaplains,
@@ -122,6 +123,8 @@ export default function HomePage() {
                 name={chaplain.name}
                 role={chaplain.role}
                 description={chaplain.description}
+                image={chaplain.image}
+                imageAlt={chaplain.imageAlt}
               />
             ))}
           </div>
@@ -149,26 +152,13 @@ export default function HomePage() {
 
             <div className="grid gap-4">
               {worshipServices.map((service) => (
-                <article
+                <WorshipServiceCard
                   key={service.title}
-                  className="flex flex-col justify-between gap-5 rounded-[1.75rem] border border-white/10 bg-white/4 p-6 shadow-luxe md:flex-row md:items-center"
-                >
-                  <div>
-                    <p className="text-sm uppercase tracking-[0.3em] text-gold-300/90">
-                      {service.title}
-                    </p>
-                    <h3 className="mt-3 font-serif text-2xl text-white">{service.description}</h3>
-                    <p className="mt-3 max-w-xl text-sm leading-7 text-slate-300">
-                      {service.detail}
-                    </p>
-                  </div>
-                  <a
-                    href="/#comunidad"
-                    className="inline-flex shrink-0 items-center justify-center rounded-full border border-gold-300/35 px-5 py-3 text-sm font-semibold text-gold-100 transition hover:border-gold-200/70 hover:bg-gold-400/10"
-                  >
-                    {service.cta}
-                  </a>
-                </article>
+                  title={service.title}
+                  description={service.description}
+                  detail={service.detail}
+                  cta={service.cta}
+                />
               ))}
             </div>
           </div>
@@ -193,6 +183,8 @@ export default function HomePage() {
                 date={event.date}
                 title={event.title}
                 description={event.description}
+                image={event.image}
+                imageAlt={event.imageAlt}
               />
             ))}
           </div>
@@ -209,22 +201,14 @@ export default function HomePage() {
 
           <div className="mt-14 grid gap-5 lg:grid-cols-2">
             {news.map((item) => (
-              <article
+              <NewsCard
                 key={item.title}
-                className="rounded-[1.75rem] border border-white/10 bg-white/4 p-7 shadow-luxe"
-              >
-                <p className="text-sm uppercase tracking-[0.28em] text-gold-300/90">
-                  {item.category}
-                </p>
-                <h3 className="mt-4 font-serif text-2xl text-white">{item.title}</h3>
-                <p className="mt-4 text-sm leading-7 text-slate-300">{item.summary}</p>
-                <Link
-                  href="/#comunidad"
-                  className="mt-6 inline-flex text-sm font-semibold text-gold-200 transition hover:text-gold-100"
-                >
-                  Leer más →
-                </Link>
-              </article>
+                category={item.category}
+                title={item.title}
+                summary={item.summary}
+                image={item.image}
+                imageAlt={item.imageAlt}
+              />
             ))}
           </div>
         </div>
