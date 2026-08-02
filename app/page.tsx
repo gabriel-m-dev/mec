@@ -1,4 +1,5 @@
 ﻿import Image from "next/image";
+import Link from "next/link";
 import { AnimatedSection } from "@/components/animated-section";
 import { ChaplainCard } from "@/components/chaplain-card";
 import { EventCard } from "@/components/event-card";
@@ -237,12 +238,12 @@ export default function HomePage() {
                   >
                     Escribir al equipo
                   </a>
-                  <a
+                  <Link
                     href="/#inicio"
                     className="inline-flex items-center justify-center rounded-full border border-white/15 bg-white/5 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
                   >
                     Volver arriba
-                  </a>
+                  </Link>
                 </div>
               </div>
 

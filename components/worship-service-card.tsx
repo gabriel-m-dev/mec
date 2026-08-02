@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 type WorshipServiceCardProps = {
   title: string;
   description: string;
@@ -64,12 +66,12 @@ export function WorshipServiceCard({ title, description, detail, cta }: WorshipS
           <p className="mt-3 max-w-xl text-sm leading-7 text-slate-300">{detail}</p>
         </div>
       </div>
-      <a
+      <Link
         href="/#comunidad"
         className="inline-flex shrink-0 items-center justify-center rounded-full border border-gold-300/35 px-5 py-3 text-sm font-semibold text-gold-100 transition hover:border-gold-200/70 hover:bg-gold-400/10"
       >
         {cta}
-      </a>
+      </Link>
     </article>
   );
 }

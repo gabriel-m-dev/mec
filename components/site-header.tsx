@@ -39,12 +39,12 @@ export function SiteHeader() {
         </nav>
 
         <div className="flex items-center gap-3">
-          <a
+          <Link
             href="/#comunidad"
             className="hidden rounded-full border border-gold-300/40 bg-gold-400/10 px-4 py-2 text-sm font-semibold text-gold-100 transition hover:border-gold-300/70 hover:bg-gold-400/20 xl:inline-flex"
           >
             Únete
-          </a>
+          </Link>
 
           <button
             type="button"
@@ -90,22 +90,22 @@ export function SiteHeader() {
           >
             <nav className="mx-auto flex max-w-7xl flex-col gap-1 px-4 py-4 sm:px-6 lg:px-8">
               {navItems.map((item) => (
-                <a
+                <Link
                   key={item.href}
                   href={`/${item.href}`}
                   onClick={() => setIsMobileMenuOpen(false)}
                   className="rounded-xl px-3 py-3 text-sm font-medium text-slate-200 transition hover:bg-white/5 hover:text-white"
                 >
                   {item.label}
-                </a>
+                </Link>
               ))}
-              <a
+              <Link
                 href="/#comunidad"
                 onClick={() => setIsMobileMenuOpen(false)}
                 className="mt-2 rounded-full border border-gold-300/40 bg-gold-400/10 px-4 py-3 text-center text-sm font-semibold text-gold-100 transition hover:border-gold-300/70 hover:bg-gold-400/20"
               >
                 Únete
-              </a>
+              </Link>
             </nav>
           </motion.div>
         ) : null}

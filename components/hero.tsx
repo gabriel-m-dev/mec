@@ -2,6 +2,7 @@
 
 import dynamic from "next/dynamic";
 import Image from "next/image";
+import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { heroHighlights } from "@/lib/content";
@@ -108,18 +109,18 @@ export function Hero() {
             transition={{ duration: shouldReduceMotion ? 0 : 0.9, delay: shouldReduceMotion ? 0 : 0.46 }}
             className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row"
           >
-            <a
+            <Link
               href="/#comunidad"
               className="inline-flex items-center justify-center rounded-full bg-gold-400 px-6 py-3 text-sm font-semibold text-ink-950 shadow-luxe transition hover:-translate-y-0.5 hover:bg-gold-300"
             >
               Conectar con la comunidad
-            </a>
-            <a
+            </Link>
+            <Link
               href="/#cultos"
               className="inline-flex items-center justify-center rounded-full border border-gold-300/35 bg-white/5 px-6 py-3 text-sm font-semibold text-white transition hover:border-gold-200/65 hover:bg-white/10"
             >
               Ver cultos
-            </a>
+            </Link>
           </motion.div>
         </div>
 
