@@ -10,23 +10,24 @@
  * Usage:
  *   npm run seed                # writes to Sanity (requires SANITY_API_WRITE_TOKEN)
  *   npm run seed -- --dry-run   # prints the plan only, no token needed, no writes
+ *
+ * ⚠️ ADVERTENCIA — PELIGRO VIVO (leer antes de correr `npm run seed`):
+ * Este script usa `createOrReplace` con IDs deterministas (ver `slugify` y
+ * los `_id` de cada `upsert`). Desde que el equipo de Sanity CMS (PR C1/C2)
+ * quedó mergeado, TODAS las páginas públicas leen el contenido en vivo desde
+ * el dataset de Sanity, y el cliente edita ese contenido directamente desde
+ * el Studio (`/studio`). Volver a correr `npm run seed` ahora PISA cualquier
+ * edición que el cliente haya hecho en el Studio y la reemplaza por los
+ * literales hardcodeados de este archivo (los mismos que se seedearon una
+ * sola vez, al principio del proyecto). Ya NO es una herramienta inocua de
+ * desarrollo — antes de correrlo en el dataset de producción, confirmar con
+ * el cliente o restringir su uso a un dataset de desarrollo/staging aparte.
  */
 
 import { loadEnvConfig } from "@next/env";
 import { createClient } from "@sanity/client";
 import fs from "node:fs";
 import path from "node:path";
-
-import {
-  ministries,
-  chaplains,
-  worshipServices,
-  events,
-  news,
-  contactDetails,
-  venue,
-  socialLinks,
-} from "../lib/content";
 
 import type {
   SiteSettings,
@@ -83,6 +84,188 @@ function slugify(value: string): string {
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
 }
+
+// Snapshot histórico congelado del contenido estático original de
+// `lib/content.ts` (PR C3). Estos 8 conjuntos de datos vivían antes como
+// exports públicos ahí, pero ya nadie en `app/` ni `components/` los
+// importa — las páginas leen de Sanity desde PR C1/C2. Se mueven acá,
+// como constantes locales (no exportadas), en vez de borrarse, porque son
+// el único consumidor real que queda: el seed necesita estos valores tal
+// cual se escribieron en el dataset la primera vez. NO editar estos
+// literales para reflejar cambios hechos por el cliente en el Studio — el
+// dataset vivo es la fuente de verdad ahora, esto es solo el punto de
+// partida histórico.
+const ministries = [
+  {
+    name: "Alabanza y adoración",
+    description:
+      "Diseñamos atmósferas de adoración que elevan la presencia de Dios con excelencia.",
+    image: "/images/ministries/alabanza.jpg",
+    imageAlt: "Personas con las manos levantadas en un tiempo de adoración",
+  },
+  {
+    name: "Juventud MEC",
+    description:
+      "Espacios para formación, comunidad y liderazgo con identidad firme.",
+    image: "/images/ministries/juventud.jpg",
+    imageAlt: "Grupo de jóvenes orando juntos al aire libre",
+  },
+  {
+    name: "Niños y familias",
+    description:
+      "Formación bíblica creativa para sembrar fe sólida en cada hogar.",
+    image: "/images/ministries/ninos-familias.jpg",
+    imageAlt: "Familia jugando y compartiendo tiempo juntos en casa",
+  },
+  {
+    name: "Intercesión y misericordia",
+    description:
+      "Oración estratégica, apoyo a necesitados y respuesta pastoral oportuna.",
+    image: "/images/ministries/intercesion.jpg",
+    imageAlt: "Primer plano de manos en oración con un rosario",
+  },
+];
+
+const chaplains = [
+  {
+    name: "Pr. Daniel Medina",
+    role: "Capellán general",
+    description:
+      "Lidera el cuidado espiritual, la escucha pastoral y el acompañamiento a familias.",
+    image: "/images/chaplains/daniel-medina.jpg",
+    imageAlt: "Retrato de un pastor con traje oscuro mirando a la cámara",
+  },
+  {
+    name: "Lic. Andrea López",
+    role: "Consejería y orientación",
+    description:
+      "Acompaña procesos emocionales y familiares con enfoque humano y bíblico.",
+    image: "/images/chaplains/andrea-lopez.jpg",
+    imageAlt: "Retrato de una consejera sonriendo con actitud profesional",
+  },
+  {
+    name: "Pr. Esteban Ruiz",
+    role: "Capellán de misión",
+    description:
+      "Coordina visitas, oración en territorio y soporte a equipos de servicio.",
+    image: "/images/chaplains/esteban-ruiz.jpg",
+    imageAlt: "Retrato de un pastor sonriendo con calidez",
+  },
+];
+
+const worshipServices = [
+  {
+    title: "Presencial",
+    description: "Auditorio Luz de Vida",
+    detail: "Domingos 10:00 AM y miércoles 7:30 PM",
+    cta: "Ver dirección",
+  },
+  {
+    title: "En vivo",
+    description: "YouTube y Facebook Live",
+    detail: "Transmisión con chat activo y oración en línea",
+    cta: "Ver transmisión",
+  },
+  {
+    title: "En línea",
+    description: "MEC Online",
+    detail: "Mensajes, devocionales y recursos bajo demanda",
+    cta: "Entrar al sitio",
+  },
+];
+
+const events = [
+  {
+    day: "Viernes",
+    title: "Noche de adoración",
+    description: "Un tiempo de ministración profunda y oración congregacional.",
+    image: "/images/events/noche-adoracion.jpg",
+    imageAlt: "Persona con las manos levantadas durante un tiempo de adoración",
+  },
+  {
+    day: "Domingo",
+    title: "Encuentro de familias",
+    description: "Herramientas prácticas para fortalecer el hogar y la fe.",
+    image: "/images/events/encuentro-familias.jpg",
+    imageAlt: "Familia sonriendo junta en la sala de su casa",
+  },
+  {
+    day: "Sábado",
+    title: "Conferencia de liderazgo",
+    description: "Formación para servidores, líderes y nuevos equipos.",
+    image: "/images/events/conferencia-liderazgo.jpg",
+    imageAlt: "Orador dirigiéndose a una audiencia desde un podio",
+  },
+  {
+    day: "Jueves",
+    title: "Vigilia de oración",
+    description: "Una noche extendida de intercesión, quietud y búsqueda de Dios en comunidad.",
+    image: "/images/events/vigilia-oracion.jpg",
+    imageAlt: "Personas sosteniendo velas encendidas durante una vigilia nocturna",
+  },
+  {
+    day: "Martes",
+    title: "Encuentro de mentoría",
+    description: "Espacios uno a uno para acompañar procesos de discipulado y crecimiento personal.",
+    image: "/images/events/encuentro-mentoria.jpg",
+    imageAlt: "Dos personas conversando sentadas en un banco",
+  },
+];
+
+const news = [
+  {
+    category: "Institucional",
+    title: "Renovamos nuestras noches de oración con enfoque pastoral",
+    summary:
+      "Más acompañamiento, más escucha y una ruta clara para quien necesita apoyo espiritual.",
+    image: "/images/news/noches-oracion.jpg",
+    imageAlt: "Grupo de personas sosteniendo velas durante una noche de oración",
+  },
+  {
+    category: "Comunidad",
+    title: "Lanzamos una red de voluntariado para visitas y ayuda social",
+    summary:
+      "Servir mejor, llegar más lejos y responder con compasión donde hay necesidad.",
+    image: "/images/news/voluntariado.jpg",
+    imageAlt: "Voluntarios entregando agua y ayuda a personas en la calle",
+  },
+  {
+    category: "Alianzas",
+    title: "Nueva alianza con el banco de alimentos del barrio",
+    summary:
+      "Sumamos esfuerzos logísticos para que más familias reciban una caja de alimentos cada mes.",
+    image: "/images/news/banco-alimentos.jpg",
+    imageAlt: "Voluntarios apilando cajas de alimentos para distribución",
+  },
+  {
+    category: "Comunidad",
+    title: "Celebramos un nuevo aniversario de la congregación",
+    summary:
+      "Un domingo especial de gratitud, testimonios y celebración por lo que Dios ha hecho en estos años.",
+    image: "/images/news/celebracion-comunidad.jpg",
+    imageAlt: "Grupo de personas aplaudiendo durante una celebración",
+  },
+];
+
+const contactDetails = {
+  address: "Av. Esperanza 123, Ciudad de Fe",
+  schedule: "Domingos 10:00 AM · Miércoles 7:30 PM",
+};
+
+const venue = {
+  name: "Auditorio Luz de Vida",
+  address: contactDetails.address,
+  schedule: contactDetails.schedule,
+  image: "/images/venue/auditorio-luz-de-vida.jpg",
+  imageAlt: "Interior de un auditorio con butacas en filas e iluminación cálida",
+};
+
+const socialLinks = [
+  { name: "YouTube", href: "#", icon: "youtube" },
+  { name: "Facebook", href: "#", icon: "facebook" },
+  { name: "Instagram", href: "#", icon: "instagram" },
+  { name: "Plataforma web", href: "/cultos", icon: "globe" },
+] as const;
 
 interface BannerSeed {
   route: string;
