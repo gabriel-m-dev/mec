@@ -51,15 +51,10 @@ const config: Config = {
           "0%": { backgroundPosition: "0% 50%" },
           "100%": { backgroundPosition: "100% 50%" },
         },
-        "spin-slow": {
-          "0%": { transform: "rotate(0deg)" },
-          "100%": { transform: "rotate(360deg)" },
-        },
       },
       animation: {
         floaty: "floaty 8s ease-in-out infinite",
         shimmer: "shimmer 6s linear infinite",
-        "spin-slow": "spin-slow 4s linear infinite",
       },
     },
   },
