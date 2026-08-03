@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { AnimatedSection } from "@/components/animated-section";
 import { EventCard } from "@/components/event-card";
 import { PageHeader } from "@/components/page-header";
 import { SectionHeading } from "@/components/section-heading";
@@ -20,7 +19,7 @@ export default function EventosPage() {
         description="Vigilias, conferencias, retiros y jornadas de servicio pensadas para distintas etapas de tu caminar con Dios."
       />
 
-      <AnimatedSection className="bg-[linear-gradient(180deg,rgba(255,255,255,0.03),rgba(255,255,255,0.015))] py-24 sm:py-28">
+      <section className="bg-[linear-gradient(180deg,rgba(255,255,255,0.03),rgba(255,255,255,0.015))] py-24 sm:py-28">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionHeading
             eyebrow="Eventos"
@@ -49,7 +48,7 @@ export default function EventosPage() {
             ))}
           </div>
         </div>
-      </AnimatedSection>
+      </section>
     </main>
   );
 }

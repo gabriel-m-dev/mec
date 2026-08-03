@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { AnimatedSection } from "@/components/animated-section";
 import { NewsCard } from "@/components/news-card";
 import { PageHeader } from "@/components/page-header";
 import { SectionHeading } from "@/components/section-heading";
@@ -20,7 +19,7 @@ export default function NoticiasPage() {
         description="Alianzas, celebraciones y novedades institucionales para que ninguna actualización te tome por sorpresa."
       />
 
-      <AnimatedSection className="py-24 sm:py-28">
+      <section className="py-24 sm:py-28">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionHeading
             eyebrow="Noticias"
@@ -48,7 +47,7 @@ export default function NoticiasPage() {
             ))}
           </div>
         </div>
-      </AnimatedSection>
+      </section>
     </main>
   );
 }

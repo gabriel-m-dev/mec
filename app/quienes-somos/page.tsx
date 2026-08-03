@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import { AnimatedSection } from "@/components/animated-section";
 import { PageHeader } from "@/components/page-header";
 import { SectionHeading } from "@/components/section-heading";
 import { ServeHandsIcon, ShieldCrossIcon, UsersIcon } from "@/components/feature-icons";
@@ -27,7 +26,7 @@ export default function QuienesSomosPage() {
         description="Conocé la historia, la convicción y los valores que sostienen cada encuentro, cada ministerio y cada gesto de cuidado en MEC."
       />
 
-      <AnimatedSection className="bg-[radial-gradient(circle_at_top,rgba(227,170,53,0.09),transparent_38%)] py-24 sm:py-28">
+      <section className="bg-[radial-gradient(circle_at_top,rgba(227,170,53,0.09),transparent_38%)] py-24 sm:py-28">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionHeading
             eyebrow="Quiénes somos"
@@ -84,9 +83,9 @@ export default function QuienesSomosPage() {
             </div>
           </div>
         </div>
-      </AnimatedSection>
+      </section>
 
-      <AnimatedSection className="py-24 sm:py-28">
+      <section className="py-24 sm:py-28">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
             <div className="relative aspect-[4/5] overflow-hidden rounded-[2rem] border border-white/10 bg-white/4 shadow-luxe">
@@ -123,9 +122,9 @@ export default function QuienesSomosPage() {
             </div>
           </div>
         </div>
-      </AnimatedSection>
+      </section>
 
-      <AnimatedSection className="bg-white/[0.03] py-24 sm:py-28">
+      <section className="bg-white/[0.03] py-24 sm:py-28">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionHeading
             eyebrow="Nuestros valores"
@@ -153,7 +152,7 @@ export default function QuienesSomosPage() {
             })}
           </div>
         </div>
-      </AnimatedSection>
+      </section>
     </main>
   );
 }

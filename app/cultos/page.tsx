@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { AnimatedSection } from "@/components/animated-section";
 import { PageHeader } from "@/components/page-header";
 import { SectionHeading } from "@/components/section-heading";
 import { VenueCard } from "@/components/venue-card";
@@ -44,7 +43,7 @@ export default function CultosPage() {
         description="Sumate a nuestros encuentros semanales en el auditorio o desde donde estés, con la misma calidez y el mismo propósito."
       />
 
-      <AnimatedSection className="py-24 sm:py-28">
+      <section className="py-24 sm:py-28">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionHeading
             eyebrow="Cultos presenciales y online"
@@ -94,7 +93,7 @@ export default function CultosPage() {
             </div>
           </div>
         </div>
-      </AnimatedSection>
+      </section>
     </main>
   );
 }

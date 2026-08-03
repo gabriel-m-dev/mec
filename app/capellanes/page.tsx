@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { AnimatedSection } from "@/components/animated-section";
 import { ChaplainCard } from "@/components/chaplain-card";
 import { PageHeader } from "@/components/page-header";
 import { SectionHeading } from "@/components/section-heading";
@@ -21,7 +20,7 @@ export default function CapellanesPage() {
         description="Consejería, oración y acompañamiento para atravesar procesos personales, familiares e institucionales con respaldo real."
       />
 
-      <AnimatedSection className="bg-white/[0.03] py-24 sm:py-28">
+      <section className="bg-white/[0.03] py-24 sm:py-28">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionHeading
             eyebrow="Capellanes"
@@ -67,7 +66,7 @@ export default function CapellanesPage() {
             </Link>
           </div>
         </div>
-      </AnimatedSection>
+      </section>
     </main>
   );
 }

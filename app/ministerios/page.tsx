@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { AnimatedSection } from "@/components/animated-section";
 import { MinistryCard } from "@/components/ministry-card";
 import { PageHeader } from "@/components/page-header";
 import { SectionHeading } from "@/components/section-heading";
@@ -21,7 +20,7 @@ export default function MinisteriosPage() {
         description="Desde la adoración hasta el cuidado de niños, cada ministerio es un espacio para poner tus dones al servicio de la comunidad."
       />
 
-      <AnimatedSection className="py-24 sm:py-28">
+      <section className="py-24 sm:py-28">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionHeading
             eyebrow="Ministerios"
@@ -70,7 +69,7 @@ export default function MinisteriosPage() {
             </Link>
           </div>
         </div>
-      </AnimatedSection>
+      </section>
     </main>
   );
 }

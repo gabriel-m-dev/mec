@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { AnimatedSection } from "@/components/animated-section";
 import {
   ClockIcon,
   FacebookIcon,
@@ -34,7 +33,7 @@ export default function ContactoPage() {
         description="Contanos qué necesitás — una pregunta, un pedido de oración o ganas de conocernos — y te respondemos a la brevedad."
       />
 
-      <AnimatedSection className="py-24 sm:py-28">
+      <section className="py-24 sm:py-28">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="relative overflow-hidden rounded-[2.5rem] border border-gold-300/20 bg-[radial-gradient(circle_at_top,rgba(227,170,53,0.22),rgba(2,5,12,0.95)_55%)] p-8 shadow-luxe sm:p-12">
             <div className="absolute inset-0 bg-[linear-gradient(120deg,transparent_0%,rgba(255,255,255,0.05)_50%,transparent_100%)] bg-[length:240%_100%] animate-shimmer" />
@@ -99,9 +98,9 @@ export default function ContactoPage() {
             </div>
           </div>
         </div>
-      </AnimatedSection>
+      </section>
 
-      <AnimatedSection className="pb-24 sm:pb-28">
+      <section className="pb-24 sm:pb-28">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="relative grid gap-6 overflow-hidden rounded-[2rem] border border-white/10 bg-white/4 p-8 shadow-luxe sm:p-10 lg:grid-cols-[auto_1fr] lg:items-center">
             <div
@@ -126,7 +125,7 @@ export default function ContactoPage() {
             </div>
           </div>
         </div>
-      </AnimatedSection>
+      </section>
     </main>
   );
 }
