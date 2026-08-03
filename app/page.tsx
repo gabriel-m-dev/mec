@@ -2,6 +2,13 @@
 import Link from "next/link";
 import { AnimatedSection } from "@/components/animated-section";
 import { ChaplainCard } from "@/components/chaplain-card";
+import {
+  ClockIcon,
+  FacebookIcon,
+  GlobeIcon,
+  MapPinIcon,
+  YoutubeIcon,
+} from "@/components/contact-icons";
 import { EventCard } from "@/components/event-card";
 import { Hero } from "@/components/hero";
 import { MinistryCard } from "@/components/ministry-card";
@@ -11,11 +18,19 @@ import { WorshipServiceCard } from "@/components/worship-service-card";
 import {
   aboutStats,
   chaplains,
+  contactDetails,
   events,
   ministries,
   news,
+  socialLinks,
   worshipServices,
 } from "@/lib/content";
+
+const socialIcons = {
+  youtube: YoutubeIcon,
+  facebook: FacebookIcon,
+  globe: GlobeIcon,
+};
 
 export default function HomePage() {
   return (
@@ -252,9 +267,29 @@ export default function HomePage() {
                   Contacto
                 </p>
                 <div className="mt-5 space-y-4 text-sm leading-7 text-slate-200">
-                  <p>Av. Esperanza 123, Ciudad de Fe</p>
-                  <p>Domingos 10:00 AM · Miércoles 7:30 PM</p>
-                  <p>YouTube, Facebook Live y plataforma web</p>
+                  <p className="flex items-center gap-3">
+                    <MapPinIcon className="h-5 w-5 shrink-0 text-gold-300" />
+                    {contactDetails.address}
+                  </p>
+                  <p className="flex items-center gap-3">
+                    <ClockIcon className="h-5 w-5 shrink-0 text-gold-300" />
+                    {contactDetails.schedule}
+                  </p>
+                  <div className="flex items-center gap-3 pt-1">
+                    {socialLinks.map((social) => {
+                      const SocialIcon = socialIcons[social.icon];
+                      return (
+                        <Link
+                          key={social.name}
+                          href={social.href}
+                          aria-label={social.name}
+                          className="grid h-10 w-10 place-items-center rounded-full border border-gold-300/30 bg-gold-400/10 text-gold-200 transition hover:border-gold-300/70 hover:bg-gold-400/20"
+                        >
+                          <SocialIcon className="h-5 w-5" />
+                        </Link>
+                      );
+                    })}
+                  </div>
                 </div>
               </div>
             </div>

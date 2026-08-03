@@ -154,3 +154,14 @@ export const news = [
     imageAlt: "Voluntarios entregando agua y ayuda a personas en la calle",
   },
 ];
+
+export const contactDetails = {
+  address: "Av. Esperanza 123, Ciudad de Fe",
+  schedule: "Domingos 10:00 AM · Miércoles 7:30 PM",
+};
+
+export const socialLinks = [
+  { name: "YouTube", href: "#", icon: "youtube" },
+  { name: "Facebook", href: "#", icon: "facebook" },
+  { name: "Plataforma web", href: "/#cultos", icon: "globe" },
+] as const;
