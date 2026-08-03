@@ -37,7 +37,7 @@ export function NewsCard({ category, title, summary, image, imageAlt }: NewsCard
         <h3 className="mt-2 font-serif text-2xl text-white sm:mt-4">{title}</h3>
         <p className="mt-4 text-sm leading-7 text-slate-300">{summary}</p>
         <Link
-          href="/#comunidad"
+          href="/contacto"
           className="mt-6 inline-flex text-sm font-semibold text-gold-200 transition hover:text-gold-100"
         >
           Leer más →

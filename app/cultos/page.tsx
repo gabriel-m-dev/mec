@@ -1,45 +1,18 @@
+import type { Metadata } from "next";
 import { AnimatedSection } from "@/components/animated-section";
-import { FeatureHighlight } from "@/components/feature-highlight";
-import { PodiumIcon, ShieldCrossIcon, UsersIcon } from "@/components/feature-icons";
-import { MapPinIcon } from "@/components/contact-icons";
-import { Hero } from "@/components/hero";
 import { SectionHeading } from "@/components/section-heading";
 import { VenueCard } from "@/components/venue-card";
 import { WorshipServiceCard } from "@/components/worship-service-card";
-import { featureHighlights, venue, worshipServices } from "@/lib/content";
+import { venue, worshipServices } from "@/lib/content";
 
-const featureIcons = {
-  users: UsersIcon,
-  podium: PodiumIcon,
-  shield: ShieldCrossIcon,
-  map: MapPinIcon,
+export const metadata: Metadata = {
+  title: "Cultos",
 };
 
-export default function HomePage() {
+export default function CultosPage() {
   return (
     <main className="relative overflow-hidden bg-ink-950">
-      <Hero />
-
-      <AnimatedSection className="relative overflow-hidden border-b border-white/6 bg-ink-950 py-14 sm:py-20">
-        <div className="relative z-10 mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 gap-x-6 gap-y-12 sm:grid-cols-4 sm:gap-x-8">
-            {featureHighlights.map((item) => {
-              const Icon = featureIcons[item.icon];
-              return (
-                <FeatureHighlight
-                  key={item.label}
-                  icon={<Icon className="h-7 w-7 sm:h-8 sm:w-8" />}
-                  label={item.label}
-                  cta={item.cta}
-                  href={item.href}
-                />
-              );
-            })}
-          </div>
-        </div>
-      </AnimatedSection>
-
-      <AnimatedSection id="cultos" className="py-24 sm:py-28">
+      <AnimatedSection className="py-24 sm:py-28">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionHeading
             eyebrow="Cultos presenciales y online"

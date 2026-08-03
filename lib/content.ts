@@ -1,12 +1,12 @@
 ﻿export const navItems = [
-  { label: "Inicio", href: "#inicio" },
-  { label: "Quiénes somos", href: "#quienes-somos" },
-  { label: "Ministerios", href: "#ministerios" },
-  { label: "Capellanes", href: "#capellanes" },
-  { label: "Cultos", href: "#cultos" },
-  { label: "Eventos", href: "#eventos" },
-  { label: "Noticias", href: "#noticias" },
-  { label: "Contacto", href: "#comunidad" },
+  { label: "Inicio", href: "/" },
+  { label: "Quiénes somos", href: "/quienes-somos" },
+  { label: "Ministerios", href: "/ministerios" },
+  { label: "Capellanes", href: "/capellanes" },
+  { label: "Cultos", href: "/cultos" },
+  { label: "Eventos", href: "/eventos" },
+  { label: "Noticias", href: "/noticias" },
+  { label: "Contacto", href: "/contacto" },
 ];
 
 export const heroHighlights = [
@@ -38,25 +38,25 @@ export const featureHighlights = [
     icon: "users",
     label: "Miembros ministeriales",
     cta: "Conócelos",
-    href: "/#quienes-somos",
+    href: "/quienes-somos",
   },
   {
     icon: "podium",
     label: "Ministros",
     cta: "Ver ministros",
-    href: "/#ministerios",
+    href: "/ministerios",
   },
   {
     icon: "shield",
     label: "Capellanes",
     cta: "Conócelos",
-    href: "/#capellanes",
+    href: "/capellanes",
   },
   {
     icon: "map",
     label: "Lugar de encuentro",
     cta: "Ver lugar",
-    href: "/#cultos",
+    href: "/cultos",
   },
 ] as const;
 
@@ -199,5 +199,5 @@ export const socialLinks = [
   { name: "YouTube", href: "#", icon: "youtube" },
   { name: "Facebook", href: "#", icon: "facebook" },
   { name: "Instagram", href: "#", icon: "instagram" },
-  { name: "Plataforma web", href: "/#cultos", icon: "globe" },
+  { name: "Plataforma web", href: "/cultos", icon: "globe" },
 ] as const;

@@ -22,13 +22,13 @@ export function SiteFooter() {
 
         <div className="flex flex-col items-center gap-5 sm:flex-row sm:gap-8">
           <div className="flex items-center gap-4">
-            <Link href="/#inicio" className="transition hover:text-white">
+            <Link href="/" className="transition hover:text-white">
               Inicio
             </Link>
-            <Link href="/#ministerios" className="transition hover:text-white">
+            <Link href="/ministerios" className="transition hover:text-white">
               Ministerios
             </Link>
-            <Link href="/#comunidad" className="transition hover:text-white">
+            <Link href="/contacto" className="transition hover:text-white">
               Contacto
             </Link>
           </div>

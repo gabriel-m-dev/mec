@@ -67,7 +67,7 @@ export function WorshipServiceCard({ title, description, detail, cta }: WorshipS
         </div>
       </div>
       <Link
-        href="/#comunidad"
+        href="/contacto"
         className="inline-flex shrink-0 items-center justify-center rounded-full border border-gold-300/35 px-5 py-3 text-sm font-semibold text-gold-100 transition hover:border-gold-200/70 hover:bg-gold-400/10"
       >
         {cta}

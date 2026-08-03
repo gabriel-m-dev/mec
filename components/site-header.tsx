@@ -2,42 +2,18 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
+import { useState } from "react";
 import { navItems } from "@/lib/content";
 
 export function SiteHeader() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState("inicio");
-
-  useEffect(() => {
-    const sections = navItems
-      .map((item) => document.getElementById(item.href.replace("#", "")))
-      .filter((section): section is HTMLElement => section !== null);
-
-    if (sections.length === 0) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries.filter((entry) => entry.isIntersecting);
-        if (visible.length === 0) return;
-
-        const topMost = visible.reduce((closest, entry) =>
-          entry.boundingClientRect.top < closest.boundingClientRect.top ? entry : closest
-        );
-        setActiveSection(topMost.target.id);
-      },
-      { rootMargin: "-45% 0px -45% 0px", threshold: 0 }
-    );
-
-    sections.forEach((section) => observer.observe(section));
-
-    return () => observer.disconnect();
-  }, []);
+  const pathname = usePathname();
 
   return (
     <header className="sticky top-0 z-50 border-b border-white/8 bg-ink-950/75 backdrop-blur-xl">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
-        <Link href="/#inicio" className="flex items-center gap-3">
+        <Link href="/" className="flex items-center gap-3">
           <span className="grid h-11 w-11 place-items-center rounded-full border border-gold-300/60 bg-white/5 text-sm font-semibold text-gold-100 shadow-glow">
             MEC
           </span>
@@ -53,15 +29,13 @@ export function SiteHeader() {
 
         <nav className="hidden items-center gap-7 xl:flex">
           {navItems.map((item) => {
-            const sectionId = item.href.replace("#", "");
-            const isActive = activeSection === sectionId;
+            const isActive = pathname === item.href;
 
             return (
-              <motion.a
+              <Link
                 key={item.href}
-                whileHover={{ y: -2 }}
-                href={`/${item.href}`}
-                className={`relative pb-1 text-sm font-medium transition ${
+                href={item.href}
+                className={`relative pb-1 text-sm font-medium transition hover:-translate-y-0.5 ${
                   isActive ? "text-white" : "text-slate-200 hover:text-white"
                 }`}
               >
@@ -73,14 +47,14 @@ export function SiteHeader() {
                     transition={{ type: "spring", stiffness: 380, damping: 30 }}
                   />
                 ) : null}
-              </motion.a>
+              </Link>
             );
           })}
         </nav>
 
         <div className="flex items-center gap-3">
           <Link
-            href="/#comunidad"
+            href="/contacto"
             className="hidden rounded-full border border-gold-300/40 bg-gold-400/10 px-4 py-2 text-sm font-semibold text-gold-100 transition hover:border-gold-300/70 hover:bg-gold-400/20 xl:inline-flex"
           >
             Únete
@@ -132,7 +106,7 @@ export function SiteHeader() {
               {navItems.map((item) => (
                 <Link
                   key={item.href}
-                  href={`/${item.href}`}
+                  href={item.href}
                   onClick={() => setIsMobileMenuOpen(false)}
                   className="rounded-xl px-3 py-3 text-sm font-medium text-slate-200 transition hover:bg-white/5 hover:text-white"
                 >
@@ -140,7 +114,7 @@ export function SiteHeader() {
                 </Link>
               ))}
               <Link
-                href="/#comunidad"
+                href="/contacto"
                 onClick={() => setIsMobileMenuOpen(false)}
                 className="mt-2 rounded-full border border-gold-300/40 bg-gold-400/10 px-4 py-3 text-center text-sm font-semibold text-gold-100 transition hover:border-gold-300/70 hover:bg-gold-400/20"
               >
