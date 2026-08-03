@@ -4,6 +4,11 @@ import { PageHeader } from "@/components/page-header";
 import { SectionHeading } from "@/components/section-heading";
 import { ServeHandsIcon, ShieldCrossIcon, UsersIcon } from "@/components/feature-icons";
 import { aboutStats, aboutValues } from "@/lib/content";
+import { sanityClient } from "@/sanity/lib/client";
+import { urlForImage } from "@/sanity/lib/image";
+import { pageBannerByRouteQuery } from "@/sanity/lib/queries";
+import { SANITY_TAGS } from "@/sanity/lib/tags";
+import type { PageBanner } from "@/sanity/lib/types";
 
 export const metadata: Metadata = {
   title: "Quiénes somos",
@@ -15,16 +20,24 @@ const valueIcons = {
   serve: ServeHandsIcon,
 };
 
-export default function QuienesSomosPage() {
+export default async function QuienesSomosPage() {
+  const banner = await sanityClient.fetch<PageBanner | null>(
+    pageBannerByRouteQuery,
+    { route: "/quienes-somos" },
+    { cache: "force-cache", next: { tags: [SANITY_TAGS.pageBanner] } },
+  );
+
   return (
     <main className="relative overflow-hidden bg-ink-950">
-      <PageHeader
-        image="/images/pages/quienes-somos-banner.jpg"
-        imageAlt="Congregación reunida durante un culto"
-        eyebrow="Quiénes somos"
-        title="Una comunidad que adora, aprende y sirve junta"
-        description="Conocé la historia, la convicción y los valores que sostienen cada encuentro, cada ministerio y cada gesto de cuidado en MEC."
-      />
+      {banner && (
+        <PageHeader
+          image={banner.image ? urlForImage(banner.image).url() : undefined}
+          imageAlt={banner.imageAlt ?? ""}
+          eyebrow={banner.eyebrow ?? ""}
+          title={banner.title}
+          description={banner.description ?? ""}
+        />
+      )}
 
       <section className="bg-[radial-gradient(circle_at_top,rgba(227,170,53,0.09),transparent_38%)] py-24 sm:py-28">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">

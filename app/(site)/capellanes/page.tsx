@@ -3,22 +3,40 @@ import Link from "next/link";
 import { ChaplainCard } from "@/components/chaplain-card";
 import { PageHeader } from "@/components/page-header";
 import { SectionHeading } from "@/components/section-heading";
-import { chaplains } from "@/lib/content";
+import { urlForImage } from "@/sanity/lib/image";
+import { sanityClient } from "@/sanity/lib/client";
+import { chaplainsQuery, pageBannerByRouteQuery } from "@/sanity/lib/queries";
+import { SANITY_TAGS } from "@/sanity/lib/tags";
+import type { Chaplain, PageBanner } from "@/sanity/lib/types";
 
 export const metadata: Metadata = {
   title: "Capellanes",
 };
 
-export default function CapellanesPage() {
+export default async function CapellanesPage() {
+  const [banner, chaplains] = await Promise.all([
+    sanityClient.fetch<PageBanner | null>(
+      pageBannerByRouteQuery,
+      { route: "/capellanes" },
+      { cache: "force-cache", next: { tags: [SANITY_TAGS.pageBanner] } },
+    ),
+    sanityClient.fetch<Chaplain[]>(chaplainsQuery, {}, {
+      cache: "force-cache",
+      next: { tags: [SANITY_TAGS.chaplain] },
+    }),
+  ]);
+
   return (
     <main className="relative overflow-hidden bg-ink-950">
-      <PageHeader
-        image="/images/pages/capellanes-banner.jpg"
-        imageAlt="Sesión de consejería y acompañamiento pastoral"
-        eyebrow="Capellanes"
-        title="Un equipo preparado para escuchar antes de hablar"
-        description="Consejería, oración y acompañamiento para atravesar procesos personales, familiares e institucionales con respaldo real."
-      />
+      {banner && (
+        <PageHeader
+          image={banner.image ? urlForImage(banner.image).url() : undefined}
+          imageAlt={banner.imageAlt ?? ""}
+          eyebrow={banner.eyebrow ?? ""}
+          title={banner.title}
+          description={banner.description ?? ""}
+        />
+      )}
 
       <section className="bg-white/[0.03] py-24 sm:py-28">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -39,11 +57,11 @@ export default function CapellanesPage() {
           <div className="mt-14 grid gap-5 lg:grid-cols-3">
             {chaplains.map((chaplain) => (
               <ChaplainCard
-                key={chaplain.name}
+                key={chaplain._id}
                 name={chaplain.name}
                 role={chaplain.role}
                 description={chaplain.description}
-                image={chaplain.image}
+                image={urlForImage(chaplain.image).url()}
                 imageAlt={chaplain.imageAlt}
               />
             ))}

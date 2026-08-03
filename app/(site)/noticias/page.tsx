@@ -2,22 +2,40 @@ import type { Metadata } from "next";
 import { NewsCard } from "@/components/news-card";
 import { PageHeader } from "@/components/page-header";
 import { SectionHeading } from "@/components/section-heading";
-import { news } from "@/lib/content";
+import { urlForImage } from "@/sanity/lib/image";
+import { sanityClient } from "@/sanity/lib/client";
+import { newsItemsQuery, pageBannerByRouteQuery } from "@/sanity/lib/queries";
+import { SANITY_TAGS } from "@/sanity/lib/tags";
+import type { NewsItem, PageBanner } from "@/sanity/lib/types";
 
 export const metadata: Metadata = {
   title: "Noticias",
 };
 
-export default function NoticiasPage() {
+export default async function NoticiasPage() {
+  const [banner, news] = await Promise.all([
+    sanityClient.fetch<PageBanner | null>(
+      pageBannerByRouteQuery,
+      { route: "/noticias" },
+      { cache: "force-cache", next: { tags: [SANITY_TAGS.pageBanner] } },
+    ),
+    sanityClient.fetch<NewsItem[]>(newsItemsQuery, {}, {
+      cache: "force-cache",
+      next: { tags: [SANITY_TAGS.newsItem] },
+    }),
+  ]);
+
   return (
     <main className="relative overflow-hidden bg-ink-950">
-      <PageHeader
-        image="/images/pages/noticias-banner.jpg"
-        imageAlt="Primer plano de un periódico sobre una mesa"
-        eyebrow="Noticias"
-        title="Lo que está pasando en nuestra comunidad"
-        description="Alianzas, celebraciones y novedades institucionales para que ninguna actualización te tome por sorpresa."
-      />
+      {banner && (
+        <PageHeader
+          image={banner.image ? urlForImage(banner.image).url() : undefined}
+          imageAlt={banner.imageAlt ?? ""}
+          eyebrow={banner.eyebrow ?? ""}
+          title={banner.title}
+          description={banner.description ?? ""}
+        />
+      )}
 
       <section className="py-24 sm:py-28">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -37,11 +55,11 @@ export default function NoticiasPage() {
           <div className="mt-14 grid gap-5 lg:grid-cols-2">
             {news.map((item) => (
               <NewsCard
-                key={item.title}
+                key={item._id}
                 category={item.category}
                 title={item.title}
                 summary={item.summary}
-                image={item.image}
+                image={urlForImage(item.image).url()}
                 imageAlt={item.imageAlt}
               />
             ))}
