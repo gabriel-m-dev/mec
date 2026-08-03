@@ -5,7 +5,10 @@ import {
   InstagramIcon,
   YoutubeIcon,
 } from "@/components/contact-icons";
-import { socialLinks } from "@/lib/content";
+import { sanityClient } from "@/sanity/lib/client";
+import { siteSettingsQuery } from "@/sanity/lib/queries";
+import { SANITY_TAGS } from "@/sanity/lib/tags";
+import type { SiteSettings } from "@/sanity/lib/types";
 
 const socialIcons = {
   youtube: YoutubeIcon,
@@ -14,7 +17,14 @@ const socialIcons = {
   instagram: InstagramIcon,
 };
 
-export function SiteFooter() {
+export async function SiteFooter() {
+  const siteSettings = await sanityClient.fetch<SiteSettings | null>(
+    siteSettingsQuery,
+    {},
+    { cache: "force-cache", next: { tags: [SANITY_TAGS.siteSettings] } },
+  );
+  const socialLinks = siteSettings?.socialLinks ?? [];
+
   return (
     <footer className="border-t border-white/8 py-10">
       <div className="mx-auto flex max-w-7xl flex-col gap-6 px-4 text-sm text-slate-400 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8">

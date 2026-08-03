@@ -3,7 +3,16 @@ import { PageHeader } from "@/components/page-header";
 import { SectionHeading } from "@/components/section-heading";
 import { VenueCard } from "@/components/venue-card";
 import { WorshipServiceCard } from "@/components/worship-service-card";
-import { venue, worshipServices } from "@/lib/content";
+import { urlForImage } from "@/sanity/lib/image";
+import { sanityClient } from "@/sanity/lib/client";
+import {
+  pageBannerByRouteQuery,
+  siteSettingsQuery,
+  venueQuery,
+  worshipServicesQuery,
+} from "@/sanity/lib/queries";
+import { SANITY_TAGS } from "@/sanity/lib/tags";
+import type { PageBanner, SiteSettings, Venue, WorshipService } from "@/sanity/lib/types";
 
 export const metadata: Metadata = {
   title: "Cultos",
@@ -32,16 +41,38 @@ const faqs = [
   },
 ];
 
-export default function CultosPage() {
+export default async function CultosPage() {
+  const [banner, siteSettings, venue, worshipServices] = await Promise.all([
+    sanityClient.fetch<PageBanner | null>(
+      pageBannerByRouteQuery,
+      { route: "/cultos" },
+      { cache: "force-cache", next: { tags: [SANITY_TAGS.pageBanner] } },
+    ),
+    sanityClient.fetch<SiteSettings | null>(siteSettingsQuery, {}, {
+      cache: "force-cache",
+      next: { tags: [SANITY_TAGS.siteSettings] },
+    }),
+    sanityClient.fetch<Venue | null>(venueQuery, {}, {
+      cache: "force-cache",
+      next: { tags: [SANITY_TAGS.venue] },
+    }),
+    sanityClient.fetch<WorshipService[]>(worshipServicesQuery, {}, {
+      cache: "force-cache",
+      next: { tags: [SANITY_TAGS.worshipService] },
+    }),
+  ]);
+
   return (
     <main className="relative overflow-hidden bg-ink-950">
-      <PageHeader
-        image="/images/pages/cultos-banner.jpg"
-        imageAlt="Multitud en un culto con luces de escenario"
-        eyebrow="Cultos"
-        title="Un mismo mensaje, presencial y en vivo"
-        description="Sumate a nuestros encuentros semanales en el auditorio o desde donde estés, con la misma calidez y el mismo propósito."
-      />
+      {banner && (
+        <PageHeader
+          image={banner.image ? urlForImage(banner.image).url() : undefined}
+          imageAlt={banner.imageAlt ?? ""}
+          eyebrow={banner.eyebrow ?? ""}
+          title={banner.title}
+          description={banner.description ?? ""}
+        />
+      )}
 
       <section className="py-24 sm:py-28">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -52,18 +83,20 @@ export default function CultosPage() {
           />
 
           <div className="mt-14 grid gap-5 lg:grid-cols-[0.9fr_1.1fr]">
-            <VenueCard
-              name={venue.name}
-              address={venue.address}
-              schedule={venue.schedule}
-              image={venue.image}
-              imageAlt={venue.imageAlt}
-            />
+            {venue && siteSettings && (
+              <VenueCard
+                name={venue.name}
+                address={siteSettings.address}
+                schedule={siteSettings.schedule}
+                image={urlForImage(venue.image).url()}
+                imageAlt={venue.alt}
+              />
+            )}
 
             <div className="grid gap-4">
               {worshipServices.map((service) => (
                 <WorshipServiceCard
-                  key={service.title}
+                  key={service._id}
                   title={service.title}
                   description={service.description}
                   detail={service.detail}

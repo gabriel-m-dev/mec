@@ -1,8 +1,12 @@
 import Image from "next/image";
 
 type PageHeaderProps = {
-  image: string;
-  imageAlt: string;
+  // La imagen es opcional porque el campo `image` de `pageBanner` no es
+  // obligatorio en el schema: el cliente puede borrarla desde el Studio. El
+  // título sí es obligatorio, así que el encabezado se sigue mostrando sin
+  // imagen en vez de desaparecer y llevarse el h1 de la página.
+  image?: string;
+  imageAlt?: string;
   eyebrow: string;
   title: string;
   description: string;
@@ -10,15 +14,17 @@ type PageHeaderProps = {
 
 export function PageHeader({ image, imageAlt, eyebrow, title, description }: PageHeaderProps) {
   return (
-    <section className="relative isolate h-72 w-full overflow-hidden border-b border-white/10 sm:h-80 lg:h-96">
-      <Image
-        src={image}
-        alt={imageAlt}
-        fill
-        priority
-        sizes="100vw"
-        className="object-cover"
-      />
+    <section className="relative isolate h-72 w-full overflow-hidden border-b border-white/10 bg-ink-950 sm:h-80 lg:h-96">
+      {image && (
+        <Image
+          src={image}
+          alt={imageAlt ?? ""}
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover"
+        />
+      )}
       <div className="absolute inset-0 bg-[linear-gradient(0deg,rgba(2,5,12,0.96)_8%,rgba(2,5,12,0.72)_45%,rgba(2,5,12,0.32)_78%,rgba(2,5,12,0.55)_100%)]" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(227,170,53,0.14),transparent_45%)]" />
 

@@ -9,7 +9,11 @@ import {
   YoutubeIcon,
 } from "@/components/contact-icons";
 import { PageHeader } from "@/components/page-header";
-import { contactDetails, socialLinks, venue } from "@/lib/content";
+import { urlForImage } from "@/sanity/lib/image";
+import { sanityClient } from "@/sanity/lib/client";
+import { pageBannerByRouteQuery, siteSettingsQuery, venueQuery } from "@/sanity/lib/queries";
+import { SANITY_TAGS } from "@/sanity/lib/tags";
+import type { PageBanner, SiteSettings, Venue } from "@/sanity/lib/types";
 
 export const metadata: Metadata = {
   title: "Contacto",
@@ -22,16 +26,34 @@ const socialIcons = {
   instagram: InstagramIcon,
 };
 
-export default function ContactoPage() {
+export default async function ContactoPage() {
+  const [banner, siteSettings, venue] = await Promise.all([
+    sanityClient.fetch<PageBanner | null>(
+      pageBannerByRouteQuery,
+      { route: "/contacto" },
+      { cache: "force-cache", next: { tags: [SANITY_TAGS.pageBanner] } },
+    ),
+    sanityClient.fetch<SiteSettings | null>(siteSettingsQuery, {}, {
+      cache: "force-cache",
+      next: { tags: [SANITY_TAGS.siteSettings] },
+    }),
+    sanityClient.fetch<Venue | null>(venueQuery, {}, {
+      cache: "force-cache",
+      next: { tags: [SANITY_TAGS.venue] },
+    }),
+  ]);
+
   return (
     <main className="relative overflow-hidden bg-ink-950">
-      <PageHeader
-        image="/images/pages/contacto-banner.jpg"
-        imageAlt="Recepción con personas conversando en un lobby luminoso"
-        eyebrow="Contacto"
-        title="Estamos para recibirte, escribinos cuando quieras"
-        description="Contanos qué necesitás — una pregunta, un pedido de oración o ganas de conocernos — y te respondemos a la brevedad."
-      />
+      {banner && (
+        <PageHeader
+          image={banner.image ? urlForImage(banner.image).url() : undefined}
+          imageAlt={banner.imageAlt ?? ""}
+          eyebrow={banner.eyebrow ?? ""}
+          title={banner.title}
+          description={banner.description ?? ""}
+        />
+      )}
 
       <section className="py-24 sm:py-28">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -72,14 +94,14 @@ export default function ContactoPage() {
                 <div className="mt-5 space-y-4 text-sm leading-7 text-slate-200">
                   <p className="flex items-center gap-3">
                     <MapPinIcon className="h-5 w-5 shrink-0 text-gold-300" />
-                    {contactDetails.address}
+                    {siteSettings?.address}
                   </p>
                   <p className="flex items-center gap-3">
                     <ClockIcon className="h-5 w-5 shrink-0 text-gold-300" />
-                    {contactDetails.schedule}
+                    {siteSettings?.schedule}
                   </p>
                   <div className="flex items-center gap-3 pt-1">
-                    {socialLinks.map((social) => {
+                    {(siteSettings?.socialLinks ?? []).map((social) => {
                       const SocialIcon = socialIcons[social.icon];
                       return (
                         <Link
@@ -114,8 +136,8 @@ export default function ContactoPage() {
               <p className="text-xs font-semibold uppercase tracking-[0.36em] text-gold-300/90">
                 Cómo llegar
               </p>
-              <p className="mt-3 font-serif text-2xl text-white">{venue.name}</p>
-              <p className="mt-2 text-lg leading-8 text-slate-200">{venue.address}</p>
+              <p className="mt-3 font-serif text-2xl text-white">{venue?.name}</p>
+              <p className="mt-2 text-lg leading-8 text-slate-200">{siteSettings?.address}</p>
               <p className="mt-3 text-sm leading-7 text-slate-300">
                 A 10 minutos del centro, con estacionamiento disponible en
                 las inmediaciones y parada de colectivo a pocas cuadras. Si
