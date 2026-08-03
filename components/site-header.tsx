@@ -2,11 +2,37 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { navItems } from "@/lib/content";
 
 export function SiteHeader() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState("inicio");
+
+  useEffect(() => {
+    const sections = navItems
+      .map((item) => document.getElementById(item.href.replace("#", "")))
+      .filter((section): section is HTMLElement => section !== null);
+
+    if (sections.length === 0) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries.filter((entry) => entry.isIntersecting);
+        if (visible.length === 0) return;
+
+        const topMost = visible.reduce((closest, entry) =>
+          entry.boundingClientRect.top < closest.boundingClientRect.top ? entry : closest
+        );
+        setActiveSection(topMost.target.id);
+      },
+      { rootMargin: "-45% 0px -45% 0px", threshold: 0 }
+    );
+
+    sections.forEach((section) => observer.observe(section));
+
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <header className="sticky top-0 z-50 border-b border-white/8 bg-ink-950/75 backdrop-blur-xl">
@@ -26,16 +52,30 @@ export function SiteHeader() {
         </Link>
 
         <nav className="hidden items-center gap-7 xl:flex">
-          {navItems.map((item) => (
-            <motion.a
-              key={item.href}
-              whileHover={{ y: -2 }}
-              href={`/${item.href}`}
-              className="text-sm font-medium text-slate-200 transition hover:text-white"
-            >
-              {item.label}
-            </motion.a>
-          ))}
+          {navItems.map((item) => {
+            const sectionId = item.href.replace("#", "");
+            const isActive = activeSection === sectionId;
+
+            return (
+              <motion.a
+                key={item.href}
+                whileHover={{ y: -2 }}
+                href={`/${item.href}`}
+                className={`relative pb-1 text-sm font-medium transition ${
+                  isActive ? "text-white" : "text-slate-200 hover:text-white"
+                }`}
+              >
+                {item.label}
+                {isActive ? (
+                  <motion.span
+                    layoutId="nav-active-indicator"
+                    className="absolute inset-x-0 -bottom-0.5 h-0.5 rounded-full bg-gold-300"
+                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                  />
+                ) : null}
+              </motion.a>
+            );
+          })}
         </nav>
 
         <div className="flex items-center gap-3">

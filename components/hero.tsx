@@ -125,9 +125,12 @@ export function Hero() {
             </Link>
             <Link
               href="/#cultos"
-              className="inline-flex items-center justify-center rounded-full border border-gold-300/35 bg-white/5 px-6 py-3 text-sm font-semibold text-white transition hover:border-gold-200/65 hover:bg-white/10"
+              className="group relative inline-flex overflow-hidden rounded-full p-[1.5px] transition hover:-translate-y-0.5"
             >
-              Ver cultos
+              <span className="absolute inset-[-1000%] animate-spin-slow bg-[conic-gradient(from_90deg_at_50%_50%,#e3aa35_0%,#02050c_35%,#f0c76b_50%,#02050c_85%,#e3aa35_100%)]" />
+              <span className="relative inline-flex items-center justify-center rounded-full bg-ink-950 px-6 py-3 text-sm font-semibold text-white transition group-hover:bg-ink-900">
+                Ver cultos
+              </span>
             </Link>
           </motion.div>
         </div>
