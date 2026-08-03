@@ -3,22 +3,40 @@ import Link from "next/link";
 import { MinistryCard } from "@/components/ministry-card";
 import { PageHeader } from "@/components/page-header";
 import { SectionHeading } from "@/components/section-heading";
-import { ministries } from "@/lib/content";
+import { urlForImage } from "@/sanity/lib/image";
+import { sanityClient } from "@/sanity/lib/client";
+import { ministriesQuery, pageBannerByRouteQuery } from "@/sanity/lib/queries";
+import { SANITY_TAGS } from "@/sanity/lib/tags";
+import type { Ministry, PageBanner } from "@/sanity/lib/types";
 
 export const metadata: Metadata = {
   title: "Ministerios",
 };
 
-export default function MinisteriosPage() {
+export default async function MinisteriosPage() {
+  const [banner, ministries] = await Promise.all([
+    sanityClient.fetch<PageBanner | null>(
+      pageBannerByRouteQuery,
+      { route: "/ministerios" },
+      { cache: "force-cache", next: { tags: [SANITY_TAGS.pageBanner] } },
+    ),
+    sanityClient.fetch<Ministry[]>(ministriesQuery, {}, {
+      cache: "force-cache",
+      next: { tags: [SANITY_TAGS.ministry] },
+    }),
+  ]);
+
   return (
     <main className="relative overflow-hidden bg-ink-950">
-      <PageHeader
-        image="/images/pages/ministerios-banner.jpg"
-        imageAlt="Equipo de voluntarios sirviendo juntos"
-        eyebrow="Ministerios"
-        title="Equipos que convierten la fe en acción concreta"
-        description="Desde la adoración hasta el cuidado de niños, cada ministerio es un espacio para poner tus dones al servicio de la comunidad."
-      />
+      {banner && (
+        <PageHeader
+          image={banner.image ? urlForImage(banner.image).url() : undefined}
+          imageAlt={banner.imageAlt ?? ""}
+          eyebrow={banner.eyebrow ?? ""}
+          title={banner.title}
+          description={banner.description ?? ""}
+        />
+      )}
 
       <section className="py-24 sm:py-28">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -40,10 +58,10 @@ export default function MinisteriosPage() {
           <div className="mt-14 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
             {ministries.map((ministry) => (
               <MinistryCard
-                key={ministry.name}
+                key={ministry._id}
                 name={ministry.name}
                 description={ministry.description}
-                image={ministry.image}
+                image={urlForImage(ministry.image).url()}
                 imageAlt={ministry.imageAlt}
               />
             ))}
