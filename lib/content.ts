@@ -33,6 +33,33 @@ export const aboutStats = [
   { label: "Personas acompañadas", value: "1.8K" },
 ];
 
+export const featureHighlights = [
+  {
+    icon: "users",
+    label: "Miembros ministeriales",
+    cta: "Conócelos",
+    href: "/#quienes-somos",
+  },
+  {
+    icon: "podium",
+    label: "Ministros",
+    cta: "Ver ministros",
+    href: "/#ministerios",
+  },
+  {
+    icon: "shield",
+    label: "Capellanes",
+    cta: "Conócelos",
+    href: "/#capellanes",
+  },
+  {
+    icon: "map",
+    label: "Lugar de encuentro",
+    cta: "Ver lugar",
+    href: "/#cultos",
+  },
+] as const;
+
 export const ministries = [
   {
     name: "Alabanza y adoración",
@@ -160,8 +187,17 @@ export const contactDetails = {
   schedule: "Domingos 10:00 AM · Miércoles 7:30 PM",
 };
 
+export const venue = {
+  name: "Auditorio Luz de Vida",
+  address: contactDetails.address,
+  schedule: contactDetails.schedule,
+  image: "/images/venue/auditorio-luz-de-vida.jpg",
+  imageAlt: "Interior de un auditorio con butacas en filas e iluminación cálida",
+};
+
 export const socialLinks = [
   { name: "YouTube", href: "#", icon: "youtube" },
   { name: "Facebook", href: "#", icon: "facebook" },
+  { name: "Instagram", href: "#", icon: "instagram" },
   { name: "Plataforma web", href: "/#cultos", icon: "globe" },
 ] as const;

@@ -48,6 +48,16 @@ export function FacebookIcon({ className = "h-5 w-5" }: IconProps) {
   );
 }
 
+export function InstagramIcon({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
+      <rect x="3.5" y="3.5" width="17" height="17" rx="5" stroke="currentColor" strokeWidth="1.6" />
+      <circle cx="12" cy="12" r="4.2" stroke="currentColor" strokeWidth="1.6" />
+      <circle cx="16.8" cy="7.2" r="1" fill="currentColor" />
+    </svg>
+  );
+}
+
 export function GlobeIcon({ className = "h-5 w-5" }: IconProps) {
   return (
     <svg viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">

@@ -1,28 +1,35 @@
 ﻿import Image from "next/image";
 import Link from "next/link";
 import { AnimatedSection } from "@/components/animated-section";
+import { BookGraphic } from "@/components/book-graphic";
 import { ChaplainCard } from "@/components/chaplain-card";
 import {
   ClockIcon,
   FacebookIcon,
   GlobeIcon,
+  InstagramIcon,
   MapPinIcon,
   YoutubeIcon,
 } from "@/components/contact-icons";
 import { EventCard } from "@/components/event-card";
+import { FeatureHighlight } from "@/components/feature-highlight";
+import { PodiumIcon, ShieldCrossIcon, UsersIcon } from "@/components/feature-icons";
 import { Hero } from "@/components/hero";
 import { MinistryCard } from "@/components/ministry-card";
 import { NewsCard } from "@/components/news-card";
 import { SectionHeading } from "@/components/section-heading";
+import { VenueCard } from "@/components/venue-card";
 import { WorshipServiceCard } from "@/components/worship-service-card";
 import {
   aboutStats,
   chaplains,
   contactDetails,
   events,
+  featureHighlights,
   ministries,
   news,
   socialLinks,
+  venue,
   worshipServices,
 } from "@/lib/content";
 
@@ -30,12 +37,46 @@ const socialIcons = {
   youtube: YoutubeIcon,
   facebook: FacebookIcon,
   globe: GlobeIcon,
+  instagram: InstagramIcon,
+};
+
+const featureIcons = {
+  users: UsersIcon,
+  podium: PodiumIcon,
+  shield: ShieldCrossIcon,
+  map: MapPinIcon,
 };
 
 export default function HomePage() {
   return (
     <main className="relative overflow-hidden bg-ink-950">
       <Hero />
+
+      <AnimatedSection className="relative overflow-hidden border-b border-white/6 bg-ink-950 pt-14 sm:pt-20">
+        <div className="relative z-10 mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-2 gap-x-6 gap-y-12 sm:grid-cols-4 sm:gap-x-8">
+            {featureHighlights.map((item) => {
+              const Icon = featureIcons[item.icon];
+              return (
+                <FeatureHighlight
+                  key={item.label}
+                  icon={<Icon className="h-7 w-7 sm:h-8 sm:w-8" />}
+                  label={item.label}
+                  cta={item.cta}
+                  href={item.href}
+                />
+              );
+            })}
+          </div>
+        </div>
+
+        <div
+          aria-hidden
+          className="relative z-0 mx-auto -mt-8 h-56 max-w-6xl px-4 sm:-mt-10 sm:h-72 sm:px-6 lg:h-80 lg:px-8"
+        >
+          <BookGraphic className="h-full w-full" />
+        </div>
+      </AnimatedSection>
 
       <AnimatedSection
         id="quienes-somos"
@@ -156,15 +197,13 @@ export default function HomePage() {
           />
 
           <div className="mt-14 grid gap-5 lg:grid-cols-[0.9fr_1.1fr]">
-            <div className="overflow-hidden rounded-[2rem] border border-white/10 shadow-luxe">
-              <Image
-                src="/images/igle-background-mobile.png"
-                alt="Culto MEC"
-                width={1400}
-                height={1800}
-                className="h-full min-h-[420px] w-full object-cover"
-              />
-            </div>
+            <VenueCard
+              name={venue.name}
+              address={venue.address}
+              schedule={venue.schedule}
+              image={venue.image}
+              imageAlt={venue.imageAlt}
+            />
 
             <div className="grid gap-4">
               {worshipServices.map((service) => (
