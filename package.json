@@ -13,23 +13,27 @@
     "@react-three/drei": "^10.7.6",
     "@react-three/fiber": "^9.2.0",
     "@sanity/client": "^7.11.0",
+    "@sanity/image-url": "^2.1.1",
+    "@sanity/locale-es-es": "^1.2.35",
     "framer-motion": "^12.23.12",
     "next": "^15.4.2",
+    "next-sanity": "^9.12.3",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "sanity": "^3.99.0",
     "three": "^0.179.1"
   },
   "devDependencies": {
+    "@eslint/eslintrc": "^3",
     "@types/node": "^24.1.0",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
-    "@eslint/eslintrc": "^3",
     "autoprefixer": "^10.4.21",
     "eslint": "^9",
     "eslint-config-next": "^15.4.2",
     "postcss": "^8.5.6",
     "tailwindcss": "^3.4.17",
+    "tsx": "^4.23.5",
     "typescript": "^5.8.3"
   }
 }
