@@ -52,3 +52,30 @@ export function ShieldCrossIcon({ className = "h-7 w-7" }: IconProps) {
     </svg>
   );
 }
+
+export function ServeHandsIcon({ className = "h-7 w-7" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
+      <path
+        d="M12 8.4c-1-1.6-2.6-2.6-4.3-2.2-2 .5-3 2.7-2.1 4.6.9 2 3.6 4.4 6.4 6.6 2.8-2.2 5.5-4.6 6.4-6.6.9-1.9-.1-4.1-2.1-4.6-1.7-.4-3.3.6-4.3 2.2Z"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M3.6 18.4c1.6-1.1 3-1.6 4.6-1.6h3.1c.9 0 1.6.7 1.6 1.6s-.7 1.6-1.6 1.6H8.6"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M20.4 18.4c-1.6-1.1-3-1.6-4.6-1.6h-1.5"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}

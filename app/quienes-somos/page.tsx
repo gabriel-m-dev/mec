@@ -1,16 +1,32 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { AnimatedSection } from "@/components/animated-section";
+import { PageHeader } from "@/components/page-header";
 import { SectionHeading } from "@/components/section-heading";
-import { aboutStats } from "@/lib/content";
+import { ServeHandsIcon, ShieldCrossIcon, UsersIcon } from "@/components/feature-icons";
+import { aboutStats, aboutValues } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "Quiénes somos",
 };
 
+const valueIcons = {
+  shield: ShieldCrossIcon,
+  users: UsersIcon,
+  serve: ServeHandsIcon,
+};
+
 export default function QuienesSomosPage() {
   return (
     <main className="relative overflow-hidden bg-ink-950">
+      <PageHeader
+        image="/images/pages/quienes-somos-banner.jpg"
+        imageAlt="Congregación reunida durante un culto"
+        eyebrow="Quiénes somos"
+        title="Una comunidad que adora, aprende y sirve junta"
+        description="Conocé la historia, la convicción y los valores que sostienen cada encuentro, cada ministerio y cada gesto de cuidado en MEC."
+      />
+
       <AnimatedSection className="bg-[radial-gradient(circle_at_top,rgba(227,170,53,0.09),transparent_38%)] py-24 sm:py-28">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionHeading
@@ -66,6 +82,75 @@ export default function QuienesSomosPage() {
                 </p>
               </div>
             </div>
+          </div>
+        </div>
+      </AnimatedSection>
+
+      <AnimatedSection className="py-24 sm:py-28">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+            <div className="relative aspect-[4/5] overflow-hidden rounded-[2rem] border border-white/10 bg-white/4 shadow-luxe">
+              <Image
+                src="/images/ministries/alabanza.jpg"
+                alt="Primeros encuentros de adoración de la congregación"
+                fill
+                sizes="(min-width: 1024px) 40vw, 90vw"
+                className="object-cover"
+              />
+            </div>
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.36em] text-gold-300/90">
+                Nuestra historia
+              </p>
+              <h2 className="mt-4 font-serif text-3xl tracking-tight text-white sm:text-4xl">
+                De una sala prestada a una casa para toda la ciudad
+              </h2>
+              <p className="mt-6 text-lg leading-8 text-slate-300">
+                MEC nació hace más de quince años como un pequeño grupo de
+                familias que se reunía en una sala prestada para orar, leer
+                la Palabra y sostenerse mutuamente en tiempos difíciles. Lo
+                que empezó como un encuentro semanal de puertas cerradas se
+                transformó, con constancia y fe, en una congregación que hoy
+                reúne a cientos de personas cada semana.
+              </p>
+              <p className="mt-5 text-lg leading-8 text-slate-300">
+                A lo largo de este camino aprendimos que crecer no significa
+                perder cercanía: cada nuevo ministerio, cada nueva sede y
+                cada nueva transmisión en vivo sigue existiendo para lo mismo
+                que nos reunió al principio — acompañar personas y
+                apuntarlas a Cristo con excelencia y calidez.
+              </p>
+            </div>
+          </div>
+        </div>
+      </AnimatedSection>
+
+      <AnimatedSection className="bg-white/[0.03] py-24 sm:py-28">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <SectionHeading
+            eyebrow="Nuestros valores"
+            title="Lo que no negociamos, sin importar cuánto crezcamos"
+            align="center"
+          />
+
+          <div className="mt-14 grid gap-5 sm:grid-cols-3">
+            {aboutValues.map((value) => {
+              const Icon = valueIcons[value.icon];
+              return (
+                <div
+                  key={value.title}
+                  className="rounded-[1.75rem] border border-white/10 bg-white/4 p-7 text-center shadow-luxe transition hover:-translate-y-1 hover:border-gold-300/25"
+                >
+                  <div className="mx-auto grid h-14 w-14 place-items-center rounded-full border border-gold-300/30 bg-gold-400/10 text-gold-200">
+                    <Icon className="h-6 w-6" />
+                  </div>
+                  <h3 className="mt-5 font-serif text-2xl text-white">{value.title}</h3>
+                  <p className="mt-3 text-sm leading-7 text-slate-300">
+                    {value.description}
+                  </p>
+                </div>
+              );
+            })}
           </div>
         </div>
       </AnimatedSection>

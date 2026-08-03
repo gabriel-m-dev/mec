@@ -9,7 +9,8 @@ import {
   MapPinIcon,
   YoutubeIcon,
 } from "@/components/contact-icons";
-import { contactDetails, socialLinks } from "@/lib/content";
+import { PageHeader } from "@/components/page-header";
+import { contactDetails, socialLinks, venue } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "Contacto",
@@ -25,6 +26,14 @@ const socialIcons = {
 export default function ContactoPage() {
   return (
     <main className="relative overflow-hidden bg-ink-950">
+      <PageHeader
+        image="/images/pages/contacto-banner.jpg"
+        imageAlt="Recepción con personas conversando en un lobby luminoso"
+        eyebrow="Contacto"
+        title="Estamos para recibirte, escribinos cuando quieras"
+        description="Contanos qué necesitás — una pregunta, un pedido de oración o ganas de conocernos — y te respondemos a la brevedad."
+      />
+
       <AnimatedSection className="py-24 sm:py-28">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="relative overflow-hidden rounded-[2.5rem] border border-gold-300/20 bg-[radial-gradient(circle_at_top,rgba(227,170,53,0.22),rgba(2,5,12,0.95)_55%)] p-8 shadow-luxe sm:p-12">
@@ -87,6 +96,33 @@ export default function ContactoPage() {
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+      </AnimatedSection>
+
+      <AnimatedSection className="pb-24 sm:pb-28">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="relative grid gap-6 overflow-hidden rounded-[2rem] border border-white/10 bg-white/4 p-8 shadow-luxe sm:p-10 lg:grid-cols-[auto_1fr] lg:items-center">
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-0 opacity-[0.08] [background-image:linear-gradient(90deg,rgba(240,199,107,0.9)_1px,transparent_1px),linear-gradient(0deg,rgba(240,199,107,0.9)_1px,transparent_1px)] [background-size:32px_32px]"
+            />
+            <div className="relative grid h-16 w-16 shrink-0 place-items-center rounded-full border border-gold-300/30 bg-gold-400/10 text-gold-200">
+              <MapPinIcon className="h-7 w-7" />
+            </div>
+            <div className="relative">
+              <p className="text-xs font-semibold uppercase tracking-[0.36em] text-gold-300/90">
+                Cómo llegar
+              </p>
+              <p className="mt-3 font-serif text-2xl text-white">{venue.name}</p>
+              <p className="mt-2 text-lg leading-8 text-slate-200">{venue.address}</p>
+              <p className="mt-3 text-sm leading-7 text-slate-300">
+                A 10 minutos del centro, con estacionamiento disponible en
+                las inmediaciones y parada de colectivo a pocas cuadras. Si
+                venís por primera vez, nuestro equipo de bienvenida te va a
+                estar esperando en la entrada.
+              </p>
             </div>
           </div>
         </div>

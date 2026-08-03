@@ -33,6 +33,27 @@ export const aboutStats = [
   { label: "Personas acompañadas", value: "1.8K" },
 ];
 
+export const aboutValues = [
+  {
+    icon: "shield",
+    title: "Fe",
+    description:
+      "Sostenemos cada decisión y cada paso comunitario en una confianza firme en la Palabra y en la fidelidad de Dios.",
+  },
+  {
+    icon: "users",
+    title: "Comunidad",
+    description:
+      "Creemos en vínculos reales: familias, células y equipos que se acompañan más allá del domingo.",
+  },
+  {
+    icon: "serve",
+    title: "Servicio",
+    description:
+      "Ponemos manos y tiempo al servicio del prójimo, dentro y fuera de nuestras puertas, con humildad y constancia.",
+  },
+] as const;
+
 export const featureHighlights = [
   {
     icon: "users",
@@ -161,6 +182,20 @@ export const events = [
     image: "/images/events/conferencia-liderazgo.jpg",
     imageAlt: "Orador dirigiéndose a una audiencia desde un podio",
   },
+  {
+    day: "Jueves",
+    title: "Vigilia de oración",
+    description: "Una noche extendida de intercesión, quietud y búsqueda de Dios en comunidad.",
+    image: "/images/events/vigilia-oracion.jpg",
+    imageAlt: "Personas sosteniendo velas encendidas durante una vigilia nocturna",
+  },
+  {
+    day: "Martes",
+    title: "Encuentro de mentoría",
+    description: "Espacios uno a uno para acompañar procesos de discipulado y crecimiento personal.",
+    image: "/images/events/encuentro-mentoria.jpg",
+    imageAlt: "Dos personas conversando sentadas en un banco",
+  },
 ];
 
 export const news = [
@@ -179,6 +214,22 @@ export const news = [
       "Servir mejor, llegar más lejos y responder con compasión donde hay necesidad.",
     image: "/images/news/voluntariado.jpg",
     imageAlt: "Voluntarios entregando agua y ayuda a personas en la calle",
+  },
+  {
+    category: "Alianzas",
+    title: "Nueva alianza con el banco de alimentos del barrio",
+    summary:
+      "Sumamos esfuerzos logísticos para que más familias reciban una caja de alimentos cada mes.",
+    image: "/images/news/banco-alimentos.jpg",
+    imageAlt: "Voluntarios apilando cajas de alimentos para distribución",
+  },
+  {
+    category: "Comunidad",
+    title: "Celebramos un nuevo aniversario de la congregación",
+    summary:
+      "Un domingo especial de gratitud, testimonios y celebración por lo que Dios ha hecho en estos años.",
+    image: "/images/news/celebracion-comunidad.jpg",
+    imageAlt: "Grupo de personas aplaudiendo durante una celebración",
   },
 ];
 
