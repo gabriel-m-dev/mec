@@ -1,8 +1,5 @@
 ﻿import type { Metadata, Viewport } from "next";
 import { Inter, Cormorant_Garamond } from "next/font/google";
-import "./globals.css";
-import { SiteHeader } from "@/components/site-header";
-import { SiteFooter } from "@/components/site-footer";
 import { getSiteUrl } from "@/lib/site-url";
 import type { ReactNode } from "react";
 
@@ -64,9 +61,7 @@ export default function RootLayout({
   return (
     <html lang="es" className={`${inter.variable} ${cormorant.variable}`}>
       <body className="bg-ink-950 font-sans text-white antialiased">
-        <SiteHeader />
         {children}
-        <SiteFooter />
       </body>
     </html>
   );

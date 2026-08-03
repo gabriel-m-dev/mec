@@ -10,5 +10,5 @@ export const sanityClient = createClient({
   projectId,
   dataset: process.env.NEXT_PUBLIC_SANITY_DATASET || "production",
   apiVersion: "2025-05-30",
-  useCdn: true,
+  useCdn: false,
 });
