@@ -1,19 +1,9 @@
 import { AnimatedSection } from "@/components/animated-section";
-import { FeatureHighlight } from "@/components/feature-highlight";
-import { PodiumIcon, ShieldCrossIcon, UsersIcon } from "@/components/feature-icons";
-import { MapPinIcon } from "@/components/contact-icons";
 import { Hero } from "@/components/hero";
 import { SectionHeading } from "@/components/section-heading";
 import { VenueCard } from "@/components/venue-card";
 import { WorshipServiceCard } from "@/components/worship-service-card";
-import { featureHighlights, venue, worshipServices } from "@/lib/content";
-
-const featureIcons = {
-  users: UsersIcon,
-  podium: PodiumIcon,
-  shield: ShieldCrossIcon,
-  map: MapPinIcon,
-};
+import { heroHighlights, venue, worshipServices } from "@/lib/content";
 
 export default function HomePage() {
   return (
@@ -22,19 +12,19 @@ export default function HomePage() {
 
       <AnimatedSection className="relative overflow-hidden border-b border-white/6 bg-ink-950 py-14 sm:py-20">
         <div className="relative z-10 mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 gap-x-6 gap-y-12 sm:grid-cols-4 sm:gap-x-8">
-            {featureHighlights.map((item) => {
-              const Icon = featureIcons[item.icon];
-              return (
-                <FeatureHighlight
-                  key={item.label}
-                  icon={<Icon className="h-7 w-7 sm:h-8 sm:w-8" />}
-                  label={item.label}
-                  cta={item.cta}
-                  href={item.href}
-                />
-              );
-            })}
+          <div className="grid gap-4 md:grid-cols-3">
+            {heroHighlights.map((item) => (
+              <article
+                key={item.title}
+                className="rounded-3xl border border-white/10 bg-ink-950/60 p-5 text-left shadow-luxe backdrop-blur-md"
+              >
+                <p className="text-sm uppercase tracking-[0.24em] text-gold-300/90">
+                  {item.title}
+                </p>
+                <p className="mt-3 font-serif text-4xl text-white">{item.value}</p>
+                <p className="mt-3 text-sm leading-6 text-slate-300">{item.copy}</p>
+              </article>
+            ))}
           </div>
         </div>
       </AnimatedSection>

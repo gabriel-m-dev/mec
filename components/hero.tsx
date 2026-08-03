@@ -5,7 +5,17 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
 import { useEffect, useState } from "react";
-import { heroHighlights } from "@/lib/content";
+import { MapPinIcon } from "@/components/contact-icons";
+import { FeatureHighlight } from "@/components/feature-highlight";
+import { PodiumIcon, ShieldCrossIcon, UsersIcon } from "@/components/feature-icons";
+import { featureHighlights } from "@/lib/content";
+
+const featureIcons = {
+  users: UsersIcon,
+  podium: PodiumIcon,
+  shield: ShieldCrossIcon,
+  map: MapPinIcon,
+};
 
 const OrbitScene = dynamic(
   () => import("@/components/three/orbit-scene").then((mod) => mod.OrbitScene),
@@ -62,7 +72,7 @@ export function Hero() {
           className="hidden object-cover object-center sm:block"
           sizes="100vw"
         />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(227,170,53,0.14),transparent_36%),linear-gradient(180deg,rgba(2,5,12,0.1)_0%,rgba(2,5,12,0.74)_55%,rgba(2,5,12,1)_100%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(227,170,53,0.14),transparent_36%),linear-gradient(180deg,rgba(2,5,12,0.1)_0%,rgba(2,5,12,0.45)_55%,rgba(2,5,12,0.6)_100%)]" />
       </div>
 
       <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/70 to-transparent" />
@@ -133,25 +143,28 @@ export function Hero() {
           </motion.div>
         </div>
 
-        <div className="relative z-10 mt-16 grid gap-4 md:grid-cols-3">
-          {heroHighlights.map((item, index) => (
-            <motion.article
-              key={item.title}
-              initial={shouldReduceMotion ? false : { opacity: 0, y: 22 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{
-                duration: shouldReduceMotion ? 0 : 0.8,
-                delay: shouldReduceMotion ? 0 : 0.58 + index * 0.1,
-              }}
-              className="rounded-3xl border border-white/10 bg-ink-950/60 p-5 text-left shadow-luxe backdrop-blur-md"
-            >
-              <p className="text-sm uppercase tracking-[0.24em] text-gold-300/90">
-                {item.title}
-              </p>
-              <p className="mt-3 font-serif text-4xl text-white">{item.value}</p>
-              <p className="mt-3 text-sm leading-6 text-slate-300">{item.copy}</p>
-            </motion.article>
-          ))}
+        <div className="relative z-10 mt-16 grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-4 sm:gap-x-8">
+          {featureHighlights.map((item, index) => {
+            const Icon = featureIcons[item.icon];
+            return (
+              <motion.div
+                key={item.label}
+                initial={shouldReduceMotion ? false : { opacity: 0, y: 22 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  duration: shouldReduceMotion ? 0 : 0.8,
+                  delay: shouldReduceMotion ? 0 : 0.58 + index * 0.1,
+                }}
+              >
+                <FeatureHighlight
+                  icon={<Icon className="h-7 w-7 sm:h-8 sm:w-8" />}
+                  label={item.label}
+                  cta={item.cta}
+                  href={item.href}
+                />
+              </motion.div>
+            );
+          })}
         </div>
       </div>
     </section>
