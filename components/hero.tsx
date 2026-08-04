@@ -77,26 +77,17 @@ export function Hero() {
 
       <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/70 to-transparent" />
 
-      <div className="relative mx-auto grid min-h-[100svh] max-w-7xl items-center px-4 pb-16 pt-28 sm:px-6 lg:px-8 lg:pb-20 lg:pt-32">
+      <div className="relative mx-auto grid min-h-[100svh] max-w-7xl items-center px-4 pb-16 pt-20 sm:px-6 lg:px-8 lg:pb-20 lg:pt-24">
         <div className="pointer-events-none absolute inset-x-0 top-12 h-[62rem] opacity-90 md:top-2">
           {!showOrbitScene ? null : <OrbitScene />}
         </div>
 
         <div className="relative z-10 mx-auto max-w-4xl text-center">
-          <motion.p
-            initial={shouldReduceMotion ? false : { opacity: 0, y: 14 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: shouldReduceMotion ? 0 : 0.8, delay: shouldReduceMotion ? 0 : 0.1 }}
-            className="text-xs font-semibold uppercase tracking-[0.46em] text-gold-200/90 sm:text-sm"
-          >
-            Cristo poder y sabiduría de Dios
-          </motion.p>
-
           <motion.h1
             initial={shouldReduceMotion ? false : { opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: shouldReduceMotion ? 0 : 0.9, delay: shouldReduceMotion ? 0 : 0.18 }}
-            className="mt-5 font-serif text-5xl tracking-tight text-white drop-shadow-[0_8px_40px_rgba(0,0,0,0.7)] sm:text-7xl md:text-8xl"
+            transition={{ duration: shouldReduceMotion ? 0 : 0.9, delay: shouldReduceMotion ? 0 : 0.1 }}
+            className="font-serif text-4xl tracking-tight text-white drop-shadow-[0_8px_40px_rgba(0,0,0,0.7)] sm:text-5xl md:text-6xl"
           >
             MEC
           </motion.h1>
@@ -105,7 +96,7 @@ export function Hero() {
             initial={shouldReduceMotion ? false : { opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: shouldReduceMotion ? 0 : 0.9, delay: shouldReduceMotion ? 0 : 0.28 }}
-            className="mx-auto mt-5 max-w-3xl text-balance font-serif text-2xl font-semibold uppercase tracking-[0.14em] text-gold-200 sm:text-3xl"
+            className="mx-auto mt-3 max-w-3xl text-balance font-serif text-lg font-semibold uppercase tracking-[0.14em] text-gold-200 sm:text-xl"
           >
             Cristo poder y sabiduría de Dios
           </motion.p>
@@ -114,7 +105,7 @@ export function Hero() {
             initial={shouldReduceMotion ? false : { opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: shouldReduceMotion ? 0 : 0.9, delay: shouldReduceMotion ? 0 : 0.36 }}
-            className="mx-auto mt-6 max-w-4xl text-pretty text-lg leading-8 text-slate-200 sm:text-xl"
+            className="mx-auto mt-4 max-w-2xl text-pretty text-sm leading-6 text-slate-200 sm:text-base"
           >
             Anunciando el poder y la sabiduría de Dios para transformar vidas,
             fortalecer familias y movilizar una comunidad de fe con excelencia,
@@ -125,7 +116,7 @@ export function Hero() {
             initial={shouldReduceMotion ? false : { opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: shouldReduceMotion ? 0 : 0.9, delay: shouldReduceMotion ? 0 : 0.46 }}
-            className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row"
+            className="mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row"
           >
             <Link
               href="/contacto"
@@ -143,7 +134,7 @@ export function Hero() {
           </motion.div>
         </div>
 
-        <div className="relative z-10 mt-16 grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-4 sm:gap-x-8">
+        <div className="relative z-10 mt-12 grid grid-cols-2 gap-x-6 gap-y-8 sm:grid-cols-4 sm:gap-x-8">
           {featureHighlights.map((item, index) => {
             const Icon = featureIcons[item.icon];
             return (
@@ -157,7 +148,7 @@ export function Hero() {
                 }}
               >
                 <FeatureHighlight
-                  icon={<Icon className="h-7 w-7 sm:h-8 sm:w-8" />}
+                  icon={<Icon className="h-5 w-5 sm:h-6 sm:w-6" />}
                   label={item.label}
                   cta={item.cta}
                   href={item.href}
