@@ -15,15 +15,15 @@ export function FeatureHighlight({ icon, label, cta, href }: FeatureHighlightPro
     // un <a> dentro de otro es HTML inválido y el navegador parte el DOM ahí.
     <Link
       href={href}
-      className="group flex flex-col items-center gap-3 rounded-3xl p-2 text-center transition hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-300 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-950"
+      className="group flex flex-col items-center gap-2 rounded-3xl p-1.5 text-center transition hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-300 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-950 sm:gap-3 sm:p-2"
     >
-      <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full border border-gold-300/30 bg-gold-400/10 text-gold-200 shadow-glow transition group-hover:border-gold-200/60 group-hover:bg-gold-400/20 sm:h-14 sm:w-14">
+      <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-gold-300/30 bg-gold-400/10 text-gold-200 shadow-glow transition group-hover:border-gold-200/60 group-hover:bg-gold-400/20 sm:h-14 sm:w-14">
         {icon}
       </span>
-      <span className="text-sm font-semibold uppercase tracking-[0.18em] text-white sm:text-base">
+      <span className="text-balance text-[11px] font-semibold uppercase leading-tight tracking-[0.1em] text-white sm:text-base sm:leading-normal sm:tracking-[0.18em]">
         {label}
       </span>
-      <span className="inline-flex items-center justify-center rounded-full bg-gold-400 px-5 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-ink-950 shadow-luxe transition group-hover:bg-gold-300">
+      <span className="inline-flex items-center justify-center rounded-full bg-gold-400 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-ink-950 shadow-luxe transition group-hover:bg-gold-300 sm:px-5 sm:py-2 sm:text-xs sm:tracking-[0.14em]">
         {cta}
       </span>
     </Link>
