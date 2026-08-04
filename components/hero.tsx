@@ -134,7 +134,7 @@ export function Hero() {
           </motion.div>
         </div>
 
-        <div className="relative z-10 mt-9 grid grid-cols-4 gap-x-1.5 gap-y-6 sm:mt-12 sm:gap-x-8 sm:gap-y-8">
+        <div className="relative z-10 mt-[1.875rem] grid grid-cols-4 gap-x-1.5 gap-y-6 sm:mt-12 sm:gap-x-8 sm:gap-y-8">
           {featureHighlights.map((item, index) => {
             const Icon = featureIcons[item.icon];
             return (
