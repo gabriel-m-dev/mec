@@ -134,7 +134,7 @@ export function Hero() {
           </motion.div>
         </div>
 
-        <div className="relative z-10 mt-12 grid grid-cols-2 gap-x-6 gap-y-8 sm:grid-cols-4 sm:gap-x-8">
+        <div className="relative z-10 mt-9 grid grid-cols-2 gap-x-4 gap-y-6 sm:mt-12 sm:grid-cols-4 sm:gap-x-8 sm:gap-y-8">
           {featureHighlights.map((item, index) => {
             const Icon = featureIcons[item.icon];
             return (
@@ -148,7 +148,7 @@ export function Hero() {
                 }}
               >
                 <FeatureHighlight
-                  icon={<Icon className="h-5 w-5 sm:h-6 sm:w-6" />}
+                  icon={<Icon className="h-4 w-4 sm:h-6 sm:w-6" />}
                   label={item.label}
                   cta={item.cta}
                   href={item.href}
