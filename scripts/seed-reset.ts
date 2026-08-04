@@ -18,7 +18,7 @@ import { stdin, stdout } from "node:process";
 loadEnvConfig(process.cwd());
 
 const PROJECT_ID = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID;
-const DATASET = process.env.NEXT_PUBLIC_SANITY_DATASET || "production";
+const DATASET = process.env.NEXT_PUBLIC_SANITY_DATASET;
 const API_VERSION = "2025-05-30";
 
 const MANAGED_TYPES = [
@@ -35,6 +35,12 @@ const MANAGED_TYPES = [
 async function main() {
   if (!PROJECT_ID) {
     throw new Error("Missing required env var: NEXT_PUBLIC_SANITY_PROJECT_ID");
+  }
+
+  // Sin fallback: este script BORRA documentos. Apuntar al dataset equivocado
+  // por una env mal puesta no puede ser un default silencioso.
+  if (!DATASET) {
+    throw new Error("Missing required env var: NEXT_PUBLIC_SANITY_DATASET");
   }
 
   const token = process.env.SANITY_API_WRITE_TOKEN;
