@@ -9,6 +9,25 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      // Escala tipográfica propia, más chica que la de Tailwind. La reducción
+      // es progresiva a propósito: el texto de lectura casi no baja, para no
+      // comprometer la legibilidad, y los tamaños de display bajan hasta un
+      // 28%, que es lo que hacía sentir la página sobredimensionada.
+      fontSize: {
+        xs: ["0.75rem", { lineHeight: "1rem" }],
+        sm: ["0.8125rem", { lineHeight: "1.25rem" }],
+        base: ["0.9375rem", { lineHeight: "1.5rem" }],
+        lg: ["1rem", { lineHeight: "1.6rem" }],
+        xl: ["1.125rem", { lineHeight: "1.65rem" }],
+        "2xl": ["1.3125rem", { lineHeight: "1.8rem" }],
+        "3xl": ["1.5rem", { lineHeight: "1.95rem" }],
+        "4xl": ["1.75rem", { lineHeight: "2.1rem" }],
+        "5xl": ["2.25rem", { lineHeight: "1.1" }],
+        "6xl": ["2.75rem", { lineHeight: "1.08" }],
+        "7xl": ["3.25rem", { lineHeight: "1.05" }],
+        "8xl": ["4rem", { lineHeight: "1.02" }],
+        "9xl": ["5rem", { lineHeight: "1" }],
+      },
       opacity: {
         4: "0.04",
         6: "0.06",
