@@ -27,9 +27,9 @@ export const structure: StructureResolver = (S) =>
       S.divider(),
       S.listItem()
         .id("pageBanner")
-        .title("Banners de página")
+        .title("Páginas")
         .child(
-          S.documentTypeList("pageBanner").title("Banners de página"),
+          S.documentTypeList("pageBanner").title("Páginas"),
         ),
       S.divider(),
       ...COLLECTIONS.map(({ type, title }) =>

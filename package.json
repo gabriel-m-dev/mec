@@ -9,7 +9,8 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "seed": "tsx scripts/seed-sanity.ts",
-    "seed:reset": "tsx scripts/seed-reset.ts"
+    "seed:reset": "tsx scripts/seed-reset.ts",
+    "migrate:page-sections": "tsx scripts/migrate-page-sections.ts"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.6",

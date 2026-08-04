@@ -22,6 +22,15 @@ export const PAGE_BANNER_ROUTES = {
 export type PageBannerRoute =
   (typeof PAGE_BANNER_ROUTES)[keyof typeof PAGE_BANNER_ROUTES];
 
+export const PAGE_SECTION_KEYS = {
+  MAIN: "main",
+  VALUES: "values",
+  FAQ: "faq",
+} as const;
+
+export type PageSectionKey =
+  (typeof PAGE_SECTION_KEYS)[keyof typeof PAGE_SECTION_KEYS];
+
 export interface SocialLink {
   name: string;
   href: string;
@@ -92,6 +101,18 @@ export interface NewsItem {
   imageAlt: string;
 }
 
+export interface PageSection {
+  key: PageSectionKey;
+  eyebrow?: string;
+  title: string;
+  copy?: string;
+}
+
+export interface Faq {
+  question: string;
+  answer: string;
+}
+
 export interface PageBanner {
   _id: string;
   _type: "pageBanner";
@@ -101,4 +122,6 @@ export interface PageBanner {
   description?: string;
   image?: SanityImageSource;
   imageAlt?: string;
+  sections?: PageSection[];
+  faqs?: Faq[];
 }
