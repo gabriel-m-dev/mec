@@ -4,7 +4,16 @@ import { structureTool } from "sanity/structure";
 import { schemaTypes } from "./sanity/schemaTypes";
 import { structure } from "./sanity/deskStructure";
 
+// Existe exactamente un documento de cada uno de estos tipos.
 const SINGLETON_TYPES = ["siteSettings", "venue"];
+
+// Conjunto fijo: hay un `pageBanner` por ruta y cada página lo busca por su
+// campo `route`. Un banner de más no se muestra en ninguna parte, y uno de
+// menos deja a esa página sin encabezado y sin su <h1>. Los 7 se editan, no se
+// crean ni se borran: si alguna vez hace falta uno nuevo, lo agrega el seed.
+const FIXED_SET_TYPES = ["pageBanner"];
+
+const PROTECTED_TYPES = [...SINGLETON_TYPES, ...FIXED_SET_TYPES];
 
 const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID;
 const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET;
@@ -35,11 +44,11 @@ export default defineConfig({
       }
 
       return prev.filter(
-        (template) => !SINGLETON_TYPES.includes(template.templateId),
+        (template) => !PROTECTED_TYPES.includes(template.templateId),
       );
     },
     actions: (prev, { schemaType }) => {
-      if (!SINGLETON_TYPES.includes(schemaType)) {
+      if (!PROTECTED_TYPES.includes(schemaType)) {
         return prev;
       }
 

@@ -49,7 +49,7 @@ loadEnvConfig(process.cwd());
 const DRY_RUN = process.argv.includes("--dry-run");
 
 const PROJECT_ID = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID;
-const DATASET = process.env.NEXT_PUBLIC_SANITY_DATASET || "production";
+const DATASET = process.env.NEXT_PUBLIC_SANITY_DATASET;
 const API_VERSION = "2025-05-30";
 
 const DOC_TYPES = {
@@ -360,6 +360,12 @@ function padLabel(label: string, width: number): string {
 async function main() {
   if (!PROJECT_ID) {
     throw new Error("Missing required env var: NEXT_PUBLIC_SANITY_PROJECT_ID");
+  }
+
+  // Sin fallback: escribir en el dataset equivocado por una env mal puesta es
+  // silencioso y, en un script que hace createOrReplace, destructivo.
+  if (!DATASET) {
+    throw new Error("Missing required env var: NEXT_PUBLIC_SANITY_DATASET");
   }
 
   console.log(
