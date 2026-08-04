@@ -9,24 +9,6 @@
   { label: "Contacto", href: "/contacto" },
 ];
 
-export const heroHighlights = [
-  {
-    title: "Miembros ministeriales",
-    value: "120+",
-    copy: "Una familia activa, intergeneracional y centrada en Cristo.",
-  },
-  {
-    title: "Cultos semanales",
-    value: "4",
-    copy: "Encuentros presenciales y transmisiones en vivo cada semana.",
-  },
-  {
-    title: "Capellanía",
-    value: "24/7",
-    copy: "Acompañamiento espiritual y consejería para la comunidad.",
-  },
-];
-
 export const aboutStats = [
   { label: "Años sirviendo", value: "15+" },
   { label: "Ciudades alcanzadas", value: "7" },
