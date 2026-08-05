@@ -1,4 +1,9 @@
-import { defineField, defineType } from "sanity";
+import {
+  defineField,
+  defineType,
+  type ConditionalPropertyCallbackContext,
+  type ValidationContext,
+} from "sanity";
 
 import {
   duplicatedSectionKeys,
@@ -15,6 +20,35 @@ const PAGE_BANNER_ROUTE_OPTIONS = [
   { title: "Noticias", value: "/noticias" },
   { title: "Contacto", value: "/contacto" },
 ];
+
+/** La única página que usa los bloques de abajo. */
+const ABOUT_ROUTE = "/quienes-somos";
+
+const VALUE_ICON_OPTIONS = [
+  { title: "Escudo con cruz", value: "shield" },
+  { title: "Personas", value: "users" },
+  { title: "Manos que sirven", value: "serve" },
+];
+
+/**
+ * Los bloques de `/quienes-somos` viven en `pageBanner` como campos
+ * opcionales, así que sin esto aparecerían vacíos en las otras 6 páginas y el
+ * cliente tendría que adivinar cuáles le corresponden.
+ */
+function hiddenUnlessAbout({ document }: ConditionalPropertyCallbackContext): boolean {
+  return (document as { route?: string } | undefined)?.route !== ABOUT_ROUTE;
+}
+
+/**
+ * El texto alternativo es obligatorio SOLO si se cargó la imagen: exigirlo
+ * siempre bloquearía documentos que legítimamente no tienen esa imagen.
+ */
+function requiredWhenImagePresent(imageField: string) {
+  return (alt: string | undefined, context: ValidationContext): true | string => {
+    const parent = context.parent as Record<string, unknown> | undefined;
+    return parent?.[imageField] && !alt ? "Requerido cuando hay una imagen" : true;
+  };
+}
 
 const PAGE_SECTION_KEY_OPTIONS = [
   { title: "Principal", value: "main" },
@@ -150,6 +184,154 @@ export const pageBanner = defineType({
         },
       ],
     }),
+    // --- Bloques propios de /quienes-somos ---------------------------------
+    // Viven en `pageBanner` y no en un tipo aparte para respetar la decisión
+    // ya tomada de un documento por página. Son opcionales, así que las otras
+    // 6 páginas simplemente no los usan, y `hidden` los saca de la vista para
+    // que el cliente no vea campos que no le sirven.
+    defineField({
+      name: "introParagraphs",
+      title: "Presentación",
+      type: "array",
+      description: "Párrafos de apertura. Cada elemento es un párrafo.",
+      of: [{ type: "text", rows: 3 }],
+      hidden: hiddenUnlessAbout,
+    }),
+    defineField({
+      name: "introImage",
+      title: "Imagen de la presentación",
+      type: "image",
+      options: { hotspot: true },
+      hidden: hiddenUnlessAbout,
+    }),
+    defineField({
+      name: "introImageAlt",
+      title: "Texto alternativo de la imagen de presentación",
+      type: "string",
+      description: "Describe la imagen para quienes usan lectores de pantalla.",
+      validation: (Rule) => Rule.custom(requiredWhenImagePresent("introImage")),
+      hidden: hiddenUnlessAbout,
+    }),
+    defineField({
+      name: "stats",
+      title: "Cifras",
+      type: "array",
+      description: 'Las cifras destacadas, por ejemplo "15+ años sirviendo".',
+      of: [
+        {
+          type: "object",
+          name: "statItem",
+          fields: [
+            defineField({
+              name: "value",
+              title: "Cifra",
+              type: "string",
+              description: 'El número tal como se muestra: "15+", "1.8K".',
+              validation: (Rule) => Rule.required(),
+            }),
+            defineField({
+              name: "label",
+              title: "Descripción",
+              type: "string",
+              validation: (Rule) => Rule.required(),
+            }),
+          ],
+          preview: { select: { title: "value", subtitle: "label" } },
+        },
+      ],
+      hidden: hiddenUnlessAbout,
+    }),
+    defineField({
+      name: "vision",
+      title: "Visión",
+      type: "object",
+      fields: [
+        defineField({
+          name: "eyebrow",
+          title: "Antetítulo",
+          type: "string",
+          description: 'El texto chico en mayúsculas, hoy "Visión".',
+        }),
+        defineField({
+          name: "body",
+          title: "Texto",
+          type: "text",
+          rows: 4,
+          validation: (Rule) => Rule.required(),
+        }),
+      ],
+      hidden: hiddenUnlessAbout,
+    }),
+    defineField({
+      name: "story",
+      title: "Nuestra historia",
+      type: "object",
+      fields: [
+        defineField({ name: "eyebrow", title: "Antetítulo", type: "string" }),
+        defineField({
+          name: "title",
+          title: "Título",
+          type: "string",
+          validation: (Rule) => Rule.required(),
+        }),
+        defineField({
+          name: "paragraphs",
+          title: "Párrafos",
+          type: "array",
+          of: [{ type: "text", rows: 4 }],
+        }),
+        defineField({
+          name: "image",
+          title: "Imagen",
+          type: "image",
+          options: { hotspot: true },
+        }),
+        defineField({
+          name: "imageAlt",
+          title: "Texto alternativo de la imagen",
+          type: "string",
+          validation: (Rule) => Rule.custom(requiredWhenImagePresent("image")),
+        }),
+      ],
+      hidden: hiddenUnlessAbout,
+    }),
+    defineField({
+      name: "values",
+      title: "Valores",
+      type: "array",
+      description: "Las tarjetas de valores. El encabezado se edita en Secciones.",
+      of: [
+        {
+          type: "object",
+          name: "valueItem",
+          fields: [
+            defineField({
+              name: "icon",
+              title: "Ícono",
+              type: "string",
+              options: { list: VALUE_ICON_OPTIONS },
+              validation: (Rule) => Rule.required(),
+            }),
+            defineField({
+              name: "title",
+              title: "Título",
+              type: "string",
+              validation: (Rule) => Rule.required(),
+            }),
+            defineField({
+              name: "description",
+              title: "Descripción",
+              type: "text",
+              rows: 3,
+              validation: (Rule) => Rule.required(),
+            }),
+          ],
+          preview: { select: { title: "title", subtitle: "icon" } },
+        },
+      ],
+      hidden: hiddenUnlessAbout,
+    }),
+
     defineField({
       name: "faqs",
       title: "Preguntas frecuentes",

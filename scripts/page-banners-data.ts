@@ -13,7 +13,14 @@
  * original de cada `app/(site)/*\/page.tsx`.
  */
 
-import type { Faq, PageSection } from "../sanity/lib/types";
+import type {
+  AboutValue,
+  Faq,
+  PageSection,
+  Stat,
+  Story,
+  Vision,
+} from "../sanity/lib/types";
 
 export interface BannerSeed {
   route: string;
@@ -24,6 +31,15 @@ export interface BannerSeed {
   imageAlt: string;
   sections?: PageSection[];
   faqs?: Faq[];
+  // Bloques de /quienes-somos. Las imágenes van como RUTA local, igual que
+  // `image` de arriba: quien escribe en Sanity las resuelve a un asset.
+  introParagraphs?: string[];
+  introImage?: string;
+  introImageAlt?: string;
+  stats?: Stat[];
+  vision?: Vision;
+  story?: Omit<Story, "image"> & { image?: string };
+  values?: AboutValue[];
 }
 
 // Las 4 FAQs mostradas en /cultos — transcriptas tal cual del const `faqs`
@@ -80,6 +96,54 @@ export const PAGE_BANNERS: BannerSeed[] = [
         key: "values",
         eyebrow: "Nuestros valores",
         title: "Lo que no negociamos, sin importar cuánto crezcamos",
+      },
+    ],
+    // Los bloques que hasta ahora estaban hardcodeados en
+    // app/(site)/quienes-somos/page.tsx y en `aboutStats`/`aboutValues` de
+    // lib/content.ts, transcriptos tal cual. Orden y redacción preservados.
+    introParagraphs: [
+      "Somos una comunidad que sirve con orden, belleza y reverencia. Creemos en una fe práctica, en la formación de discípulos y en una vida ministerial que impacta la ciudad con integridad.",
+      "Nuestro enfoque integra adoración, cuidado pastoral, formación de liderazgos y presencia digital para que cada persona encuentre un lugar seguro para crecer.",
+    ],
+    introImage: "/images/igle-background-desktop.png",
+    introImageAlt: "Ambiente visual MEC",
+    stats: [
+      { value: "15+", label: "Años sirviendo" },
+      { value: "7", label: "Ciudades alcanzadas" },
+      { value: "1.8K", label: "Personas acompañadas" },
+    ],
+    vision: {
+      eyebrow: "Visión",
+      body: "Ser una casa espiritual donde la presencia de Dios, la excelencia ministerial y la compasión se encuentren en cada experiencia.",
+    },
+    story: {
+      eyebrow: "Nuestra historia",
+      title: "De una sala prestada a una casa para toda la ciudad",
+      paragraphs: [
+        "MEC nació hace más de quince años como un pequeño grupo de familias que se reunía en una sala prestada para orar, leer la Palabra y sostenerse mutuamente en tiempos difíciles. Lo que empezó como un encuentro semanal de puertas cerradas se transformó, con constancia y fe, en una congregación que hoy reúne a cientos de personas cada semana.",
+        "A lo largo de este camino aprendimos que crecer no significa perder cercanía: cada nuevo ministerio, cada nueva sede y cada nueva transmisión en vivo sigue existiendo para lo mismo que nos reunió al principio — acompañar personas y apuntarlas a Cristo con excelencia y calidez.",
+      ],
+      image: "/images/ministries/alabanza.jpg",
+      imageAlt: "Primeros encuentros de adoración de la congregación",
+    },
+    values: [
+      {
+        icon: "shield",
+        title: "Fe",
+        description:
+          "Sostenemos cada decisión y cada paso comunitario en una confianza firme en la Palabra y en la fidelidad de Dios.",
+      },
+      {
+        icon: "users",
+        title: "Comunidad",
+        description:
+          "Creemos en vínculos reales: familias, células y equipos que se acompañan más allá del domingo.",
+      },
+      {
+        icon: "serve",
+        title: "Servicio",
+        description:
+          "Ponemos manos y tiempo al servicio del prójimo, dentro y fuera de nuestras puertas, con humildad y constancia.",
       },
     ],
   },

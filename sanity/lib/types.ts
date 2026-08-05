@@ -113,6 +113,34 @@ export interface Faq {
   answer: string;
 }
 
+/** Los íconos disponibles para las tarjetas de valores de /quienes-somos. */
+export const VALUE_ICONS = ["shield", "users", "serve"] as const;
+export type ValueIcon = (typeof VALUE_ICONS)[number];
+
+export interface Stat {
+  value: string;
+  label: string;
+}
+
+export interface AboutValue {
+  icon: ValueIcon;
+  title: string;
+  description: string;
+}
+
+export interface Vision {
+  eyebrow?: string;
+  body: string;
+}
+
+export interface Story {
+  eyebrow?: string;
+  title: string;
+  paragraphs?: string[];
+  image?: SanityImageSource;
+  imageAlt?: string;
+}
+
 export interface PageBanner {
   _id: string;
   _type: "pageBanner";
@@ -124,4 +152,13 @@ export interface PageBanner {
   imageAlt?: string;
   sections?: PageSection[];
   faqs?: Faq[];
+  // Bloques propios de /quienes-somos. Opcionales: las otras 6 páginas
+  // comparten el tipo pero no los usan.
+  introParagraphs?: string[];
+  introImage?: SanityImageSource;
+  introImageAlt?: string;
+  stats?: Stat[];
+  vision?: Vision;
+  story?: Story;
+  values?: AboutValue[];
 }

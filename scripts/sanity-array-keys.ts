@@ -82,6 +82,16 @@ export function keyedFaqs<T>(faqs: readonly T[]): Keyed<T>[] {
   return withKeys(faqs, "faqItem", (_faq, index) => `faq-${index}`);
 }
 
+/** `pageBanner.stats` — clave derivada de la descripción, única por cifra. */
+export function keyedStats<T extends { label?: string }>(stats: readonly T[]): Keyed<T>[] {
+  return withKeys(stats, "statItem", (stat, index) => stat.label ?? `stat-${index}`);
+}
+
+/** `pageBanner.values` — clave derivada del ícono, uno por tarjeta. */
+export function keyedValues<T extends { icon?: string }>(values: readonly T[]): Keyed<T>[] {
+  return withKeys(values, "valueItem", (value, index) => value.icon ?? `value-${index}`);
+}
+
 /** `siteSettings.socialLinks` — clave derivada de `icon`, único por plataforma. */
 export function keyedSocialLinks<T extends { icon?: string }>(links: readonly T[]): Keyed<T>[] {
   return withKeys(links, "socialLink", (link, index) => link.icon ?? `social-${index}`);

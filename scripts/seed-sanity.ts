@@ -49,7 +49,13 @@ import type {
 } from "../sanity/lib/types";
 import { PAGE_BANNERS } from "./page-banners-data";
 import { driftedFields } from "./seed-guard";
-import { keyedFaqs, keyedSections, keyedSocialLinks } from "./sanity-array-keys";
+import {
+  keyedFaqs,
+  keyedSections,
+  keyedSocialLinks,
+  keyedStats,
+  keyedValues,
+} from "./sanity-array-keys";
 
 // Load .env.local the same way Next.js does — this script runs standalone via
 // tsx, outside the Next.js process, so env vars are not loaded automatically.
@@ -443,9 +449,13 @@ async function main() {
       // Documento que no existe todavía: no hay nada que pisar.
       if (!existing) continue;
 
-      // En dry-run las imágenes no se suben, así que `doc.image` viene vacío:
-      // compararlo marcaría deriva falsa en todos los documentos con imagen.
-      const fields = driftedFields(existing, doc, DRY_RUN ? ["image"] : []);
+      // En dry-run las imágenes no se suben, así que quedan en `undefined` y
+      // se reportarían como deriva. `imagesMayBeMissing` ignora exactamente
+      // ese hueco a cualquier nivel — incluido el de adentro de `story`, que
+      // lleva imagen Y texto — y sigue comparando todo lo demás.
+      const fields = driftedFields(existing, doc, [], {
+        imagesMayBeMissing: DRY_RUN,
+      });
       if (fields.length > 0) drifted.push({ id: doc._id, fields });
     }
 
@@ -636,6 +646,18 @@ async function main() {
       // escritura pasa igual pero el Studio bloquea la edición del array.
       sections: banner.sections && keyedSections(banner.sections),
       faqs: banner.faqs && keyedFaqs(banner.faqs),
+      // Bloques de /quienes-somos. Sus dos imágenes se resuelven igual que
+      // cualquier otra: ruta local -> asset subido.
+      introParagraphs: banner.introParagraphs,
+      introImage: banner.introImage ? await resolveImage(banner.introImage) : undefined,
+      introImageAlt: banner.introImageAlt,
+      stats: banner.stats && keyedStats(banner.stats),
+      vision: banner.vision,
+      story: banner.story && {
+        ...banner.story,
+        image: banner.story.image ? await resolveImage(banner.story.image) : undefined,
+      },
+      values: banner.values && keyedValues(banner.values),
     });
   }
 

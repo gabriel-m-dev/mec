@@ -68,6 +68,39 @@ describe("driftedFields — con deriva, esto es lo que el seed borraría", () =>
   });
 });
 
+describe("driftedFields — imágenes ausentes en dry-run", () => {
+  const image = { _type: "image", asset: { _type: "reference", _ref: "image-abc" } };
+  const opts = { imagesMayBeMissing: true };
+
+  it("una imagen viva contra `undefined` no es deriva", () => {
+    expect(driftedFields({ ...base, image }, { ...base }, [], opts)).toEqual([]);
+  });
+
+  it("tampoco lo es anidada, como `story.image`", () => {
+    const story = { title: "T", paragraphs: ["p"], image };
+    const live = { ...base, story };
+    const next = { ...base, story: { title: "T", paragraphs: ["p"], image: undefined } };
+    expect(driftedFields(live, next, [], opts)).toEqual([]);
+  });
+
+  it("PERO el texto de al lado se sigue comparando: esto es lo que se perdería", () => {
+    // El motivo de no ignorar `story` entero. Si se ignorara el campo, esta
+    // edición del cliente pasaría desapercibida y el seed la borraría.
+    const live = { ...base, story: { title: "EDITADO POR EL CLIENTE", image } };
+    const next = { ...base, story: { title: "T", image: undefined } };
+    expect(driftedFields(live, next, [], opts)).toEqual(["story"]);
+  });
+
+  it("sin la opción, la imagen ausente SÍ es deriva", () => {
+    expect(driftedFields({ ...base, image }, { ...base })).toEqual(["image"]);
+  });
+
+  it("no confunde cualquier objeto ausente con una imagen", () => {
+    const noImage = { _type: "otraCosa", asset: {} };
+    expect(driftedFields({ ...base, x: noImage }, { ...base }, [], opts)).toEqual(["x"]);
+  });
+});
+
 describe("driftedFields — objetos anidados dentro de arrays (el caso real de las FAQ)", () => {
   const withFaqs = {
     _id: "b",

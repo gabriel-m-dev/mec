@@ -9,33 +9,6 @@
   { label: "Contacto", href: "/contacto" },
 ];
 
-export const aboutStats = [
-  { label: "Años sirviendo", value: "15+" },
-  { label: "Ciudades alcanzadas", value: "7" },
-  { label: "Personas acompañadas", value: "1.8K" },
-];
-
-export const aboutValues = [
-  {
-    icon: "shield",
-    title: "Fe",
-    description:
-      "Sostenemos cada decisión y cada paso comunitario en una confianza firme en la Palabra y en la fidelidad de Dios.",
-  },
-  {
-    icon: "users",
-    title: "Comunidad",
-    description:
-      "Creemos en vínculos reales: familias, células y equipos que se acompañan más allá del domingo.",
-  },
-  {
-    icon: "serve",
-    title: "Servicio",
-    description:
-      "Ponemos manos y tiempo al servicio del prójimo, dentro y fuera de nuestras puertas, con humildad y constancia.",
-  },
-] as const;
-
 export const featureHighlights = [
   {
     icon: "users",

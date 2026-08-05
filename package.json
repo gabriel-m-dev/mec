@@ -13,6 +13,7 @@
     "seed": "tsx scripts/seed-sanity.ts",
     "seed:reset": "tsx scripts/seed-reset.ts",
     "migrate:page-sections": "tsx scripts/migrate-page-sections.ts",
+    "migrate:about": "tsx scripts/migrate-about-page.ts",
     "repair:array-keys": "tsx scripts/repair-array-keys.ts"
   },
   "dependencies": {

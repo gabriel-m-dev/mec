@@ -10,7 +10,13 @@
 
 import { describe, expect, it } from "vitest";
 
-import { keyedFaqs, keyedSections, keyedSocialLinks } from "./sanity-array-keys";
+import {
+  keyedFaqs,
+  keyedSections,
+  keyedSocialLinks,
+  keyedStats,
+  keyedValues,
+} from "./sanity-array-keys";
 
 describe("keyedSections", () => {
   it("deriva la clave del campo `key` y estampa el `_type` del schema", () => {
@@ -63,6 +69,37 @@ describe("keyedFaqs", () => {
     const reordered = [second, first];
     expect(reordered.map((f) => f._key)).toEqual(["faq-1", "faq-0"]);
     expect(new Set(reordered.map((f) => f._key)).size).toBe(2);
+  });
+});
+
+describe("keyedStats", () => {
+  it("deriva la clave de la descripción y estampa el `_type` del schema", () => {
+    const result = keyedStats([
+      { value: "15+", label: "Años sirviendo" },
+      { value: "7", label: "Ciudades alcanzadas" },
+    ]);
+    expect(result.map((s) => s._key)).toEqual(["anos-sirviendo", "ciudades-alcanzadas"]);
+    expect(result.every((s) => s._type === "statItem")).toBe(true);
+  });
+
+  it("desambigua dos cifras con la misma descripción", () => {
+    const result = keyedStats([
+      { value: "1", label: "Sedes" },
+      { value: "2", label: "Sedes" },
+    ]);
+    expect(result.map((s) => s._key)).toEqual(["sedes", "sedes-2"]);
+  });
+});
+
+describe("keyedValues", () => {
+  it("deriva la clave del ícono y estampa el `_type` del schema", () => {
+    const result = keyedValues([
+      { icon: "shield", title: "Fe" },
+      { icon: "users", title: "Comunidad" },
+      { icon: "serve", title: "Servicio" },
+    ]);
+    expect(result.map((v) => v._key)).toEqual(["shield", "users", "serve"]);
+    expect(result.every((v) => v._type === "valueItem")).toBe(true);
   });
 });
 
