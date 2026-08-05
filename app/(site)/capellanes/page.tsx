@@ -7,7 +7,7 @@ import { urlForImage } from "@/sanity/lib/image";
 import { sanityClient } from "@/sanity/lib/client";
 import { chaplainsQuery, pageBannerByRouteQuery } from "@/sanity/lib/queries";
 import { SANITY_TAGS } from "@/sanity/lib/tags";
-import type { Chaplain, PageBanner } from "@/sanity/lib/types";
+import { PAGE_SECTION_KEYS, type Chaplain, type PageBanner } from "@/sanity/lib/types";
 
 export const metadata: Metadata = {
   title: "Capellanes",
@@ -26,6 +26,10 @@ export default async function CapellanesPage() {
     }),
   ]);
 
+  const mainSection = banner?.sections?.find(
+    (section) => section.key === PAGE_SECTION_KEYS.MAIN,
+  );
+
   return (
     <main className="relative overflow-hidden bg-ink-950">
       {banner && (
@@ -40,11 +44,13 @@ export default async function CapellanesPage() {
 
       <section className="bg-white/[0.03] py-24 sm:py-28">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <SectionHeading
-            eyebrow="Capellanes"
-            title="Acompañamiento espiritual con criterio y sensibilidad"
-            copy="Un equipo preparado para cuidar, escuchar y orientar procesos personales, familiares e institucionales."
-          />
+          {mainSection && (
+            <SectionHeading
+              eyebrow={mainSection.eyebrow ?? ""}
+              title={mainSection.title}
+              copy={mainSection.copy}
+            />
+          )}
 
           <p className="mt-8 max-w-3xl text-lg leading-8 text-slate-300">
             El programa de capellanía existe para que nadie atraviese un

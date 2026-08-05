@@ -10,9 +10,15 @@ const PAGE_BANNER_ROUTE_OPTIONS = [
   { title: "Contacto", value: "/contacto" },
 ];
 
+const PAGE_SECTION_KEY_OPTIONS = [
+  { title: "Principal", value: "main" },
+  { title: "Valores", value: "values" },
+  { title: "Preguntas frecuentes", value: "faq" },
+];
+
 export const pageBanner = defineType({
   name: "pageBanner",
-  title: "Banner de página",
+  title: "Página",
   type: "document",
   fields: [
     defineField({
@@ -82,6 +88,78 @@ export const pageBanner = defineType({
           }
           return true;
         }),
+    }),
+    defineField({
+      name: "sections",
+      title: "Secciones",
+      type: "array",
+      description: "Encabezados de las secciones de contenido de esta página.",
+      of: [
+        {
+          type: "object",
+          name: "pageSection",
+          fields: [
+            defineField({
+              name: "key",
+              title: "Sección",
+              type: "string",
+              description: "Qué sección de la página es.",
+              options: { list: PAGE_SECTION_KEY_OPTIONS },
+              validation: (Rule) => Rule.required(),
+            }),
+            defineField({
+              name: "eyebrow",
+              title: "Antetítulo",
+              type: "string",
+              description: "Texto pequeño en mayúsculas que aparece sobre el título.",
+            }),
+            defineField({
+              name: "title",
+              title: "Título",
+              type: "string",
+              validation: (Rule) => Rule.required(),
+            }),
+            defineField({
+              name: "copy",
+              title: "Texto",
+              type: "text",
+              description: "Párrafo opcional debajo del título.",
+            }),
+          ],
+          preview: {
+            select: { title: "title", subtitle: "key" },
+          },
+        },
+      ],
+    }),
+    defineField({
+      name: "faqs",
+      title: "Preguntas frecuentes",
+      type: "array",
+      description: "Preguntas y respuestas que se muestran en esta página.",
+      of: [
+        {
+          type: "object",
+          name: "faqItem",
+          fields: [
+            defineField({
+              name: "question",
+              title: "Pregunta",
+              type: "string",
+              validation: (Rule) => Rule.required(),
+            }),
+            defineField({
+              name: "answer",
+              title: "Respuesta",
+              type: "text",
+              validation: (Rule) => Rule.required(),
+            }),
+          ],
+          preview: {
+            select: { title: "question" },
+          },
+        },
+      ],
     }),
   ],
   preview: {

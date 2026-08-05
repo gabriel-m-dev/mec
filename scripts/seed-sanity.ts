@@ -41,6 +41,7 @@ import type {
   SocialLink,
   SocialIcon,
 } from "../sanity/lib/types";
+import { PAGE_BANNERS } from "./page-banners-data";
 
 // Load .env.local the same way Next.js does — this script runs standalone via
 // tsx, outside the Next.js process, so env vars are not loaded automatically.
@@ -266,85 +267,6 @@ const socialLinks = [
   { name: "Instagram", href: "#", icon: "instagram" },
   { name: "Plataforma web", href: "/cultos", icon: "globe" },
 ] as const;
-
-interface BannerSeed {
-  route: string;
-  eyebrow: string;
-  title: string;
-  description: string;
-  image: string;
-  imageAlt: string;
-}
-
-// The 7 page banners are NOT in lib/content.ts — they are hardcoded literals
-// inside each app/(site)/*/page.tsx <PageHeader/> call. Transcribed here by
-// hand from the current source (verified against every page.tsx at the time
-// of writing).
-const PAGE_BANNERS: BannerSeed[] = [
-  {
-    route: "/quienes-somos",
-    eyebrow: "Quiénes somos",
-    title: "Una comunidad que adora, aprende y sirve junta",
-    description:
-      "Conocé la historia, la convicción y los valores que sostienen cada encuentro, cada ministerio y cada gesto de cuidado en MEC.",
-    image: "/images/pages/quienes-somos-banner.jpg",
-    imageAlt: "Congregación reunida durante un culto",
-  },
-  {
-    route: "/ministerios",
-    eyebrow: "Ministerios",
-    title: "Equipos que convierten la fe en acción concreta",
-    description:
-      "Desde la adoración hasta el cuidado de niños, cada ministerio es un espacio para poner tus dones al servicio de la comunidad.",
-    image: "/images/pages/ministerios-banner.jpg",
-    imageAlt: "Equipo de voluntarios sirviendo juntos",
-  },
-  {
-    route: "/capellanes",
-    eyebrow: "Capellanes",
-    title: "Un equipo preparado para escuchar antes de hablar",
-    description:
-      "Consejería, oración y acompañamiento para atravesar procesos personales, familiares e institucionales con respaldo real.",
-    image: "/images/pages/capellanes-banner.jpg",
-    imageAlt: "Sesión de consejería y acompañamiento pastoral",
-  },
-  {
-    route: "/cultos",
-    eyebrow: "Cultos",
-    title: "Un mismo mensaje, presencial y en vivo",
-    description:
-      "Sumate a nuestros encuentros semanales en el auditorio o desde donde estés, con la misma calidez y el mismo propósito.",
-    image: "/images/pages/cultos-banner.jpg",
-    imageAlt: "Multitud en un culto con luces de escenario",
-  },
-  {
-    route: "/eventos",
-    eyebrow: "Eventos",
-    title: "Encuentros para vivir la fe más allá del domingo",
-    description:
-      "Vigilias, conferencias, retiros y jornadas de servicio pensadas para distintas etapas de tu caminar con Dios.",
-    image: "/images/pages/eventos-banner.jpg",
-    imageAlt: "Orador presentando ante una audiencia en un evento",
-  },
-  {
-    route: "/noticias",
-    eyebrow: "Noticias",
-    title: "Lo que está pasando en nuestra comunidad",
-    description:
-      "Alianzas, celebraciones y novedades institucionales para que ninguna actualización te tome por sorpresa.",
-    image: "/images/pages/noticias-banner.jpg",
-    imageAlt: "Primer plano de un periódico sobre una mesa",
-  },
-  {
-    route: "/contacto",
-    eyebrow: "Contacto",
-    title: "Estamos para recibirte, escribinos cuando quieras",
-    description:
-      "Contanos qué necesitás — una pregunta, un pedido de oración o ganas de conocernos — y te respondemos a la brevedad.",
-    image: "/images/pages/contacto-banner.jpg",
-    imageAlt: "Recepción con personas conversando en un lobby luminoso",
-  },
-];
 
 type ImageValue = { _type: "image"; asset: { _type: "reference"; _ref: string } };
 
@@ -591,6 +513,8 @@ async function main() {
       description: banner.description,
       image: image as PageBanner["image"],
       imageAlt: banner.imageAlt,
+      sections: banner.sections,
+      faqs: banner.faqs,
     });
   }
 

@@ -22,5 +22,10 @@ export const eventsQuery = /* groq */ `*[_type == "event"] | order(_createdAt as
 
 export const newsItemsQuery = /* groq */ `*[_type == "newsItem"] | order(_createdAt asc)`;
 
-/** Parametrized by `$route` (e.g. "/ministerios"). Returns null if no banner exists for that route. */
+/**
+ * Parametrized by `$route` (e.g. "/ministerios"). Returns null if no banner
+ * exists for that route. No projection — returns the whole document,
+ * including `sections` and `faqs`, so pages get section headings and FAQs
+ * from this single fetch (no second round trip).
+ */
 export const pageBannerByRouteQuery = /* groq */ `*[_type == "pageBanner" && route == $route][0]`;

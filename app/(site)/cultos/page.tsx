@@ -12,34 +12,17 @@ import {
   worshipServicesQuery,
 } from "@/sanity/lib/queries";
 import { SANITY_TAGS } from "@/sanity/lib/tags";
-import type { PageBanner, SiteSettings, Venue, WorshipService } from "@/sanity/lib/types";
+import {
+  PAGE_SECTION_KEYS,
+  type PageBanner,
+  type SiteSettings,
+  type Venue,
+  type WorshipService,
+} from "@/sanity/lib/types";
 
 export const metadata: Metadata = {
   title: "Cultos",
 };
-
-const faqs = [
-  {
-    question: "¿Necesito registrarme para asistir?",
-    answer:
-      "No es obligatorio. Podés llegar directamente a cualquiera de nuestros cultos; si querés que te reservemos un lugar en un evento especial, avisanos por contacto.",
-  },
-  {
-    question: "¿Hay actividades para niños durante el culto?",
-    answer:
-      "Sí, contamos con espacio de niños y familias durante el culto de domingo, con material acorde a cada edad y un equipo de voluntarios a cargo.",
-  },
-  {
-    question: "¿Cómo llego en transporte público?",
-    answer:
-      "El auditorio se encuentra a pocas cuadras de las principales líneas de colectivo del centro, con parada a menos de 5 minutos caminando.",
-  },
-  {
-    question: "¿Puedo participar solo de la transmisión en vivo?",
-    answer:
-      "Por supuesto. Muchas personas de nuestra comunidad se conectan cada semana por YouTube o Facebook Live y participan del chat y la oración en línea.",
-  },
-];
 
 export default async function CultosPage() {
   const [banner, siteSettings, venue, worshipServices] = await Promise.all([
@@ -62,6 +45,14 @@ export default async function CultosPage() {
     }),
   ]);
 
+  const mainSection = banner?.sections?.find(
+    (section) => section.key === PAGE_SECTION_KEYS.MAIN,
+  );
+  const faqSection = banner?.sections?.find(
+    (section) => section.key === PAGE_SECTION_KEYS.FAQ,
+  );
+  const faqs = banner?.faqs ?? [];
+
   return (
     <main className="relative overflow-hidden bg-ink-950">
       {banner && (
@@ -76,11 +67,13 @@ export default async function CultosPage() {
 
       <section className="py-24 sm:py-28">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <SectionHeading
-            eyebrow="Cultos presenciales y online"
-            title="Una experiencia unificada para quienes están cerca y para quienes se conectan a distancia"
-            copy="La misma esencia ministerial, con múltiples formatos para reunir, transmitir y servir."
-          />
+          {mainSection && (
+            <SectionHeading
+              eyebrow={mainSection.eyebrow ?? ""}
+              title={mainSection.title}
+              copy={mainSection.copy}
+            />
+          )}
 
           <div className="mt-14 grid gap-5 lg:grid-cols-[0.9fr_1.1fr]">
             {venue && siteSettings && (
@@ -106,25 +99,27 @@ export default async function CultosPage() {
             </div>
           </div>
 
-          <div className="mt-14">
-            <SectionHeading
-              eyebrow="Preguntas frecuentes"
-              title="Antes de tu primera visita"
-              copy="Algunas respuestas rápidas para que llegues sin dudas al auditorio."
-            />
+          {faqSection && faqs.length > 0 && (
+            <div className="mt-14">
+              <SectionHeading
+                eyebrow={faqSection.eyebrow ?? ""}
+                title={faqSection.title}
+                copy={faqSection.copy}
+              />
 
-            <div className="mt-8 grid gap-4 sm:grid-cols-2">
-              {faqs.map((faq) => (
-                <div
-                  key={faq.question}
-                  className="rounded-[1.75rem] border border-white/10 bg-white/4 p-6 shadow-luxe"
-                >
-                  <p className="font-serif text-lg text-white">{faq.question}</p>
-                  <p className="mt-3 text-sm leading-7 text-slate-300">{faq.answer}</p>
-                </div>
-              ))}
+              <div className="mt-8 grid gap-4 sm:grid-cols-2">
+                {faqs.map((faq) => (
+                  <div
+                    key={faq.question}
+                    className="rounded-[1.75rem] border border-white/10 bg-white/4 p-6 shadow-luxe"
+                  >
+                    <p className="font-serif text-lg text-white">{faq.question}</p>
+                    <p className="mt-3 text-sm leading-7 text-slate-300">{faq.answer}</p>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </section>
     </main>

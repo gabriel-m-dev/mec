@@ -7,7 +7,7 @@ import { urlForImage } from "@/sanity/lib/image";
 import { sanityClient } from "@/sanity/lib/client";
 import { ministriesQuery, pageBannerByRouteQuery } from "@/sanity/lib/queries";
 import { SANITY_TAGS } from "@/sanity/lib/tags";
-import type { Ministry, PageBanner } from "@/sanity/lib/types";
+import { PAGE_SECTION_KEYS, type Ministry, type PageBanner } from "@/sanity/lib/types";
 
 export const metadata: Metadata = {
   title: "Ministerios",
@@ -26,6 +26,10 @@ export default async function MinisteriosPage() {
     }),
   ]);
 
+  const mainSection = banner?.sections?.find(
+    (section) => section.key === PAGE_SECTION_KEYS.MAIN,
+  );
+
   return (
     <main className="relative overflow-hidden bg-ink-950">
       {banner && (
@@ -40,11 +44,13 @@ export default async function MinisteriosPage() {
 
       <section className="py-24 sm:py-28">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <SectionHeading
-            eyebrow="Ministerios"
-            title="Equipos diseñados para servir con precisión y calidez"
-            copy="Cada ministerio está pensado como una puerta de entrada al discipulado, la acción y el cuidado mutuo."
-          />
+          {mainSection && (
+            <SectionHeading
+              eyebrow={mainSection.eyebrow ?? ""}
+              title={mainSection.title}
+              copy={mainSection.copy}
+            />
+          )}
 
           <p className="mt-8 max-w-3xl text-lg leading-8 text-slate-300">
             Un ministerio es simplemente un grupo de personas que decidió
