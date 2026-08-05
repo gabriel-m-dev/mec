@@ -279,6 +279,20 @@ const socialLinks = [
 
 type ImageValue = { _type: "image"; asset: { _type: "reference"; _ref: string } };
 
+/**
+ * El documento tal como lo arma el seed, donde `image` PUEDE faltar.
+ *
+ * `resolveImage()` devuelve `undefined` en dry-run, porque ahí no se sube
+ * nada. Los tipos de la app declaran `image` obligatoria — y está bien, el
+ * sitio siempre lee documentos ya escritos — así que cada `upsert` llevaba un
+ * `as Venue["image"]` para tapar el hueco. Eso le miente al compilador en el
+ * único script capaz de escribir en producción.
+ *
+ * Modelarlo acá dice la verdad: en dry-run falta la imagen, y en dry-run no
+ * se escribe (ver `flush()`), así que ese `undefined` nunca llega a Sanity.
+ */
+type Seeded<T> = Omit<T, "image"> & { image?: ImageValue };
+
 interface Counts {
   created: number;
   updated: number;
@@ -525,11 +539,11 @@ async function main() {
   // --- venue (singleton, fixed id) — no address/schedule: those live only on
   // siteSettings now, collapsing the duplication that lib/content.ts had.
   const venueImage = await resolveImage(venue.image);
-  await upsert<Venue>(DOC_TYPES.VENUE, {
+  await upsert<Seeded<Venue>>(DOC_TYPES.VENUE, {
     _id: "venue",
     _type: "venue",
     name: venue.name,
-    image: venueImage as Venue["image"],
+    image: venueImage,
     alt: venue.imageAlt,
   });
 
@@ -537,12 +551,12 @@ async function main() {
   for (const ministry of ministries) {
     const id = `ministry-${slugify(ministry.name)}`;
     const image = await resolveImage(ministry.image);
-    await upsert<Ministry>(DOC_TYPES.MINISTRY, {
+    await upsert<Seeded<Ministry>>(DOC_TYPES.MINISTRY, {
       _id: id,
       _type: "ministry",
       name: ministry.name,
       description: ministry.description,
-      image: image as Ministry["image"],
+      image,
       imageAlt: ministry.imageAlt,
     });
   }
@@ -551,13 +565,13 @@ async function main() {
   for (const chaplain of chaplains) {
     const id = `chaplain-${slugify(chaplain.name)}`;
     const image = await resolveImage(chaplain.image);
-    await upsert<Chaplain>(DOC_TYPES.CHAPLAIN, {
+    await upsert<Seeded<Chaplain>>(DOC_TYPES.CHAPLAIN, {
       _id: id,
       _type: "chaplain",
       name: chaplain.name,
       role: chaplain.role,
       description: chaplain.description,
-      image: image as Chaplain["image"],
+      image,
       imageAlt: chaplain.imageAlt,
     });
   }
@@ -579,13 +593,13 @@ async function main() {
   for (const event of events) {
     const id = `event-${slugify(event.title)}`;
     const image = await resolveImage(event.image);
-    await upsert<EventDoc>(DOC_TYPES.EVENT, {
+    await upsert<Seeded<EventDoc>>(DOC_TYPES.EVENT, {
       _id: id,
       _type: "event",
       day: event.day,
       title: event.title,
       description: event.description,
-      image: image as EventDoc["image"],
+      image,
       imageAlt: event.imageAlt,
     });
   }
@@ -594,13 +608,13 @@ async function main() {
   for (const item of news) {
     const id = `newsItem-${slugify(item.title)}`;
     const image = await resolveImage(item.image);
-    await upsert<NewsItem>(DOC_TYPES.NEWS_ITEM, {
+    await upsert<Seeded<NewsItem>>(DOC_TYPES.NEWS_ITEM, {
       _id: id,
       _type: "newsItem",
       category: item.category,
       title: item.title,
       summary: item.summary,
-      image: image as NewsItem["image"],
+      image,
       imageAlt: item.imageAlt,
     });
   }
@@ -609,14 +623,14 @@ async function main() {
   for (const banner of PAGE_BANNERS) {
     const id = `pageBanner-${banner.route.replace(/^\//, "")}`;
     const image = await resolveImage(banner.image);
-    await upsert<PageBanner>(DOC_TYPES.PAGE_BANNER, {
+    await upsert<Seeded<PageBanner>>(DOC_TYPES.PAGE_BANNER, {
       _id: id,
       _type: "pageBanner",
       route: banner.route as PageBanner["route"],
       eyebrow: banner.eyebrow,
       title: banner.title,
       description: banner.description,
-      image: image as PageBanner["image"],
+      image,
       imageAlt: banner.imageAlt,
       // `_key` estampado al escribir, nunca a mano en los literales: sin él la
       // escritura pasa igual pero el Studio bloquea la edición del array.
