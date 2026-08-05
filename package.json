@@ -10,7 +10,8 @@
     "lint": "eslint .",
     "seed": "tsx scripts/seed-sanity.ts",
     "seed:reset": "tsx scripts/seed-reset.ts",
-    "migrate:page-sections": "tsx scripts/migrate-page-sections.ts"
+    "migrate:page-sections": "tsx scripts/migrate-page-sections.ts",
+    "repair:array-keys": "tsx scripts/repair-array-keys.ts"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.6",

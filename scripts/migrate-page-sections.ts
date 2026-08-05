@@ -33,6 +33,7 @@ import { createClient } from "@sanity/client";
 
 import type { PageBanner } from "../sanity/lib/types";
 import { PAGE_BANNERS } from "./page-banners-data";
+import { keyedFaqs, keyedSections } from "./sanity-array-keys";
 
 // Carga .env.local igual que Next.js — este script corre standalone vía tsx,
 // fuera del proceso de Next.js, así que las env vars no se cargan solas.
@@ -157,7 +158,10 @@ async function main() {
       if (hasExisting && !FORCE) {
         alreadyHas.push("sections");
       } else {
-        patch.sections = entry.sections;
+        // `_key` estampado acá, no en los literales: sin él la escritura pasa
+        // igual (la API no valida contra el schema) pero el Studio muestra
+        // "Claves faltantes" y bloquea la edición del array.
+        patch.sections = keyedSections(entry.sections);
       }
     }
 
@@ -166,7 +170,7 @@ async function main() {
       if (hasExisting && !FORCE) {
         alreadyHas.push("faqs");
       } else {
-        patch.faqs = entry.faqs;
+        patch.faqs = keyedFaqs(entry.faqs);
       }
     }
 
