@@ -8,20 +8,26 @@
  * every document of the managed types), see `scripts/seed-reset.ts`.
  *
  * Usage:
- *   npm run seed                # writes to Sanity (requires SANITY_API_WRITE_TOKEN)
- *   npm run seed -- --dry-run   # prints the plan only, no token needed, no writes
+ *   npm run seed                # escribe (requiere SANITY_API_WRITE_TOKEN)
+ *   npm run seed -- --dry-run   # imprime el plan y corre el guard, sin token ni escrituras
+ *   npm run seed -- --force     # pisa las ediciones del cliente (ver el guard)
  *
- * ⚠️ ADVERTENCIA — PELIGRO VIVO (leer antes de correr `npm run seed`):
- * Este script usa `createOrReplace` con IDs deterministas (ver `slugify` y
- * los `_id` de cada `upsert`). Desde que el equipo de Sanity CMS (PR C1/C2)
- * quedó mergeado, TODAS las páginas públicas leen el contenido en vivo desde
- * el dataset de Sanity, y el cliente edita ese contenido directamente desde
- * el Studio (`/studio`). Volver a correr `npm run seed` ahora PISA cualquier
- * edición que el cliente haya hecho en el Studio y la reemplaza por los
- * literales hardcodeados de este archivo (los mismos que se seedearon una
- * sola vez, al principio del proyecto). Ya NO es una herramienta inocua de
- * desarrollo — antes de correrlo en el dataset de producción, confirmar con
- * el cliente o restringir su uso a un dataset de desarrollo/staging aparte.
+ * ⚠️ POR QUÉ ESTE SCRIPT ES PELIGROSO:
+ * usa `createOrReplace` con IDs deterministas, así que reemplaza el documento
+ * ENTERO por los literales congelados de este archivo. Desde que el sitio lee
+ * todo en vivo desde Sanity y el cliente edita desde `/studio`, correrlo a lo
+ * bruto pisaría el trabajo del cliente sin dejar rastro.
+ *
+ * 🛡️ EL GUARD (ver `flush()`):
+ * antes de escribir NADA, el script compara cada documento que va a escribir
+ * contra el que está vivo en el dataset. Si encuentra diferencias — que por
+ * definición son ediciones hechas desde el Studio — imprime QUÉ documentos y
+ * QUÉ campos se perderían y ABORTA sin escribir una sola letra. `--force` lo
+ * saltea, pero recién después de haber mostrado el daño.
+ *
+ * Esto invierte el default: antes había que acordarse de la advertencia, ahora
+ * el script se frena solo. Un dataset recién creado no tiene nada que perder y
+ * el seed corre igual que siempre.
  */
 
 import { loadEnvConfig } from "@next/env";
@@ -42,6 +48,7 @@ import type {
   SocialIcon,
 } from "../sanity/lib/types";
 import { PAGE_BANNERS } from "./page-banners-data";
+import { driftedFields } from "./seed-guard";
 import { keyedFaqs, keyedSections, keyedSocialLinks } from "./sanity-array-keys";
 
 // Load .env.local the same way Next.js does — this script runs standalone via
@@ -49,6 +56,7 @@ import { keyedFaqs, keyedSections, keyedSocialLinks } from "./sanity-array-keys"
 loadEnvConfig(process.cwd());
 
 const DRY_RUN = process.argv.includes("--dry-run");
+const FORCE = process.argv.includes("--force");
 
 const PROJECT_ID = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID;
 const DATASET = process.env.NEXT_PUBLIC_SANITY_DATASET;
@@ -280,6 +288,7 @@ function padLabel(label: string, width: number): string {
   return label.padEnd(width, " ");
 }
 
+
 async function main() {
   if (!PROJECT_ID) {
     throw new Error("Missing required env var: NEXT_PUBLIC_SANITY_PROJECT_ID");
@@ -320,6 +329,8 @@ async function main() {
 
   const imageCache = new Map<string, ImageValue>();
   const uploadedPaths = new Set<string>();
+  const pending: { type: DocType; doc: Record<string, unknown> & { _id: string } }[] = [];
+  let aborted = false;
   const counts: Record<DocType, Counts> = {
     siteSettings: { created: 0, updated: 0 },
     venue: { created: 0, updated: 0 },
@@ -360,21 +371,112 @@ async function main() {
     return value;
   }
 
+  /**
+   * NO escribe. Junta el documento para que `flush()` pueda comparar TODO
+   * contra el dataset vivo antes de tocar nada — un `createOrReplace` a mitad
+   * de camino, abortado después, dejaría el dataset en un estado mezclado.
+   */
   async function upsert<T extends { _id: string; _type: string }>(
     type: DocType,
     doc: T,
   ): Promise<void> {
+    pending.push({ type, doc });
     if (DRY_RUN || !client) {
       counts[type].created += 1;
-      return;
+    }
+  }
+
+  /**
+   * EL GUARD. Compara lo que el seed va a escribir contra lo que hay vivo en
+   * el dataset y ABORTA sin escribir una sola letra si encuentra diferencias.
+   *
+   * El seed usa `createOrReplace`: reemplaza el documento ENTERO por los
+   * literales congelados de este archivo. Desde que el cliente edita en
+   * `/studio`, cualquier diferencia entre el documento vivo y el literal es,
+   * por definición, trabajo del cliente que este script está por borrar.
+   *
+   * Por eso el guard no pregunta "¿es producción?" sino "¿hay algo que se
+   * pierda?". Es la pregunta correcta: un dataset recién creado no tiene nada
+   * que perder y el seed corre solo, como siempre; uno editado se frena.
+   *
+   * `--force` lo saltea, pero recién después de haber IMPRESO qué se pierde.
+   */
+  async function flush(): Promise<void> {
+    // La lectura no necesita token: el dataset es público (así lo lee el
+    // sitio). Por eso el guard también corre en `--dry-run`, que es
+    // justamente cuando más sirve — avisa antes de que exista intención de
+    // escribir.
+    const reader =
+      client ??
+      createClient({
+        projectId: PROJECT_ID,
+        dataset: DATASET,
+        apiVersion: API_VERSION,
+        useCdn: false,
+      });
+
+    const ids = pending.map((entry) => entry.doc._id);
+    const live = await reader.fetch<Record<string, unknown>[]>(
+      "*[_id in $ids]",
+      { ids },
+    );
+    const liveById = new Map(live.map((doc) => [doc._id as string, doc]));
+
+    const drifted: { id: string; fields: string[] }[] = [];
+
+    for (const { doc } of pending) {
+      const existing = liveById.get(doc._id);
+      // Documento que no existe todavía: no hay nada que pisar.
+      if (!existing) continue;
+
+      // En dry-run las imágenes no se suben, así que `doc.image` viene vacío:
+      // compararlo marcaría deriva falsa en todos los documentos con imagen.
+      const fields = driftedFields(existing, doc, DRY_RUN ? ["image"] : []);
+      if (fields.length > 0) drifted.push({ id: doc._id, fields });
     }
 
-    const existing = await client.getDocument(doc._id);
-    await client.createOrReplace(doc);
-    if (existing) {
-      counts[type].updated += 1;
-    } else {
-      counts[type].created += 1;
+    if (drifted.length > 0) {
+      const totalFields = drifted.reduce((sum, entry) => sum + entry.fields.length, 0);
+      console.log("");
+      console.log(
+        `⚠️  EL DATASET TIENE CONTENIDO QUE ESTE SEED VA A PISAR — ${drifted.length} documento(s), ${totalFields} campo(s):`,
+      );
+      for (const entry of drifted) {
+        console.log(`  ${entry.id} — ${entry.fields.join(", ")}`);
+      }
+      console.log("");
+      console.log(
+        "Estos campos difieren de los literales congelados de este archivo, así que\n" +
+          "son ediciones hechas desde el Studio. `createOrReplace` las reemplaza por\n" +
+          "los valores originales del seed y NO hay forma de recuperarlas desde acá.",
+      );
+
+      if (!FORCE) {
+        console.log("");
+        console.log(
+          "ABORTADO — no se escribió nada.\n" +
+            "  · Para ver el plan completo sin escribir:  npm run seed -- --dry-run\n" +
+            "  · Si de verdad querés pisar esas ediciones: npm run seed -- --force",
+        );
+        process.exitCode = 1;
+        aborted = true;
+        return;
+      }
+
+      console.log("");
+      console.log("--force presente — se pisan igual.");
+    }
+
+    if (DRY_RUN || !client) return;
+
+    for (const { type, doc } of pending) {
+      const existed = liveById.has(doc._id);
+      await client.createOrReplace(doc as Parameters<typeof client.createOrReplace>[0]);
+      if (existed) {
+        counts[type].updated += 1;
+      } else {
+        counts[type].created += 1;
+      }
     }
   }
 
@@ -522,6 +624,9 @@ async function main() {
       faqs: banner.faqs && keyedFaqs(banner.faqs),
     });
   }
+
+  await flush();
+  if (aborted) return;
 
   // --- summary ---
   const labelWidth = 16;
