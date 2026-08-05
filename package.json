@@ -8,13 +8,12 @@
     "start": "next start",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "seed": "tsx scripts/seed-sanity.ts",
     "seed:reset": "tsx scripts/seed-reset.ts",
     "migrate:page-sections": "tsx scripts/migrate-page-sections.ts",
-    "repair:array-keys": "tsx scripts/repair-array-keys.ts",
-    "check:seed-guard": "tsx scripts/seed-guard.check.ts",
-    "check:page-banner": "tsx scripts/page-banner-validation.check.ts",
-    "check": "npm run check:seed-guard && npm run check:page-banner"
+    "repair:array-keys": "tsx scripts/repair-array-keys.ts"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.6",
@@ -42,6 +41,7 @@
     "postcss": "^8.5.6",
     "tailwindcss": "^3.4.17",
     "tsx": "^4.23.5",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "vitest": "^4.1.10"
   }
 }
