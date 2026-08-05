@@ -7,7 +7,6 @@ import {
   ShieldCrossIcon,
   UsersIcon,
 } from "@/components/feature-icons";
-import { aboutStats, aboutValues } from "@/lib/content";
 import { sanityClient } from "@/sanity/lib/client";
 import { urlForImage } from "@/sanity/lib/image";
 import { pageBannerByRouteQuery } from "@/sanity/lib/queries";
@@ -38,6 +37,11 @@ export default async function QuienesSomosPage() {
     (section) => section.key === PAGE_SECTION_KEYS.VALUES,
   );
 
+  const introParagraphs = banner?.introParagraphs ?? [];
+  const stats = banner?.stats ?? [];
+  const story = banner?.story;
+  const values = banner?.values ?? [];
+
   return (
     <main className="relative overflow-hidden bg-ink-950">
       {banner && (
@@ -62,95 +66,108 @@ export default async function QuienesSomosPage() {
 
           <div className="mt-14 grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
             <div className="rounded-[2rem] border border-white/10 bg-white/4 p-8 shadow-luxe backdrop-blur-md">
-              <p className="text-lg leading-8 text-slate-200">
-                Somos una comunidad que sirve con orden, belleza y reverencia.
-                Creemos en una fe práctica, en la formación de discípulos y en
-                una vida ministerial que impacta la ciudad con integridad.
-              </p>
-              <p className="mt-6 text-lg leading-8 text-slate-300">
-                Nuestro enfoque integra adoración, cuidado pastoral, formación
-                de liderazgos y presencia digital para que cada persona
-                encuentre un lugar seguro para crecer.
-              </p>
+              {introParagraphs.map((paragraph, index) => (
+                <p
+                  key={paragraph}
+                  className={
+                    index === 0
+                      ? "text-lg leading-8 text-slate-200"
+                      : "mt-6 text-lg leading-8 text-slate-300"
+                  }
+                >
+                  {paragraph}
+                </p>
+              ))}
 
-              <div className="mt-8 grid gap-4 sm:grid-cols-3">
-                {aboutStats.map((item) => (
-                  <div
-                    key={item.label}
-                    className="rounded-2xl border border-gold-300/15 bg-black/20 p-4"
-                  >
-                    <p className="font-serif text-3xl text-gold-200">
-                      {item.value}
-                    </p>
-                    <p className="mt-2 text-sm text-slate-300">{item.label}</p>
-                  </div>
-                ))}
-              </div>
+              {stats.length > 0 && (
+                <div className="mt-8 grid gap-4 sm:grid-cols-3">
+                  {stats.map((item) => (
+                    <div
+                      key={item.label}
+                      className="rounded-2xl border border-gold-300/15 bg-black/20 p-4"
+                    >
+                      <p className="font-serif text-3xl text-gold-200">
+                        {item.value}
+                      </p>
+                      <p className="mt-2 text-sm text-slate-300">{item.label}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
 
             <div className="grid gap-4">
-              <div className="overflow-hidden rounded-[2rem] border border-white/10 bg-white/4 shadow-luxe">
-                <Image
-                  src="/images/igle-background-desktop.png"
-                  alt="Ambiente visual MEC"
-                  width={1600}
-                  height={900}
-                  className="h-full w-full object-cover"
-                />
-              </div>
-              <div className="rounded-[2rem] border border-white/10 bg-ink-900/70 p-6">
-                <p className="text-sm uppercase tracking-[0.32em] text-gold-300/90">
-                  Visión
-                </p>
-                <p className="mt-3 text-lg leading-8 text-slate-200">
-                  Ser una casa espiritual donde la presencia de Dios, la
-                  excelencia ministerial y la compasión se encuentren en cada
-                  experiencia.
-                </p>
-              </div>
+              {banner?.introImage && (
+                <div className="overflow-hidden rounded-[2rem] border border-white/10 bg-white/4 shadow-luxe">
+                  <Image
+                    src={urlForImage(banner.introImage).width(1600).url()}
+                    alt={banner.introImageAlt ?? ""}
+                    width={1600}
+                    height={900}
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+              )}
+              {banner?.vision && (
+                <div className="rounded-[2rem] border border-white/10 bg-ink-900/70 p-6">
+                  {banner.vision.eyebrow && (
+                    <p className="text-sm uppercase tracking-[0.32em] text-gold-300/90">
+                      {banner.vision.eyebrow}
+                    </p>
+                  )}
+                  <p className="mt-3 text-lg leading-8 text-slate-200">
+                    {banner.vision.body}
+                  </p>
+                </div>
+              )}
             </div>
           </div>
         </div>
       </section>
 
-      <section className="py-24 sm:py-28">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
-            <div className="relative aspect-[4/5] overflow-hidden rounded-[2rem] border border-white/10 bg-white/4 shadow-luxe">
-              <Image
-                src="/images/ministries/alabanza.jpg"
-                alt="Primeros encuentros de adoración de la congregación"
-                fill
-                sizes="(min-width: 1024px) 40vw, 90vw"
-                className="object-cover"
-              />
-            </div>
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.36em] text-gold-300/90">
-                Nuestra historia
-              </p>
-              <h2 className="mt-4 font-serif text-3xl tracking-tight text-white sm:text-4xl">
-                De una sala prestada a una casa para toda la ciudad
-              </h2>
-              <p className="mt-6 text-lg leading-8 text-slate-300">
-                MEC nació hace más de quince años como un pequeño grupo de
-                familias que se reunía en una sala prestada para orar, leer la
-                Palabra y sostenerse mutuamente en tiempos difíciles. Lo que
-                empezó como un encuentro semanal de puertas cerradas se
-                transformó, con constancia y fe, en una congregación que hoy
-                reúne a cientos de personas cada semana.
-              </p>
-              <p className="mt-5 text-lg leading-8 text-slate-300">
-                A lo largo de este camino aprendimos que crecer no significa
-                perder cercanía: cada nuevo ministerio, cada nueva sede y cada
-                nueva transmisión en vivo sigue existiendo para lo mismo que nos
-                reunió al principio — acompañar personas y apuntarlas a Cristo
-                con excelencia y calidez.
-              </p>
+      {/* Igual que la banda de valores: sin el bloque cargado no queda una
+          sección a medio armar, directamente no se muestra. */}
+      {story && (
+        <section className="py-24 sm:py-28">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+              {story.image && (
+                <div className="relative aspect-[4/5] overflow-hidden rounded-[2rem] border border-white/10 bg-white/4 shadow-luxe">
+                  <Image
+                    src={urlForImage(story.image).width(900).url()}
+                    alt={story.imageAlt ?? ""}
+                    fill
+                    sizes="(min-width: 1024px) 40vw, 90vw"
+                    className="object-cover"
+                  />
+                </div>
+              )}
+              <div>
+                {story.eyebrow && (
+                  <p className="text-xs font-semibold uppercase tracking-[0.36em] text-gold-300/90">
+                    {story.eyebrow}
+                  </p>
+                )}
+                <h2 className="mt-4 font-serif text-3xl tracking-tight text-white sm:text-4xl">
+                  {story.title}
+                </h2>
+                {(story.paragraphs ?? []).map((paragraph, index) => (
+                  <p
+                    key={paragraph}
+                    className={
+                      index === 0
+                        ? "mt-6 text-lg leading-8 text-slate-300"
+                        : "mt-5 text-lg leading-8 text-slate-300"
+                    }
+                  >
+                    {paragraph}
+                  </p>
+                ))}
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* La sección entera depende de su encabezado, igual que el bloque de
           preguntas frecuentes en /cultos: sin título, las tarjetas quedan
@@ -166,7 +183,7 @@ export default async function QuienesSomosPage() {
             />
 
             <div className="mt-14 grid gap-5 sm:grid-cols-3">
-              {aboutValues.map((value) => {
+              {values.map((value) => {
                 const Icon = valueIcons[value.icon];
                 return (
                   <div
