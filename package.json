@@ -12,7 +12,9 @@
     "seed:reset": "tsx scripts/seed-reset.ts",
     "migrate:page-sections": "tsx scripts/migrate-page-sections.ts",
     "repair:array-keys": "tsx scripts/repair-array-keys.ts",
-    "check:seed-guard": "tsx scripts/seed-guard.check.ts"
+    "check:seed-guard": "tsx scripts/seed-guard.check.ts",
+    "check:page-banner": "tsx scripts/page-banner-validation.check.ts",
+    "check": "npm run check:seed-guard && npm run check:page-banner"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.6",

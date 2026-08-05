@@ -1,5 +1,11 @@
 import { defineField, defineType } from "sanity";
 
+import {
+  duplicatedSectionKeys,
+  faqHeadingWithoutQuestions,
+  questionsWithoutFaqHeading,
+} from "./pageBannerValidation";
+
 const PAGE_BANNER_ROUTE_OPTIONS = [
   { title: "Quiénes somos", value: "/quienes-somos" },
   { title: "Ministerios", value: "/ministerios" },
@@ -94,6 +100,18 @@ export const pageBanner = defineType({
       title: "Secciones",
       type: "array",
       description: "Encabezados de las secciones de contenido de esta página.",
+      // Cada página busca su encabezado con `.find(s => s.key === "...")`, así
+      // que dos secciones con la misma "Sección" dejan a la segunda muerta: no
+      // se muestra en ningún lado y no hay ninguna pista de por qué.
+      validation: (Rule) =>
+        Rule.custom((sections, context) => {
+          const faqs = (context.document as { faqs?: unknown[] } | undefined)?.faqs;
+
+          const orphanHeading = faqHeadingWithoutQuestions(sections, faqs);
+          if (orphanHeading !== true) return orphanHeading;
+
+          return duplicatedSectionKeys(sections, PAGE_SECTION_KEY_OPTIONS);
+        }),
       of: [
         {
           type: "object",
@@ -136,7 +154,17 @@ export const pageBanner = defineType({
       name: "faqs",
       title: "Preguntas frecuentes",
       type: "array",
-      description: "Preguntas y respuestas que se muestran en esta página.",
+      description:
+        'Preguntas y respuestas que se muestran en esta página. Necesitan que exista una sección "Preguntas frecuentes" arriba: el bloque se muestra solo si están las dos cosas.',
+      // Las preguntas y su encabezado viven en dos arrays separados, así que se
+      // pueden desincronizar. La página exige los dos para mostrar el bloque —
+      // sin este aviso, borrar el encabezado hace desaparecer preguntas
+      // perfectamente cargadas y nada explica por qué.
+      validation: (Rule) =>
+        Rule.custom((faqs, context) => {
+          const sections = (context.document as { sections?: unknown[] } | undefined)?.sections;
+          return questionsWithoutFaqHeading(faqs, sections);
+        }),
       of: [
         {
           type: "object",
