@@ -42,6 +42,7 @@ import type {
   SocialIcon,
 } from "../sanity/lib/types";
 import { PAGE_BANNERS } from "./page-banners-data";
+import { keyedFaqs, keyedSections, keyedSocialLinks } from "./sanity-array-keys";
 
 // Load .env.local the same way Next.js does — this script runs standalone via
 // tsx, outside the Next.js process, so env vars are not loaded automatically.
@@ -401,13 +402,15 @@ async function main() {
 
   const isAbsoluteHttpUrl = (href: string) => /^https?:\/\//.test(href);
 
-  const socialLinksSeed: SocialLink[] = socialLinks.map((link) => ({
-    name: link.name,
-    href: isAbsoluteHttpUrl(link.href)
-      ? link.href
-      : PLACEHOLDER_SOCIAL_HREF[link.icon],
-    icon: link.icon,
-  }));
+  const socialLinksSeed = keyedSocialLinks(
+    socialLinks.map<SocialLink>((link) => ({
+      name: link.name,
+      href: isAbsoluteHttpUrl(link.href)
+        ? link.href
+        : PLACEHOLDER_SOCIAL_HREF[link.icon],
+      icon: link.icon,
+    })),
+  );
 
   await upsert<SiteSettings>(DOC_TYPES.SITE_SETTINGS, {
     _id: "siteSettings",
@@ -513,8 +516,10 @@ async function main() {
       description: banner.description,
       image: image as PageBanner["image"],
       imageAlt: banner.imageAlt,
-      sections: banner.sections,
-      faqs: banner.faqs,
+      // `_key` estampado al escribir, nunca a mano en los literales: sin él la
+      // escritura pasa igual pero el Studio bloquea la edición del array.
+      sections: banner.sections && keyedSections(banner.sections),
+      faqs: banner.faqs && keyedFaqs(banner.faqs),
     });
   }
 
