@@ -70,6 +70,17 @@ export function Hero() {
             Ministerio Evangélico Cristiano
           </motion.p>
 
+          {/* El lema, debajo del nombre. La iglesia usa los DOS juntos: así
+              aparece en su membrete institucional, no uno o el otro. */}
+          <motion.p
+            initial={shouldReduceMotion ? false : { opacity: 0, y: 18 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: shouldReduceMotion ? 0 : 0.9, delay: shouldReduceMotion ? 0 : 0.32 }}
+            className="mx-auto mt-2 max-w-3xl text-balance font-serif text-xs italic tracking-[0.08em] text-gold-300/80 sm:text-base"
+          >
+            Cristo poder y sabiduría de Dios
+          </motion.p>
+
           <motion.p
             initial={shouldReduceMotion ? false : { opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
