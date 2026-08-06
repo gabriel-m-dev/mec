@@ -60,11 +60,17 @@ const REAL = {
 };
 
 /**
- * El WhatsApp NO se toca. El dataset tiene `5491141648955`, que no es el
- * teléfono de la nota (`11-2530-9266`). Puede ser el número real de otra
- * persona de la iglesia, y pisarlo mandaría los mensajes a cualquier lado.
- * Lo cambia quien sepa cuál corresponde.
+ * El WhatsApp usa el MISMO número que el teléfono, confirmado por el usuario.
+ * En el dataset había `5491141648955`, que no correspondía a nadie conocido.
+ *
+ * El formato es el que exige `wa.me`: código de país, el 9 de los móviles
+ * argentinos, la característica sin el 0 y el número sin el 15. `11-2530-9266`
+ * se convierte en `5491125309266`.
  */
+const WHATSAPP = {
+  phone: "5491125309266",
+  message: "Hola, me comunico desde la página de MEC.",
+};
 
 interface SettingsDoc {
   _id: string;
@@ -111,7 +117,10 @@ async function main() {
   }
 
   // --- correcciones: pisan lo que hay porque lo que hay está mal ---
-  const corrections: Record<string, unknown> = { address: ADDRESS };
+  const corrections: Record<string, unknown> = {
+    address: ADDRESS,
+    whatsapp: WHATSAPP,
+  };
 
   // --- campos vacíos, o con un valor de prueba conocido ---
   const fill: Record<string, unknown> = {};
@@ -131,10 +140,6 @@ async function main() {
   } else {
     console.log("  siteSettings.rnc — ya cargado, salteado");
   }
-
-  console.log(
-    `  siteSettings.whatsapp — "${settings.whatsapp?.phone ?? "vacío"}" no se toca a propósito`,
-  );
 
   const changes = { ...corrections, ...fill };
 
