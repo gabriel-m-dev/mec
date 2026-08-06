@@ -14,7 +14,10 @@ import {
 const PAGE_BANNER_ROUTE_OPTIONS = [
   { title: "Quiénes somos", value: "/quienes-somos" },
   { title: "Ministerios", value: "/ministerios" },
-  { title: "Capellanes", value: "/capellanes" },
+  // El nombre visible cambió a "Capellanía", pero la ruta sigue siendo
+  // `/capellanes`: cambiarla obligaría a migrar este documento y a redirigir
+  // los enlaces ya compartidos, sin que el visitante gane nada.
+  { title: "Capellanía", value: "/capellanes" },
   { title: "Cultos", value: "/cultos" },
   { title: "Eventos", value: "/eventos" },
   { title: "Noticias", value: "/noticias" },
@@ -23,6 +26,7 @@ const PAGE_BANNER_ROUTE_OPTIONS = [
 
 /** La única página que usa los bloques de abajo. */
 const ABOUT_ROUTE = "/quienes-somos";
+const CHAPLAINCY_ROUTE = "/capellanes";
 
 const VALUE_ICON_OPTIONS = [
   { title: "Escudo con cruz", value: "shield" },
@@ -37,6 +41,13 @@ const VALUE_ICON_OPTIONS = [
  */
 function hiddenUnlessAbout({ document }: ConditionalPropertyCallbackContext): boolean {
   return (document as { route?: string } | undefined)?.route !== ABOUT_ROUTE;
+}
+
+/** Mismo criterio que `hiddenUnlessAbout`, para el bloque de capellanía. */
+function hiddenUnlessChaplaincy({
+  document,
+}: ConditionalPropertyCallbackContext): boolean {
+  return (document as { route?: string } | undefined)?.route !== CHAPLAINCY_ROUTE;
 }
 
 /**
@@ -190,6 +201,19 @@ export const pageBanner = defineType({
           },
         },
       ],
+    }),
+    // --- Bloque propio de /capellanes --------------------------------------
+    // Mismo criterio que los de /quienes-somos: vive acá para respetar la
+    // decisión de un documento por página, es opcional, y `hidden` lo saca de
+    // la vista en las otras 6 páginas.
+    defineField({
+      name: "chaplaincyIntro",
+      title: "Qué es la capellanía",
+      type: "text",
+      rows: 5,
+      description:
+        "Párrafo que explica de qué se trata la capellanía. Aparece debajo del título de la sección y antes de las actividades.",
+      hidden: hiddenUnlessChaplaincy,
     }),
     // --- Bloques propios de /quienes-somos ---------------------------------
     // Viven en `pageBanner` y no en un tipo aparte para respetar la decisión
