@@ -10,3 +10,8 @@ dist
 
 .vercel
 .env*
+
+# Fondos de la prueba de cielo estrellado: viven en la rama
+# preview/starfield-background. Quedan en la carpeta local para poder
+# retomarla, pero fuera de main porque ahi nadie los usa.
+public/images/background_page_*.png
