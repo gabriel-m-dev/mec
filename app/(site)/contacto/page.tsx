@@ -5,11 +5,14 @@ import {
   FacebookIcon,
   GlobeIcon,
   InstagramIcon,
+  MailIcon,
   MapPinIcon,
+  PhoneIcon,
   YoutubeIcon,
 } from "@/components/contact-icons";
 import { PageHeader } from "@/components/page-header";
 import { VenueMap } from "@/components/venue-map";
+import { mailtoHref, telHref } from "@/lib/contact-links";
 import { urlForBanner } from "@/sanity/lib/image";
 import { sanityClient } from "@/sanity/lib/client";
 import { pageBannerByRouteQuery, siteSettingsQuery, venueQuery } from "@/sanity/lib/queries";
@@ -44,6 +47,13 @@ export default async function ContactoPage() {
     }),
   ]);
 
+  // El teléfono se muestra tal como lo escribió la iglesia y el `href` va
+  // limpio: son dos cosas distintas y por eso no se reusa el valor crudo.
+  const phone = siteSettings?.phone;
+  const email = siteSettings?.email;
+  const phoneLink = telHref(phone);
+  const emailLink = mailtoHref(email);
+
   return (
     <main className="relative overflow-hidden bg-ink-950">
       {banner && (
@@ -73,12 +83,18 @@ export default async function ContactoPage() {
                   conectar con una iglesia sólida, este es tu punto de entrada.
                 </p>
                 <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                  <a
-                    href="mailto:contacto@mec.com"
-                    className="inline-flex items-center justify-center rounded-full bg-gold-400 px-6 py-3 text-sm font-semibold text-ink-950 transition hover:bg-gold-300"
-                  >
-                    Escribir al equipo
-                  </a>
+                  {/* Antes esto apuntaba a `contacto@mec.com`, un dominio que
+                      no existe: el botón principal de la página de contacto
+                      llevaba a ningún lado. Ahora sale del Studio, y sin
+                      correo cargado no se dibuja. */}
+                  {emailLink && (
+                    <a
+                      href={emailLink}
+                      className="inline-flex items-center justify-center rounded-full bg-gold-400 px-6 py-3 text-sm font-semibold text-ink-950 transition hover:bg-gold-300"
+                    >
+                      Escribir al equipo
+                    </a>
+                  )}
                   <Link
                     href="/"
                     className="inline-flex items-center justify-center rounded-full border border-white/15 bg-white/5 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
@@ -101,6 +117,30 @@ export default async function ContactoPage() {
                     <ClockIcon className="h-5 w-5 shrink-0 text-gold-300" />
                     {siteSettings?.schedule}
                   </p>
+                  {phoneLink && (
+                    <p className="flex items-center gap-3">
+                      <PhoneIcon className="h-5 w-5 shrink-0 text-gold-300" />
+                      <a
+                        href={phoneLink}
+                        className="transition hover:text-white"
+                      >
+                        {phone}
+                      </a>
+                    </p>
+                  )}
+                  {emailLink && (
+                    <p className="flex items-center gap-3">
+                      <MailIcon className="h-5 w-5 shrink-0 text-gold-300" />
+                      {/* `break-all` porque una dirección larga no tiene dónde
+                          cortar y desbordaba la tarjeta en móvil. */}
+                      <a
+                        href={emailLink}
+                        className="break-all transition hover:text-white"
+                      >
+                        {email}
+                      </a>
+                    </p>
+                  )}
                   <div className="flex items-center gap-3 pt-1">
                     {(siteSettings?.socialLinks ?? []).map((social) => {
                       const SocialIcon = socialIcons[social.icon];

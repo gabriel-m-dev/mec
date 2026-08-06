@@ -47,7 +47,10 @@ export interface SiteSettings {
   _type: "siteSettings";
   address: string;
   schedule: string;
-  // Opcional: sin número configurado el botón flotante no se muestra.
+  // Los tres son opcionales: cada uno se muestra solo si está cargado, y
+  // vaciarlo es la forma de sacarlo del sitio sin tocar código.
+  phone?: string;
+  email?: string;
   whatsapp?: WhatsAppSettings;
   socialLinks: SocialLink[];
 }

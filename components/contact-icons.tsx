@@ -25,6 +25,28 @@ export function ClockIcon({ className = "h-5 w-5" }: IconProps) {
   );
 }
 
+export function PhoneIcon({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
+      <path
+        d="M6.3 3.5h2.4l1.5 3.7-1.9 1.4a11.5 11.5 0 0 0 5.1 5.1l1.4-1.9 3.7 1.5v2.4a2 2 0 0 1-2.2 2 16.6 16.6 0 0 1-13-13 2 2 0 0 1 2-2.2Z"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+export function MailIcon({ className = "h-5 w-5" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
+      <rect x="3" y="5.5" width="18" height="13" rx="2.5" stroke="currentColor" strokeWidth="1.6" />
+      <path d="m4 7.5 8 5.5 8-5.5" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
 export function YoutubeIcon({ className = "h-5 w-5" }: IconProps) {
   return (
     <svg viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
