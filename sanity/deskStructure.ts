@@ -21,27 +21,32 @@ const SECTIONS = [
   {
     title: "Ministerios",
     pageId: "pageBanner-ministerios",
-    collection: { type: "ministry", title: "Lista de ministerios" },
+    collections: [{ type: "ministry", title: "Lista de ministerios" }],
   },
   {
-    title: "Capellanes",
+    title: "Capellanía",
     pageId: "pageBanner-capellanes",
-    collection: { type: "chaplain", title: "Lista de capellanes" },
+    // La única sección con dos colecciones. El orden espeja el de la página:
+    // primero las actividades, después las personas.
+    collections: [
+      { type: "chaplaincyActivity", title: "Actividades de capellanía" },
+      { type: "chaplain", title: "Lista de capellanes" },
+    ],
   },
   {
     title: "Cultos",
     pageId: "pageBanner-cultos",
-    collection: { type: "worshipService", title: "Lista de cultos" },
+    collections: [{ type: "worshipService", title: "Lista de cultos" }],
   },
   {
     title: "Eventos",
     pageId: "pageBanner-eventos",
-    collection: { type: "event", title: "Lista de eventos" },
+    collections: [{ type: "event", title: "Lista de eventos" }],
   },
   {
     title: "Noticias",
     pageId: "pageBanner-noticias",
-    collection: { type: "newsItem", title: "Lista de noticias" },
+    collections: [{ type: "newsItem", title: "Lista de noticias" }],
   },
   {
     title: "Contacto",
@@ -77,14 +82,12 @@ export const structure: StructureResolver = (S) =>
         // Las secciones sin colección —Quiénes somos y Contacto— entran derecho
         // al documento: un submenú de un solo ítem es un click de más que no
         // informa nada.
-        if (!("collection" in section)) {
+        if (!("collections" in section)) {
           return S.listItem()
             .id(section.pageId)
             .title(section.title)
             .child(pageDocument);
         }
-
-        const { type, title } = section.collection;
 
         return S.listItem()
           .id(section.pageId)
@@ -97,10 +100,12 @@ export const structure: StructureResolver = (S) =>
                   .id("page")
                   .title("Textos de la página")
                   .child(pageDocument),
-                S.listItem()
-                  .id(type)
-                  .title(title)
-                  .child(S.documentTypeList(type).title(title)),
+                ...section.collections.map(({ type, title }) =>
+                  S.listItem()
+                    .id(type)
+                    .title(title)
+                    .child(S.documentTypeList(type).title(title)),
+                ),
               ]),
           );
       }),

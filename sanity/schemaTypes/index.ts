@@ -1,4 +1,5 @@
 import { chaplain } from "./chaplain";
+import { chaplaincyActivity } from "./chaplaincyActivity";
 import { event } from "./event";
 import { homePage } from "./homePage";
 import { ministry } from "./ministry";
@@ -14,6 +15,7 @@ export const schemaTypes = [
   venue,
   ministry,
   chaplain,
+  chaplaincyActivity,
   worshipService,
   event,
   newsItem,

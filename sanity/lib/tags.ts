@@ -9,6 +9,7 @@ export const SANITY_TAGS = {
   venue: "venue",
   ministry: "ministry",
   chaplain: "chaplain",
+  chaplaincyActivity: "chaplaincyActivity",
   worshipService: "worshipService",
   event: "event",
   newsItem: "newsItem",
