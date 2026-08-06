@@ -148,19 +148,22 @@ export const PAGE_BANNERS: BannerSeed[] = [
     ],
   },
   {
-    route: "/ministerios",
-    eyebrow: "Ministerios",
-    title: "Equipos que convierten la fe en acción concreta",
+    route: "/the-chosen",
+    eyebrow: "The Chosen",
+    title: "Un lugar donde los chicos crecen, juegan y aprenden",
     description:
-      "Desde la adoración hasta el cuidado de niños, cada ministerio es un espacio para poner tus dones al servicio de la comunidad.",
+      "The Chosen es el grupo de chicos de la iglesia: salidas, juegos y actividades para crecer en comunidad y en la fe.",
     image: "/images/pages/ministerios-banner.jpg",
-    imageAlt: "Equipo de voluntarios sirviendo juntos",
+    imageAlt: "Chicos compartiendo una actividad al aire libre",
+    // La sección `main` ya no se usa: la página de The Chosen escribe sus
+    // propios títulos. Se deja el bloque porque el schema exige al menos una
+    // sección y porque un banner sin `main` rompería la validación.
     sections: [
       {
         key: "main",
-        eyebrow: "Ministerios",
-        title: "Equipos diseñados para servir con precisión y calidez",
-        copy: "Cada ministerio está pensado como una puerta de entrada al discipulado, la acción y el cuidado mutuo.",
+        eyebrow: "The Chosen",
+        title: "Un lugar donde los chicos crecen, juegan y aprenden",
+        copy: "Salidas, juegos y actividades para crecer en comunidad y en la fe.",
       },
     ],
   },

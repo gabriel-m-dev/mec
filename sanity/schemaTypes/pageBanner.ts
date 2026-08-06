@@ -13,7 +13,7 @@ import {
 
 const PAGE_BANNER_ROUTE_OPTIONS = [
   { title: "Quiénes somos", value: "/quienes-somos" },
-  { title: "Ministerios", value: "/ministerios" },
+  { title: "The Chosen", value: "/the-chosen" },
   // El nombre visible cambió a "Capellanía", pero la ruta sigue siendo
   // `/capellanes`: cambiarla obligaría a migrar este documento y a redirigir
   // los enlaces ya compartidos, sin que el visitante gane nada.

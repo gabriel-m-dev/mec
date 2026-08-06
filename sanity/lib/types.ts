@@ -11,7 +11,7 @@ export type SocialIcon = (typeof SOCIAL_ICONS)[keyof typeof SOCIAL_ICONS];
 
 export const PAGE_BANNER_ROUTES = {
   QUIENES_SOMOS: "/quienes-somos",
-  MINISTERIOS: "/ministerios",
+  THE_CHOSEN: "/the-chosen",
   CAPELLANES: "/capellanes",
   CULTOS: "/cultos",
   EVENTOS: "/eventos",
@@ -63,11 +63,26 @@ export interface Venue {
   alt: string;
 }
 
-export interface Ministry {
+export interface ChosenLeader {
   _id: string;
-  _type: "ministry";
+  _type: "chosenLeader";
   name: string;
+  role: string;
   description: string;
+  /** Opcional: sin foto, la tarjeta se muestra solo con el texto. */
+  image?: SanityImageSource;
+  imageAlt?: string;
+}
+
+/** "Ya pasó" o "está por venir". Decide en qué lista aparece la actividad. */
+export type ChosenActivityWhen = "recent" | "upcoming";
+
+export interface ChosenActivity {
+  _id: string;
+  _type: "chosenActivity";
+  title: string;
+  when: ChosenActivityWhen;
+  date?: string;
   image: SanityImageSource;
   imageAlt: string;
 }
