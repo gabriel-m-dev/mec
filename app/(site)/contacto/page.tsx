@@ -9,6 +9,7 @@ import {
   YoutubeIcon,
 } from "@/components/contact-icons";
 import { PageHeader } from "@/components/page-header";
+import { VenueMap } from "@/components/venue-map";
 import { urlForBanner } from "@/sanity/lib/image";
 import { sanityClient } from "@/sanity/lib/client";
 import { pageBannerByRouteQuery, siteSettingsQuery, venueQuery } from "@/sanity/lib/queries";
@@ -124,26 +125,31 @@ export default async function ContactoPage() {
 
       <section className="pb-24 sm:pb-28">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="relative grid gap-6 overflow-hidden rounded-[2rem] border border-white/10 bg-white/4 p-8 shadow-luxe sm:p-10 lg:grid-cols-[auto_1fr] lg:items-center">
+          <div className="relative grid gap-8 overflow-hidden rounded-[2rem] border border-white/10 bg-white/4 p-8 shadow-luxe sm:p-10 lg:grid-cols-2 lg:items-center lg:gap-10">
             <div
               aria-hidden="true"
               className="pointer-events-none absolute inset-0 opacity-[0.08] [background-image:linear-gradient(90deg,rgba(240,199,107,0.9)_1px,transparent_1px),linear-gradient(0deg,rgba(240,199,107,0.9)_1px,transparent_1px)] [background-size:32px_32px]"
             />
-            <div className="relative grid h-16 w-16 shrink-0 place-items-center rounded-full border border-gold-300/30 bg-gold-400/10 text-gold-200">
-              <MapPinIcon className="h-7 w-7" />
+            <div className="relative flex gap-6">
+              <div className="grid h-16 w-16 shrink-0 place-items-center rounded-full border border-gold-300/30 bg-gold-400/10 text-gold-200">
+                <MapPinIcon className="h-7 w-7" />
+              </div>
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.36em] text-gold-300/90">
+                  Cómo llegar
+                </p>
+                <p className="mt-3 font-serif text-2xl text-white">{venue?.name}</p>
+                <p className="mt-2 text-lg leading-8 text-slate-200">{siteSettings?.address}</p>
+                <p className="mt-3 text-sm leading-7 text-slate-300">
+                  A 10 minutos del centro, con estacionamiento disponible en
+                  las inmediaciones y parada de colectivo a pocas cuadras. Si
+                  venís por primera vez, nuestro equipo de bienvenida te va a
+                  estar esperando en la entrada.
+                </p>
+              </div>
             </div>
             <div className="relative">
-              <p className="text-xs font-semibold uppercase tracking-[0.36em] text-gold-300/90">
-                Cómo llegar
-              </p>
-              <p className="mt-3 font-serif text-2xl text-white">{venue?.name}</p>
-              <p className="mt-2 text-lg leading-8 text-slate-200">{siteSettings?.address}</p>
-              <p className="mt-3 text-sm leading-7 text-slate-300">
-                A 10 minutos del centro, con estacionamiento disponible en
-                las inmediaciones y parada de colectivo a pocas cuadras. Si
-                venís por primera vez, nuestro equipo de bienvenida te va a
-                estar esperando en la entrada.
-              </p>
+              <VenueMap />
             </div>
           </div>
         </div>
