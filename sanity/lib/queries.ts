@@ -46,19 +46,33 @@ export const eventBySlugQuery = /* groq */ `*[_type == "event" && slug.current =
  * cálculo vive en la query y no en el componente para que la regla esté en un
  * solo lugar.
  *
- * El `[0...5]` es el techo real: la validación del schema avisa en el Studio,
- * pero la API de mutación no la aplica, así que el corte se hace acá también.
+ * TRAMPA DE GROQ, aprendida rompiendo el build: después de un `[]->` los
+ * operadores que siguen se aplican a CADA elemento, no al array. Tanto
+ * `[0...5]` como `[defined(@)]` terminan evaluándose contra cada objeto
+ * —`objeto[0...5]`— y devuelven `null`. La query completa pasa a ser
+ * `[null, null, null]` sin ningún error: solo se nota al usarla.
+ *
+ * Por eso acá no va ningún operador después de la proyección. El corte a 5 y
+ * el descarte de referencias rotas viven en `app/(site)/page.tsx`, donde el
+ * comportamiento es explícito y no depende de precedencias.
+ *
+ * El `coalesce` del texto no es cosmético: los dos tipos lo guardan con nombre
+ * distinto — los eventos en `description`, las noticias en `summary` — y sin
+ * él la noticia sale sin una sola línea de texto, sin que nada avise.
+ *
+ * Y nada de comentarios adentro del template: GROQ no los acepta, y un
+ * backtick ahí adentro cierra el literal de TypeScript.
  */
 export const homeFeaturedQuery = /* groq */ `*[_type == "homePage"][0].featured[]->{
   _id,
   _type,
   title,
-  description,
+  "description": coalesce(description, summary),
   image,
   imageAlt,
   "slug": slug.current,
   "hasGallery": count(gallery) > 0
-}[0...5]`;
+}`;
 
 /**
  * Parametrized by `$route` (e.g. "/ministerios"). Returns null if no banner
