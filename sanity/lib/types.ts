@@ -86,12 +86,10 @@ export interface ChaplaincyActivity {
   _id: string;
   _type: "chaplaincyActivity";
   name: string;
-  /** Etiqueta del día, no una fecha: "Martes", "Primer sábado del mes". */
-  day: string;
-  time?: string;
   description: string;
-  image: SanityImageSource;
-  imageAlt: string;
+  /** Opcional: sin foto, la fila se dibuja solo con el texto. */
+  image?: SanityImageSource;
+  imageAlt?: string;
 }
 
 export interface WorshipService {

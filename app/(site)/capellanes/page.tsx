@@ -144,7 +144,7 @@ export default async function CapellaniaPage() {
               Qué hacemos
             </h2>
             <p className="mt-4 max-w-2xl text-base leading-8 text-slate-300">
-              Dónde está presente la capellanía y con qué frecuencia.
+              Los ámbitos donde la capellanía está presente y acompaña.
             </p>
 
             <div className="mt-14 space-y-16 lg:space-y-8">
@@ -152,10 +152,12 @@ export default async function CapellaniaPage() {
                 <ChaplaincyActivityRow
                   key={activity._id}
                   name={activity.name}
-                  day={activity.day}
-                  time={activity.time}
                   description={activity.description}
-                  image={urlForImage(activity.image).url()}
+                  image={
+                    activity.image
+                      ? urlForImage(activity.image).url()
+                      : undefined
+                  }
                   imageAlt={activity.imageAlt}
                   reversed={index % 2 === 1}
                 />
