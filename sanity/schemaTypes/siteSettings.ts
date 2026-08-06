@@ -26,6 +26,43 @@ export const siteSettings = defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
+      name: "whatsapp",
+      title: "WhatsApp",
+      type: "object",
+      description:
+        "Botón flotante de WhatsApp. Si dejás el número vacío, el botón no aparece en el sitio.",
+      options: { collapsible: true, collapsed: false },
+      fields: [
+        defineField({
+          name: "phone",
+          title: "Número",
+          type: "string",
+          description:
+            "Con código de país y solo números: sin +, sin espacios y sin guiones. En Argentina es 549, la característica SIN el 0 y el número SIN el 15. Ejemplo: para el (011) 15-2233-4455 se escribe 5491122334455.",
+          // Un número mal escrito no rompe nada visible: el botón aparece igual
+          // y el enlace lleva a un chat que no existe. Se valida acá porque es
+          // el único lugar donde alguien lo va a ver antes de publicarlo.
+          validation: (Rule) =>
+            Rule.custom((value?: string) => {
+              // Vacío es válido a propósito: es la forma de apagar el botón.
+              if (!value) return true;
+
+              return (
+                /^[0-9]{8,15}$/.test(value) ||
+                "Solo números, entre 8 y 15 dígitos. Sin +, sin espacios, sin guiones y sin el 15."
+              );
+            }),
+        }),
+        defineField({
+          name: "message",
+          title: "Mensaje inicial",
+          type: "string",
+          description:
+            "Texto que aparece ya escrito en el chat cuando alguien toca el botón. Opcional.",
+        }),
+      ],
+    }),
+    defineField({
       name: "socialLinks",
       title: "Redes sociales",
       type: "array",

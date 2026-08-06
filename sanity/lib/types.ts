@@ -37,11 +37,18 @@ export interface SocialLink {
   icon: SocialIcon;
 }
 
+export interface WhatsAppSettings {
+  phone?: string;
+  message?: string;
+}
+
 export interface SiteSettings {
   _id: string;
   _type: "siteSettings";
   address: string;
   schedule: string;
+  // Opcional: sin número configurado el botón flotante no se muestra.
+  whatsapp?: WhatsAppSettings;
   socialLinks: SocialLink[];
 }
 
