@@ -23,6 +23,19 @@ export const eventsQuery = /* groq */ `*[_type == "event"] | order(_createdAt as
 export const newsItemsQuery = /* groq */ `*[_type == "newsItem"] | order(_createdAt asc)`;
 
 /**
+ * Los slugs que tienen página propia. Solo los eventos CON fotos: sin galería
+ * la página sería el título y un párrafo, o sea menos de lo que ya muestra la
+ * tarjeta, así que esos eventos no linkean a ningún lado.
+ *
+ * Alimenta `generateStaticParams` y el sitemap, para que las dos listas salgan
+ * de la misma definición y no puedan divergir.
+ */
+export const eventSlugsWithGalleryQuery = /* groq */ `*[_type == "event" && defined(slug.current) && count(gallery) > 0].slug.current`;
+
+/** Parametrizada por `$slug`. Devuelve null si no existe. */
+export const eventBySlugQuery = /* groq */ `*[_type == "event" && slug.current == $slug][0]`;
+
+/**
  * Parametrized by `$route` (e.g. "/ministerios"). Returns null if no banner
  * exists for that route. No projection — returns the whole document,
  * including `sections` and `faqs`, so pages get section headings and FAQs

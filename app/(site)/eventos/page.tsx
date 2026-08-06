@@ -68,6 +68,14 @@ export default async function EventosPage() {
                 description={event.description}
                 image={urlForImage(event.image).url()}
                 imageAlt={event.imageAlt}
+                // Solo enlaza si hay fotos: la página de galería no existe
+                // para un evento sin cargar, y mandar ahí sería llevar al
+                // visitante a menos de lo que ya está viendo.
+                href={
+                  event.slug?.current && (event.gallery?.length ?? 0) > 0
+                    ? `/eventos/${event.slug.current}`
+                    : undefined
+                }
               />
             ))}
           </div>

@@ -14,6 +14,7 @@
     "seed:reset": "tsx scripts/seed-reset.ts",
     "migrate:page-sections": "tsx scripts/migrate-page-sections.ts",
     "migrate:about": "tsx scripts/migrate-about-page.ts",
+    "migrate:event-slugs": "tsx scripts/migrate-event-slugs.ts",
     "repair:array-keys": "tsx scripts/repair-array-keys.ts"
   },
   "dependencies": {

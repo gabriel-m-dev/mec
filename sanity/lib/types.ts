@@ -81,6 +81,13 @@ export interface WorshipService {
   cta: string;
 }
 
+export interface GalleryImage {
+  _key: string;
+  asset: SanityImageSource;
+  /** Opcional a propósito: si falta, la página usa el título del evento. */
+  alt?: string;
+}
+
 export interface Event {
   _id: string;
   _type: "event";
@@ -89,6 +96,9 @@ export interface Event {
   description: string;
   image: SanityImageSource;
   imageAlt: string;
+  /** `_type` incluido: es lo que escriben el Studio y las migraciones. */
+  slug?: { _type?: "slug"; current: string };
+  gallery?: GalleryImage[];
 }
 
 export interface NewsItem {
