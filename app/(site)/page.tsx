@@ -35,14 +35,23 @@ export default async function HomePage() {
     },
   );
 
-  const slides: CarouselSlide[] = (featured ?? []).map((item) => ({
-    id: item._id,
-    title: item.title,
-    description: item.description,
-    image: urlForImage(item.image).width(1600).url(),
-    imageAlt: item.imageAlt,
-    href: hrefFor(item),
-  }));
+  // Dos redes, y las dos hacen falta:
+  // - `filter(Boolean)` porque una referencia a un documento borrado se
+  //   desreferencia a `null`. La query ya lo filtra, pero esto es lo que
+  //   separa un destacado roto de un build caído.
+  // - `slice(0, 5)` porque el máximo del schema solo se aplica en el Studio:
+  //   la API de mutación no valida contra el schema.
+  const slides: CarouselSlide[] = (featured ?? [])
+    .filter((item): item is FeaturedItem => Boolean(item))
+    .slice(0, 5)
+    .map((item) => ({
+      id: item._id,
+      title: item.title,
+      description: item.description,
+      image: urlForImage(item.image).width(1600).url(),
+      imageAlt: item.imageAlt,
+      href: hrefFor(item),
+    }));
 
   return (
     <main className="relative overflow-hidden bg-ink-950">
