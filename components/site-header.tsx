@@ -3,19 +3,46 @@
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { navItems } from "@/lib/content";
+
+/** Apenas se despega de arriba. Con 0 el fondo parpadearía con el rebote del scroll. */
+const SCROLL_THRESHOLD = 8;
 
 export function SiteHeader() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const pathname = usePathname();
 
-  // Negro neutro y no `ink-950`: ese color es #02050c, con el canal azul seis
-  // veces el rojo, y a 75% de opacidad teñía de azul todo lo que pasaba por
-  // debajo. El `backdrop-blur` es lo que sostiene la legibilidad, así que el
-  // fondo puede ser mucho más transparente sin que el texto sufra.
+  useEffect(() => {
+    function evaluate() {
+      setIsScrolled(window.scrollY > SCROLL_THRESHOLD);
+    }
+
+    // Se evalúa una vez al montar: si se entra por un ancla o se recarga a
+    // mitad de página, el header ya arranca scrolleado.
+    evaluate();
+
+    window.addEventListener("scroll", evaluate, { passive: true });
+    return () => window.removeEventListener("scroll", evaluate);
+  }, []);
+
+  // Arriba de todo el header no pone fondo: se apoya en el hero, que ya trae su
+  // propio oscurecido en los primeros 24 de alto.
+  //
+  // El menú desplegado también fuerza el fondo aunque estemos arriba: si no, el
+  // panel opaco colgaría de una barra transparente y se vería cortado.
+  //
+  // El negro es neutro a propósito. `ink-950` es #02050c, con el canal azul seis
+  // veces el rojo, y teñía de azul todo lo que pasaba por debajo.
+  const hasBackdrop = isScrolled || isMobileMenuOpen;
+
   return (
-    <header className="sticky top-0 z-50 bg-black/25 backdrop-blur-xl">
+    <header
+      className={`sticky top-0 z-50 transition-colors duration-300 ${
+        hasBackdrop ? "bg-black/25 backdrop-blur-xl" : "bg-transparent"
+      }`}
+    >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
         <Link href="/" className="flex items-center gap-3">
           <span className="grid h-11 w-11 place-items-center rounded-full border border-gold-300/60 bg-white/5 text-sm font-semibold text-gold-100 shadow-glow">
