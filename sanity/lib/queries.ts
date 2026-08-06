@@ -14,7 +14,9 @@ export const venueQuery = /* groq */ `*[_type == "venue"][0]`;
 
 export const worshipServicesQuery = /* groq */ `*[_type == "worshipService"] | order(_createdAt asc)`;
 
-export const ministriesQuery = /* groq */ `*[_type == "ministry"] | order(_createdAt asc)`;
+export const chosenLeaderQuery = /* groq */ `*[_type == "chosenLeader"][0]`;
+
+export const chosenActivitiesQuery = /* groq */ `*[_type == "chosenActivity"] | order(_createdAt asc)`;
 
 export const chaplainsQuery = /* groq */ `*[_type == "chaplain"] | order(_createdAt asc)`;
 

@@ -7,7 +7,7 @@ import { SANITY_TAGS } from "@/sanity/lib/tags";
 const STATIC_ROUTES = [
   "",
   "/quienes-somos",
-  "/ministerios",
+  "/the-chosen",
   "/capellanes",
   "/cultos",
   "/eventos",

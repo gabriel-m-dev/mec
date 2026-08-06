@@ -41,8 +41,8 @@ export async function SiteFooter() {
             <Link href="/" className="transition hover:text-white">
               Inicio
             </Link>
-            <Link href="/ministerios" className="transition hover:text-white">
-              Ministerios
+            <Link href="/the-chosen" className="transition hover:text-white">
+              The Chosen
             </Link>
             <Link href="/contacto" className="transition hover:text-white">
               Contacto

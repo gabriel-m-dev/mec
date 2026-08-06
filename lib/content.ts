@@ -1,7 +1,7 @@
 ﻿export const navItems = [
   { label: "Inicio", href: "/" },
   { label: "Quiénes somos", href: "/quienes-somos" },
-  { label: "Ministerios", href: "/ministerios" },
+  { label: "The Chosen", href: "/the-chosen" },
   // El nombre visible es "Capellanía"; la ruta sigue siendo `/capellanes`
   // para no romper los enlaces ya compartidos.
   { label: "Capellanía", href: "/capellanes" },
@@ -22,7 +22,7 @@ export const featureHighlights = [
     icon: "podium",
     label: "Ministros",
     cta: "Ver ministros",
-    href: "/ministerios",
+    href: "/the-chosen",
   },
   {
     icon: "shield",

@@ -38,7 +38,6 @@ import path from "node:path";
 import type {
   SiteSettings,
   Venue,
-  Ministry,
   Chaplain,
   WorshipService,
   Event as EventDoc,
@@ -71,7 +70,6 @@ const API_VERSION = "2025-05-30";
 const DOC_TYPES = {
   SITE_SETTINGS: "siteSettings",
   VENUE: "venue",
-  MINISTRY: "ministry",
   CHAPLAIN: "chaplain",
   WORSHIP_SERVICE: "worshipService",
   EVENT: "event",
@@ -84,7 +82,6 @@ type DocType = (typeof DOC_TYPES)[keyof typeof DOC_TYPES];
 const DOC_TYPE_ORDER: DocType[] = [
   DOC_TYPES.SITE_SETTINGS,
   DOC_TYPES.VENUE,
-  DOC_TYPES.MINISTRY,
   DOC_TYPES.CHAPLAIN,
   DOC_TYPES.WORSHIP_SERVICE,
   DOC_TYPES.EVENT,
@@ -111,37 +108,6 @@ function slugify(value: string): string {
 // literales para reflejar cambios hechos por el cliente en el Studio — el
 // dataset vivo es la fuente de verdad ahora, esto es solo el punto de
 // partida histórico.
-const ministries = [
-  {
-    name: "Alabanza y adoración",
-    description:
-      "Diseñamos atmósferas de adoración que elevan la presencia de Dios con excelencia.",
-    image: "/images/ministries/alabanza.jpg",
-    imageAlt: "Personas con las manos levantadas en un tiempo de adoración",
-  },
-  {
-    name: "Juventud MEC",
-    description:
-      "Espacios para formación, comunidad y liderazgo con identidad firme.",
-    image: "/images/ministries/juventud.jpg",
-    imageAlt: "Grupo de jóvenes orando juntos al aire libre",
-  },
-  {
-    name: "Niños y familias",
-    description:
-      "Formación bíblica creativa para sembrar fe sólida en cada hogar.",
-    image: "/images/ministries/ninos-familias.jpg",
-    imageAlt: "Familia jugando y compartiendo tiempo juntos en casa",
-  },
-  {
-    name: "Intercesión y misericordia",
-    description:
-      "Oración estratégica, apoyo a necesitados y respuesta pastoral oportuna.",
-    image: "/images/ministries/intercesion.jpg",
-    imageAlt: "Primer plano de manos en oración con un rosario",
-  },
-];
-
 const chaplains = [
   {
     name: "Pr. Daniel Medina",
@@ -359,7 +325,6 @@ async function main() {
   const counts: Record<DocType, Counts> = {
     siteSettings: { created: 0, updated: 0 },
     venue: { created: 0, updated: 0 },
-    ministry: { created: 0, updated: 0 },
     chaplain: { created: 0, updated: 0 },
     worshipService: { created: 0, updated: 0 },
     event: { created: 0, updated: 0 },
@@ -561,20 +526,6 @@ async function main() {
     image: venueImage,
     alt: venue.imageAlt,
   });
-
-  // --- ministry ---
-  for (const ministry of ministries) {
-    const id = `ministry-${slugify(ministry.name)}`;
-    const image = await resolveImage(ministry.image);
-    await upsert<Seeded<Ministry>>(DOC_TYPES.MINISTRY, {
-      _id: id,
-      _type: "ministry",
-      name: ministry.name,
-      description: ministry.description,
-      image,
-      imageAlt: ministry.imageAlt,
-    });
-  }
 
   // --- chaplain ---
   for (const chaplain of chaplains) {

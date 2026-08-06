@@ -24,7 +24,6 @@ const API_VERSION = "2025-05-30";
 const MANAGED_TYPES = [
   "siteSettings",
   "venue",
-  "ministry",
   "chaplain",
   "worshipService",
   "event",

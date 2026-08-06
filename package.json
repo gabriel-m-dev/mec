@@ -21,7 +21,9 @@
     "repair:array-keys": "tsx scripts/repair-array-keys.ts",
     "create:home-page": "tsx scripts/create-home-page.ts",
     "clean:page-banners": "tsx scripts/clean-orphan-page-banners.ts",
-    "attach:chaplaincy-images": "tsx scripts/attach-chaplaincy-images.ts"
+    "attach:chaplaincy-images": "tsx scripts/attach-chaplaincy-images.ts",
+    "migrate:the-chosen": "tsx scripts/migrate-the-chosen.ts",
+    "seed:the-chosen": "tsx scripts/seed-the-chosen.ts"
   },
   "dependencies": {
     "@sanity/client": "^7.11.0",
