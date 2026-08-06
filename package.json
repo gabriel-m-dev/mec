@@ -19,8 +19,6 @@
     "repair:array-keys": "tsx scripts/repair-array-keys.ts"
   },
   "dependencies": {
-    "@react-three/drei": "^10.7.6",
-    "@react-three/fiber": "^9.2.0",
     "@sanity/client": "^7.11.0",
     "@sanity/image-url": "^2.1.1",
     "@sanity/locale-es-es": "^1.2.35",
@@ -29,8 +27,7 @@
     "next-sanity": "^9.12.3",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "sanity": "^3.99.0",
-    "three": "^0.179.1"
+    "sanity": "^3.99.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

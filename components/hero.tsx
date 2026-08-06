@@ -1,10 +1,8 @@
 "use client";
 
-import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
-import { useEffect, useState } from "react";
 import { MapPinIcon } from "@/components/contact-icons";
 import { FeatureHighlight } from "@/components/feature-highlight";
 import { PodiumIcon, ShieldCrossIcon, UsersIcon } from "@/components/feature-icons";
@@ -17,41 +15,8 @@ const featureIcons = {
   map: MapPinIcon,
 };
 
-const OrbitScene = dynamic(
-  () => import("@/components/three/orbit-scene").then((mod) => mod.OrbitScene),
-  { ssr: false }
-);
-
 export function Hero() {
-  const [showOrbitScene, setShowOrbitScene] = useState(false);
   const shouldReduceMotion = useReducedMotion();
-
-  useEffect(() => {
-    const mediaQuery = window.matchMedia(
-      "(min-width: 768px) and (hover: hover) and (pointer: fine)"
-    );
-    const nav = navigator as Navigator & {
-      connection?: { saveData?: boolean };
-      deviceMemory?: number;
-    };
-
-    function evaluate() {
-      const saveData = nav.connection?.saveData ?? false;
-      const lowMemory = nav.deviceMemory !== undefined && nav.deviceMemory <= 4;
-      const lowCpu =
-        nav.hardwareConcurrency !== undefined && nav.hardwareConcurrency <= 4;
-
-      setShowOrbitScene(mediaQuery.matches && !saveData && !lowMemory && !lowCpu);
-    }
-
-    evaluate();
-
-    mediaQuery.addEventListener("change", evaluate);
-
-    return () => {
-      mediaQuery.removeEventListener("change", evaluate);
-    };
-  }, []);
 
   return (
     <section id="inicio" className="relative overflow-hidden border-b border-white/6">
@@ -72,16 +37,20 @@ export function Hero() {
           className="hidden object-cover object-center sm:block"
           sizes="100vw"
         />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(227,170,53,0.14),transparent_36%),linear-gradient(180deg,rgba(2,5,12,0.1)_0%,rgba(2,5,12,0.45)_55%,rgba(2,5,12,0.6)_100%)]" />
+        {/*
+          Solo el oscurecido de abajo hacia arriba, que es lo que hace legible
+          el texto. Antes había además un lavado dorado radial arriba
+          (`rgba(227,170,53,0.14)` centrado en `50% 0%`): con el fondo anterior
+          caía sobre cielo vacío y no molestaba, pero el fondo nuevo tiene el
+          globo justo ahí y le tiraba encima un velo amarillento. El arte nuevo
+          ya trae sus propios dorados en las órbitas y el libro.
+        */}
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(2,5,12,0.1)_0%,rgba(2,5,12,0.45)_55%,rgba(2,5,12,0.6)_100%)]" />
       </div>
 
       <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/70 to-transparent" />
 
       <div className="relative mx-auto grid min-h-[100svh] max-w-7xl items-center px-4 pb-16 pt-20 sm:px-6 lg:px-8 lg:pb-20 lg:pt-24">
-        <div className="pointer-events-none absolute inset-x-0 top-12 h-[62rem] opacity-90 md:top-2">
-          {!showOrbitScene ? null : <OrbitScene />}
-        </div>
-
         <div className="relative z-10 mx-auto max-w-4xl text-center">
           <motion.h1
             initial={shouldReduceMotion ? false : { opacity: 0, y: 18 }}
