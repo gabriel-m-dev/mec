@@ -72,6 +72,34 @@ export function Hero() {
           className="hidden object-cover object-center sm:block"
           sizes="100vw"
         />
+
+        {/*
+          El video va ENCIMA de la imagen de desktop, no en su lugar: la imagen
+          queda de respaldo real. Si el video tarda, falla o el navegador no lo
+          reproduce, abajo ya hay algo — sin parpadeo negro y sin salto.
+
+          Solo en desktop, como dice el nombre del archivo: son 456 KB que un
+          celular con datos no tiene por qué bajar para ver un fondo.
+
+          `shouldReduceMotion` lo apaga entero. Un video en loop de fondo es
+          exactamente lo que molesta a quien pidió menos movimiento en su
+          sistema, y ahí la imagen fija ya cumple.
+        */}
+        {!shouldReduceMotion && (
+          <video
+            className="absolute inset-0 hidden h-full w-full object-cover object-center sm:block"
+            src="/images/hero_background_video_desktop.mp4"
+            autoPlay
+            // `muted` no es decorativo: sin él los navegadores bloquean la
+            // reproducción automática y el fondo queda congelado.
+            muted
+            loop
+            playsInline
+            aria-hidden="true"
+            tabIndex={-1}
+          />
+        )}
+
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(227,170,53,0.14),transparent_36%),linear-gradient(180deg,rgba(2,5,12,0.1)_0%,rgba(2,5,12,0.45)_55%,rgba(2,5,12,0.6)_100%)]" />
       </div>
 
