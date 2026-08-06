@@ -1,6 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
@@ -18,9 +19,22 @@ export function SiteHeader() {
     <header className="sticky top-0 z-50 bg-black/25 backdrop-blur-xl">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
         <Link href="/" className="flex items-center gap-3">
-          <span className="grid h-11 w-11 place-items-center rounded-full border border-gold-300/60 bg-white/5 text-sm font-semibold text-gold-100 shadow-glow">
-            MEC
-          </span>
+          {/* El `alt` no va vacío: el texto de al lado es `hidden sm:block`, así
+              que en móvil esta imagen es lo único dentro del enlace y sin `alt`
+              el enlace a la portada se quedaría sin nombre accesible. */}
+          {/* `width`/`height` son los del archivo: fijan la relación de aspecto
+              y evitan el salto de layout. El tamaño real lo pone `h-14 w-auto`,
+              y `sizes` es lo que impide que Next sirva la variante de 828px
+              para un hueco de 83: sin él el srcset se arma desde `width`. */}
+          <Image
+            src="/images/logo-mec.png"
+            alt="MEC"
+            width={826}
+            height={556}
+            sizes="83px"
+            priority
+            className="h-14 w-auto"
+          />
           <div className="hidden sm:block">
             <p className="text-sm font-semibold uppercase tracking-[0.28em] text-white">
               MEC
