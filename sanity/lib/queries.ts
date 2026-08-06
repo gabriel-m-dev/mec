@@ -36,6 +36,31 @@ export const eventSlugsWithGalleryQuery = /* groq */ `*[_type == "event" && defi
 export const eventBySlugQuery = /* groq */ `*[_type == "event" && slug.current == $slug][0]`;
 
 /**
+ * Los destacados del carrusel de la portada, ya desreferenciados: el cliente
+ * elige eventos y noticias que ya existen, y de cada uno salen la foto, el
+ * título y la descripción que tiene cargados. Si los edita allá, acá cambian
+ * solos — no hay copia que mantener.
+ *
+ * `hasGallery` decide el destino del botón: solo un evento CON fotos tiene
+ * página propia (la ruta hace 404 sin galería), y las noticias no tienen. El
+ * cálculo vive en la query y no en el componente para que la regla esté en un
+ * solo lugar.
+ *
+ * El `[0...5]` es el techo real: la validación del schema avisa en el Studio,
+ * pero la API de mutación no la aplica, así que el corte se hace acá también.
+ */
+export const homeFeaturedQuery = /* groq */ `*[_type == "homePage"][0].featured[]->{
+  _id,
+  _type,
+  title,
+  description,
+  image,
+  imageAlt,
+  "slug": slug.current,
+  "hasGallery": count(gallery) > 0
+}[0...5]`;
+
+/**
  * Parametrized by `$route` (e.g. "/ministerios"). Returns null if no banner
  * exists for that route. No projection — returns the whole document,
  * including `sections` and `faqs`, so pages get section headings and FAQs

@@ -81,6 +81,23 @@ export interface WorshipService {
   cta: string;
 }
 
+/**
+ * Un destacado del carrusel de la portada, ya desreferenciado.
+ * Sale de `homeFeaturedQuery`, no es la forma cruda de ningún documento.
+ */
+export interface FeaturedItem {
+  _id: string;
+  _type: "event" | "newsItem";
+  title: string;
+  description: string;
+  image: SanityImageSource;
+  imageAlt: string;
+  /** Solo los eventos lo tienen. */
+  slug?: string;
+  /** Solo un evento con fotos tiene página propia. */
+  hasGallery?: boolean;
+}
+
 export interface GalleryImage {
   _key: string;
   asset: SanityImageSource;

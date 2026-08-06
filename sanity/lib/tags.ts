@@ -4,6 +4,7 @@
  * selectively invalidate only the pages that consume it.
  */
 export const SANITY_TAGS = {
+  homePage: "homePage",
   siteSettings: "siteSettings",
   venue: "venue",
   ministry: "ministry",
