@@ -2,11 +2,10 @@ import Image from "next/image";
 
 type ChaplaincyActivityRowProps = {
   name: string;
-  day: string;
-  time?: string;
   description: string;
-  image: string;
-  imageAlt: string;
+  /** Opcional: sin foto, la fila se dibuja solo con el texto. */
+  image?: string;
+  imageAlt?: string;
   /** Filas impares: la imagen pasa a la derecha y el bloque baja un poco. */
   reversed?: boolean;
 };
@@ -15,22 +14,38 @@ type ChaplaincyActivityRowProps = {
  * Una actividad de capellanía, en fila ancha con la imagen a un lado y el
  * texto al otro, alternando de lado en cada fila.
  *
- * Reemplaza a la grilla de cuatro tarjetas chicas: ahí la foto quedaba del
- * tamaño de una miniatura y no se distinguía un hospital de una comisaría,
- * que es justamente lo que la imagen tiene que comunicar acá.
+ * Reemplazó a una grilla de tarjetas chicas: ahí la foto quedaba del tamaño
+ * de una miniatura y no se distinguía un hospital de una comisaría, que es
+ * justamente lo que la imagen tiene que comunicar acá.
  *
  * El desfase vertical (`lg:mt-16`) es solo en pantallas grandes: en móvil todo
  * se apila en una columna y un margen extra sería un hueco sin sentido.
  */
 export function ChaplaincyActivityRow({
   name,
-  day,
-  time,
   description,
   image,
   imageAlt,
   reversed = false,
 }: ChaplaincyActivityRowProps) {
+  const text = (
+    <div className={image && reversed ? "lg:order-1" : ""}>
+      <h3 className="font-serif text-3xl tracking-tight text-white sm:text-4xl">
+        {name}
+      </h3>
+      <p className="mt-4 max-w-xl text-base leading-8 text-slate-300">
+        {description}
+      </p>
+    </div>
+  );
+
+  // Sin foto no se dibuja media fila vacía: la actividad se muestra como un
+  // bloque de texto y sigue siendo legible. Cuando la iglesia cargue la
+  // imagen, la fila pasa sola al formato de dos columnas.
+  if (!image) {
+    return <article className="max-w-3xl">{text}</article>;
+  }
+
   return (
     <article
       className={`grid items-center gap-8 lg:grid-cols-2 lg:gap-14 ${
@@ -44,7 +59,7 @@ export function ChaplaincyActivityRow({
       >
         <Image
           src={image}
-          alt={imageAlt}
+          alt={imageAlt ?? ""}
           fill
           sizes="(min-width: 1024px) 45vw, 92vw"
           className="object-cover"
@@ -52,21 +67,7 @@ export function ChaplaincyActivityRow({
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(2,5,12,0)_55%,rgba(2,5,12,0.65)_100%)]" />
       </div>
 
-      <div className={reversed ? "lg:order-1" : ""}>
-        {/* Sin horario cargado la píldora muestra solo el día, en vez de
-            dejar un separador colgado. Mismo criterio que en los eventos. */}
-        <p className="inline-flex rounded-full border border-gold-300/35 bg-gold-400/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-gold-200">
-          {time ? `${day} · ${time}` : day}
-        </p>
-
-        <h3 className="mt-5 font-serif text-3xl tracking-tight text-white sm:text-4xl">
-          {name}
-        </h3>
-
-        <p className="mt-4 max-w-xl text-base leading-8 text-slate-300">
-          {description}
-        </p>
-      </div>
+      {text}
     </article>
   );
 }
