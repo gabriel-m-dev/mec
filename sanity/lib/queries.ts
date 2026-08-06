@@ -18,6 +18,8 @@ export const ministriesQuery = /* groq */ `*[_type == "ministry"] | order(_creat
 
 export const chaplainsQuery = /* groq */ `*[_type == "chaplain"] | order(_createdAt asc)`;
 
+export const chaplaincyActivitiesQuery = /* groq */ `*[_type == "chaplaincyActivity"] | order(_createdAt asc)`;
+
 export const eventsQuery = /* groq */ `*[_type == "event"] | order(_createdAt asc)`;
 
 export const newsItemsQuery = /* groq */ `*[_type == "newsItem"] | order(_createdAt asc)`;

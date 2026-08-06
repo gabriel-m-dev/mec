@@ -1,25 +1,39 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ChaplainCard } from "@/components/chaplain-card";
+import { ChaplaincyActivityCard } from "@/components/chaplaincy-activity-card";
 import { PageHeader } from "@/components/page-header";
 import { SectionHeading } from "@/components/section-heading";
 import { urlForBanner, urlForImage } from "@/sanity/lib/image";
 import { sanityClient } from "@/sanity/lib/client";
-import { chaplainsQuery, pageBannerByRouteQuery } from "@/sanity/lib/queries";
+import {
+  chaplaincyActivitiesQuery,
+  chaplainsQuery,
+  pageBannerByRouteQuery,
+} from "@/sanity/lib/queries";
 import { SANITY_TAGS } from "@/sanity/lib/tags";
-import { PAGE_SECTION_KEYS, type Chaplain, type PageBanner } from "@/sanity/lib/types";
+import {
+  PAGE_SECTION_KEYS,
+  type Chaplain,
+  type ChaplaincyActivity,
+  type PageBanner,
+} from "@/sanity/lib/types";
 
 export const metadata: Metadata = {
-  title: "Capellanes",
+  title: "Capellanía",
 };
 
-export default async function CapellanesPage() {
-  const [banner, chaplains] = await Promise.all([
+export default async function CapellaniaPage() {
+  const [banner, activities, chaplains] = await Promise.all([
     sanityClient.fetch<PageBanner | null>(
       pageBannerByRouteQuery,
       { route: "/capellanes" },
       { cache: "force-cache", next: { tags: [SANITY_TAGS.pageBanner] } },
     ),
+    sanityClient.fetch<ChaplaincyActivity[]>(chaplaincyActivitiesQuery, {}, {
+      cache: "force-cache",
+      next: { tags: [SANITY_TAGS.chaplaincyActivity] },
+    }),
     sanityClient.fetch<Chaplain[]>(chaplainsQuery, {}, {
       cache: "force-cache",
       next: { tags: [SANITY_TAGS.chaplain] },
@@ -52,28 +66,57 @@ export default async function CapellanesPage() {
             />
           )}
 
-          <p className="mt-8 max-w-3xl text-lg leading-8 text-slate-300">
-            El programa de capellanía existe para que nadie atraviese un
-            momento difícil en soledad. Nuestros capellanes ofrecen escucha
-            confidencial, oración y orientación práctica en situaciones de
-            duelo, crisis familiar, enfermedad o simplemente cuando la vida
-            se siente demasiado pesada para llevarla solos.
-          </p>
+          {/* Este párrafo estaba escrito a mano en el código: explicaba de qué
+              se trata la capellanía pero la iglesia no podía tocarlo. Ahora
+              sale del Studio, y sin cargar no se dibuja. */}
+          {banner?.chaplaincyIntro && (
+            <p className="mt-8 max-w-3xl whitespace-pre-line text-lg leading-8 text-slate-300">
+              {banner.chaplaincyIntro}
+            </p>
+          )}
 
-          <div className="mt-14 grid gap-5 lg:grid-cols-3">
-            {chaplains.map((chaplain) => (
-              <ChaplainCard
-                key={chaplain._id}
-                name={chaplain.name}
-                role={chaplain.role}
-                description={chaplain.description}
-                image={urlForImage(chaplain.image).url()}
-                imageAlt={chaplain.imageAlt}
-              />
-            ))}
-          </div>
+          {activities.length > 0 && (
+            <div className="mt-16">
+              <h2 className="font-serif text-3xl tracking-tight text-white sm:text-4xl">
+                Qué hacemos
+              </h2>
+              <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+                {activities.map((activity) => (
+                  <ChaplaincyActivityCard
+                    key={activity._id}
+                    name={activity.name}
+                    day={activity.day}
+                    time={activity.time}
+                    description={activity.description}
+                    image={urlForImage(activity.image).url()}
+                    imageAlt={activity.imageAlt}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
 
-          <div className="mt-14 rounded-[2rem] border border-white/10 bg-ink-900/60 p-8 text-center shadow-luxe sm:p-12">
+          {chaplains.length > 0 && (
+            <div className="mt-20">
+              <h2 className="font-serif text-3xl tracking-tight text-white sm:text-4xl">
+                Quiénes acompañan
+              </h2>
+              <div className="mt-8 grid gap-5 lg:grid-cols-3">
+                {chaplains.map((chaplain) => (
+                  <ChaplainCard
+                    key={chaplain._id}
+                    name={chaplain.name}
+                    role={chaplain.role}
+                    description={chaplain.description}
+                    image={urlForImage(chaplain.image).url()}
+                    imageAlt={chaplain.imageAlt}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+
+          <div className="mt-20 rounded-[2rem] border border-white/10 bg-ink-900/60 p-8 text-center shadow-luxe sm:p-12">
             <h2 className="font-serif text-3xl tracking-tight text-white sm:text-4xl">
               ¿Necesitás hablar con alguien?
             </h2>

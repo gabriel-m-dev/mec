@@ -16,6 +16,7 @@
     "migrate:about": "tsx scripts/migrate-about-page.ts",
     "migrate:event-slugs": "tsx scripts/migrate-event-slugs.ts",
     "migrate:event-times": "tsx scripts/migrate-event-times.ts",
+    "migrate:chaplaincy-intro": "tsx scripts/migrate-chaplaincy-intro.ts",
     "repair:array-keys": "tsx scripts/repair-array-keys.ts",
     "create:home-page": "tsx scripts/create-home-page.ts",
     "clean:page-banners": "tsx scripts/clean-orphan-page-banners.ts"

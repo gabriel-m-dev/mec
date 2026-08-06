@@ -82,6 +82,18 @@ export interface Chaplain {
   imageAlt: string;
 }
 
+export interface ChaplaincyActivity {
+  _id: string;
+  _type: "chaplaincyActivity";
+  name: string;
+  /** Etiqueta del día, no una fecha: "Martes", "Primer sábado del mes". */
+  day: string;
+  time?: string;
+  description: string;
+  image: SanityImageSource;
+  imageAlt: string;
+}
+
 export interface WorshipService {
   _id: string;
   _type: "worshipService";
@@ -201,6 +213,8 @@ export interface PageBanner {
   imageAlt?: string;
   sections?: PageSection[];
   faqs?: Faq[];
+  // Bloque propio de /capellanes.
+  chaplaincyIntro?: string;
   // Bloques propios de /quienes-somos. Opcionales: las otras 6 páginas
   // comparten el tipo pero no los usan.
   introParagraphs?: string[];
