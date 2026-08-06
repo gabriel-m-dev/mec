@@ -26,7 +26,13 @@ export async function SiteFooter() {
   const socialLinks = siteSettings?.socialLinks ?? [];
 
   return (
-    <footer className="border-t border-white/8 py-10">
+    // `pb-24` y no `py-10`: el botón flotante de WhatsApp ocupa los últimos
+    // ~80px del viewport, y al llegar al fondo de la página caía al lado de
+    // los íconos de redes — 6px de separación en un móvil de 360px, 25px en
+    // desktop. No llegaban a superponerse, pero las áreas táctiles sí: tocar
+    // el ícono del sitio web podía abrir WhatsApp. El footer reserva el
+    // espacio en vez de que el botón esquive.
+    <footer className="border-t border-white/8 pb-24 pt-10">
       <div className="mx-auto flex max-w-7xl flex-col gap-6 px-4 text-sm text-slate-400 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8">
         <p>© {new Date().getFullYear()} MEC. Todos los derechos reservados.</p>
 
