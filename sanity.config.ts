@@ -38,15 +38,14 @@ export default defineConfig({
   },
   plugins: [structureTool({ structure }), esESLocale()],
   document: {
-    newDocumentOptions: (prev, { creationContext }) => {
-      if (creationContext.type !== "global") {
-        return prev;
-      }
-
-      return prev.filter(
-        (template) => !PROTECTED_TYPES.includes(template.templateId),
-      );
-    },
+    // Se filtra en TODOS los contextos de creación, no solo en el "+" global.
+    // Filtrar únicamente `global` dejaba pasar el botón "Crear nuevo documento"
+    // de las listas del menú lateral (contexto `structure`), y por ahí se podía
+    // crear un `pageBanner` de más. Como el tipo también tiene la acción
+    // `delete` sacada, ese documento quedaba imposible de borrar desde Studio:
+    // se creaba un callejón sin salida.
+    newDocumentOptions: (prev) =>
+      prev.filter((template) => !PROTECTED_TYPES.includes(template.templateId)),
     actions: (prev, { schemaType }) => {
       if (!PROTECTED_TYPES.includes(schemaType)) {
         return prev;

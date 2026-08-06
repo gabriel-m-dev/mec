@@ -65,7 +65,14 @@ export const pageBanner = defineType({
       name: "route",
       title: "Página",
       type: "string",
-      description: "Página del sitio a la que pertenece este banner. Solo puede haber un banner por página.",
+      description:
+        "Qué página del sitio es. Se elige entrando desde el menú, no acá.",
+      // Se entra a cada página por su nombre desde el menú lateral, así que la
+      // ruta ya quedó decidida y mostrar el desplegable solo invita a romperla.
+      // Queda visible únicamente si está vacía —no debería pasar nunca, pero es
+      // obligatoria: escondida y sin valor, el documento no se podría publicar
+      // y nada explicaría por qué.
+      hidden: ({ document }) => Boolean((document as { route?: string } | undefined)?.route),
       options: { list: PAGE_BANNER_ROUTE_OPTIONS },
       validation: (Rule) =>
         Rule.required().custom(async (route, context) => {
@@ -85,7 +92,7 @@ export const pageBanner = defineType({
             const duplicateId = await client.fetch(query, params);
 
             return duplicateId
-              ? "Ya existe un banner para esta página"
+              ? "Ya hay otro documento usando esta página"
               : true;
           } catch {
             return true;
