@@ -40,7 +40,7 @@ export function SiteHeader() {
               MEC
             </p>
             <p className="text-[11px] uppercase tracking-[0.3em] text-gold-300/90">
-              Cristo poder y sabiduría de Dios
+              Ministerio Evangélico Cristiano
             </p>
           </div>
         </Link>

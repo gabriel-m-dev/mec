@@ -21,7 +21,7 @@ function getMetadataBase() {
 export const metadata: Metadata = {
   metadataBase: getMetadataBase(),
   title: {
-    default: "MEC | Cristo poder y sabiduría de Dios",
+    default: "MEC | Ministerio Evangélico Cristiano",
     template: "%s | MEC",
   },
   description:
@@ -35,7 +35,7 @@ export const metadata: Metadata = {
     "eventos cristianos",
   ],
   openGraph: {
-    title: "MEC | Cristo poder y sabiduría de Dios",
+    title: "MEC | Ministerio Evangélico Cristiano",
     description:
       "Una experiencia digital dark-luxury para presentar la comunidad, cultos, ministerios y actividades de MEC.",
     type: "website",

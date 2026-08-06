@@ -67,7 +67,7 @@ export function Hero() {
             transition={{ duration: shouldReduceMotion ? 0 : 0.9, delay: shouldReduceMotion ? 0 : 0.28 }}
             className="mx-auto mt-2 max-w-3xl text-balance font-serif text-sm font-semibold uppercase tracking-[0.1em] text-gold-200 sm:mt-3 sm:text-xl sm:tracking-[0.14em]"
           >
-            Cristo poder y sabiduría de Dios
+            Ministerio Evangélico Cristiano
           </motion.p>
 
           <motion.p
