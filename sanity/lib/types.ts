@@ -42,6 +42,12 @@ export interface WhatsAppSettings {
   message?: string;
 }
 
+/** Inscripción en el Registro Nacional de Cultos (Ley 21.745). */
+export interface RncSettings {
+  number?: string;
+  resolution?: string;
+}
+
 export interface SiteSettings {
   _id: string;
   _type: "siteSettings";
@@ -52,6 +58,7 @@ export interface SiteSettings {
   phone?: string;
   email?: string;
   whatsapp?: WhatsAppSettings;
+  rnc?: RncSettings;
   socialLinks: SocialLink[];
 }
 

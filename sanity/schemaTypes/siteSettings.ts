@@ -26,6 +26,29 @@ export const siteSettings = defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
+      name: "rnc",
+      title: "Registro Nacional de Cultos",
+      type: "object",
+      description:
+        "El número con el que la iglesia está inscripta en el Registro Nacional de Cultos (Ley 21.745). Es lo que habilita el trabajo de capellanía en hospitales, fuerzas y escuelas, así que se muestra como respaldo. Si lo dejás vacío, no aparece.",
+      options: { collapsible: true, collapsed: false },
+      fields: [
+        defineField({
+          name: "number",
+          title: "Número de RNC",
+          type: "string",
+          description: 'Solo el número, sin la sigla. Por ejemplo: 8587.',
+        }),
+        defineField({
+          name: "resolution",
+          title: "Resolución",
+          type: "string",
+          description:
+            'Opcional. La resolución que acompaña a la inscripción, por ejemplo RESOL-2025-354-APN-SCYC#MRE.',
+        }),
+      ],
+    }),
+    defineField({
       name: "phone",
       title: "Teléfono",
       type: "string",

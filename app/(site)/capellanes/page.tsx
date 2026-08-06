@@ -9,12 +9,14 @@ import {
   chaplaincyActivitiesQuery,
   chaplainsQuery,
   pageBannerByRouteQuery,
+  siteSettingsQuery,
 } from "@/sanity/lib/queries";
 import { SANITY_TAGS } from "@/sanity/lib/tags";
 import {
   type Chaplain,
   type ChaplaincyActivity,
   type PageBanner,
+  type SiteSettings,
 } from "@/sanity/lib/types";
 
 export const metadata: Metadata = {
@@ -59,7 +61,7 @@ const SITUACIONES = [
 ];
 
 export default async function CapellaniaPage() {
-  const [banner, activities, chaplains] = await Promise.all([
+  const [banner, activities, chaplains, siteSettings] = await Promise.all([
     sanityClient.fetch<PageBanner | null>(
       pageBannerByRouteQuery,
       { route: "/capellanes" },
@@ -73,7 +75,13 @@ export default async function CapellaniaPage() {
       cache: "force-cache",
       next: { tags: [SANITY_TAGS.chaplain] },
     }),
+    sanityClient.fetch<SiteSettings | null>(siteSettingsQuery, {}, {
+      cache: "force-cache",
+      next: { tags: [SANITY_TAGS.siteSettings] },
+    }),
   ]);
+
+  const rnc = siteSettings?.rnc;
 
 
   return (
@@ -204,6 +212,18 @@ export default async function CapellaniaPage() {
             >
               Solicitar acompañamiento
             </Link>
+
+            {/* El RNC va acá y no en cualquier lado: es la inscripción que
+                habilita a la capellanía a entrar a hospitales, comisarías y
+                escuelas. Quien evalúa si abrirles la puerta lo busca, y una
+                familia que duda si confiar también. */}
+            {rnc?.number && (
+              <p className="mx-auto mt-8 max-w-2xl text-xs leading-6 text-slate-500">
+                Entidad religiosa inscripta en el Registro Nacional de Cultos
+                bajo el N.º {rnc.number}
+                {rnc.resolution ? `, Resolución ${rnc.resolution}` : ""}.
+              </p>
+            )}
           </div>
         </div>
       </section>

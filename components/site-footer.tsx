@@ -24,6 +24,7 @@ export async function SiteFooter() {
     { cache: "force-cache", next: { tags: [SANITY_TAGS.siteSettings] } },
   );
   const socialLinks = siteSettings?.socialLinks ?? [];
+  const rnc = siteSettings?.rnc;
 
   return (
     // `pb-24` y no `py-10`: el botón flotante de WhatsApp ocupa los últimos
@@ -34,7 +35,24 @@ export async function SiteFooter() {
     // espacio en vez de que el botón esquive.
     <footer className="border-t border-white/8 pb-24 pt-10">
       <div className="mx-auto flex max-w-7xl flex-col gap-6 px-4 text-sm text-slate-400 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8">
-        <p>© {new Date().getFullYear()} MEC. Todos los derechos reservados.</p>
+        <div>
+          <p>© {new Date().getFullYear()} MEC. Todos los derechos reservados.</p>
+
+          {/* El lema, como en el membrete institucional de la iglesia. */}
+          <p className="mt-1 font-serif italic text-gold-300/70">
+            Cristo poder y sabiduría de Dios
+          </p>
+
+          {/* La inscripción en el Registro Nacional de Cultos. No es un
+              adorno legal: es lo que respalda el trabajo de capellanía en
+              hospitales, fuerzas y escuelas. Sin número cargado no aparece. */}
+          {rnc?.number && (
+            <p className="mt-3 text-xs text-slate-500">
+              Inscripta en el Registro Nacional de Cultos N.º {rnc.number}
+              {rnc.resolution ? ` — ${rnc.resolution}` : ""}
+            </p>
+          )}
+        </div>
 
         <div className="flex flex-col items-center gap-5 sm:flex-row sm:gap-8">
           <div className="flex items-center gap-4">
