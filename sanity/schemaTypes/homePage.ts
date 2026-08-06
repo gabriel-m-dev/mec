@@ -15,6 +15,54 @@ export const homePage = defineType({
   type: "document",
   fields: [
     defineField({
+      name: "live",
+      title: "Transmisión en vivo",
+      type: "object",
+      description:
+        "Aparece siempre como primera diapositiva del carrusel. Cambiá el enlace cuando tengas la dirección real de la transmisión.",
+      fields: [
+        defineField({
+          name: "title",
+          title: "Título",
+          type: "string",
+          validation: (Rule) => Rule.required(),
+        }),
+        defineField({
+          name: "description",
+          title: "Descripción",
+          type: "text",
+          rows: 3,
+          validation: (Rule) => Rule.required(),
+        }),
+        defineField({
+          name: "url",
+          title: "Enlace de la transmisión",
+          type: "url",
+          description: "La dirección de YouTube donde se ve el culto en vivo.",
+          validation: (Rule) => Rule.required().uri({ scheme: ["http", "https"] }),
+        }),
+        defineField({
+          name: "cta",
+          title: "Texto del botón",
+          type: "string",
+          description: 'Por ejemplo "Ver en vivo".',
+        }),
+        defineField({
+          name: "image",
+          title: "Imagen",
+          type: "image",
+          options: { hotspot: true },
+          validation: (Rule) => Rule.required(),
+        }),
+        defineField({
+          name: "imageAlt",
+          title: "Texto alternativo de la imagen",
+          type: "string",
+          validation: (Rule) => Rule.required(),
+        }),
+      ],
+    }),
+    defineField({
       name: "featured",
       title: "Destacados del carrusel",
       type: "array",

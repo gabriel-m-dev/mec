@@ -19,8 +19,26 @@
 
 import { loadEnvConfig } from "@next/env";
 import { createClient } from "@sanity/client";
+import fs from "node:fs";
+import path from "node:path";
 
 loadEnvConfig(process.cwd());
+
+/**
+ * Contenido de arranque del bloque de transmisión en vivo. Es un PLACEHOLDER:
+ * el enlace apunta a la portada de YouTube hasta que la iglesia pase la
+ * dirección real de su transmisión, que se cambia desde el Studio sin tocar
+ * código.
+ */
+const LIVE_PLACEHOLDER = {
+  title: "Seguí el culto en vivo",
+  description:
+    "Conectate desde donde estés y participá de la transmisión con el resto de la comunidad.",
+  url: "https://www.youtube.com",
+  cta: "Ver en vivo",
+  imagePath: "/images/pages/cultos-banner.jpg",
+  imageAlt: "Culto transmitido en vivo desde el auditorio",
+};
 
 const DRY_RUN = process.argv.includes("--dry-run");
 
@@ -51,22 +69,63 @@ async function main() {
     ...(token ? { token } : {}),
   });
 
+  async function uploadLiveImage() {
+    const abs = path.join(process.cwd(), "public", LIVE_PLACEHOLDER.imagePath);
+    if (!fs.existsSync(abs)) {
+      throw new Error(`Imagen no encontrada en disco: ${LIVE_PLACEHOLDER.imagePath}`);
+    }
+    const asset = await client.assets.upload("image", fs.createReadStream(abs), {
+      filename: path.basename(abs),
+    });
+    return { _type: "image", asset: { _type: "reference", _ref: asset._id } };
+  }
+
+  function liveBlock(image: unknown) {
+    return {
+      title: LIVE_PLACEHOLDER.title,
+      description: LIVE_PLACEHOLDER.description,
+      url: LIVE_PLACEHOLDER.url,
+      cta: LIVE_PLACEHOLDER.cta,
+      image,
+      imageAlt: LIVE_PLACEHOLDER.imageAlt,
+    };
+  }
+
   const existing = await client.getDocument(DOC_ID);
 
   if (existing) {
-    const featured = existing.featured;
-    const count = Array.isArray(featured) ? featured.length : 0;
-    console.log(`${DOC_ID} ya existe — ${count} destacado(s). No se toca.`);
+    const count = Array.isArray(existing.featured) ? existing.featured.length : 0;
+
+    // El documento ya está, pero puede venir de antes del bloque de vivo.
+    // Solo se completa si falta: si la iglesia ya puso su enlace real, no se
+    // le pisa nada.
+    if (existing.live) {
+      console.log(`${DOC_ID} ya existe — ${count} destacado(s), vivo cargado. No se toca.`);
+      return;
+    }
+
+    if (DRY_RUN) {
+      console.log(`${DOC_ID} existe pero SIN bloque de vivo — se agregaría el placeholder.`);
+      return;
+    }
+
+    await client.patch(DOC_ID).set({ live: liveBlock(await uploadLiveImage()) }).commit();
+    console.log(`${DOC_ID} — bloque de transmisión en vivo agregado (enlace placeholder).`);
     return;
   }
 
   if (DRY_RUN) {
-    console.log(`${DOC_ID} NO existe — se crearía vacío.`);
+    console.log(`${DOC_ID} NO existe — se crearía con el bloque de vivo y sin destacados.`);
     return;
   }
 
-  await client.createIfNotExists({ _id: DOC_ID, _type: "homePage", featured: [] });
-  console.log(`${DOC_ID} creado, sin destacados. Cargalos desde el Studio → Inicio.`);
+  await client.createIfNotExists({
+    _id: DOC_ID,
+    _type: "homePage",
+    featured: [],
+    live: liveBlock(await uploadLiveImage()),
+  });
+  console.log(`${DOC_ID} creado con el bloque de vivo. Cargá los destacados en Studio → Inicio.`);
 }
 
 main().catch((err) => {

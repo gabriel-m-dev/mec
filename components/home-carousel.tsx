@@ -11,6 +11,10 @@ export type CarouselSlide = {
   image: string;
   imageAlt: string;
   href: string;
+  /** Texto del botón. Por defecto "Ir". */
+  cta?: string;
+  /** El enlace sale del sitio: se abre en una pestaña nueva. */
+  external?: boolean;
 };
 
 /** Cada cuánto avanza solo. El reloj se reinicia con cada cambio manual. */
@@ -141,9 +145,15 @@ export function HomeCarousel({ slides }: { slides: CarouselSlide[] }) {
                     // Fuera de la diapositiva visible el enlace no debe recibir
                     // foco: se llega tabulando a algo que no se ve.
                     tabIndex={isActive ? undefined : -1}
+                    // `noopener` no es opcional en un enlace externo con
+                    // target: sin él la página destino puede manipular la
+                    // nuestra a través de `window.opener`.
+                    {...(slide.external
+                      ? { target: "_blank", rel: "noopener noreferrer" }
+                      : {})}
                     className="mt-4 inline-flex items-center gap-2 rounded-full bg-gold-400 px-5 py-2.5 text-xs font-semibold text-ink-950 transition hover:-translate-y-0.5 hover:bg-gold-300 sm:mt-5 sm:text-sm"
                   >
-                    Ir <span aria-hidden="true">→</span>
+                    {slide.cta ?? "Ir"} <span aria-hidden="true">→</span>
                   </Link>
                 </div>
               </div>
