@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 type EventCardProps = {
   day: string;
@@ -6,11 +7,20 @@ type EventCardProps = {
   description: string;
   image: string;
   imageAlt: string;
+  /** Dirección de la galería. Sin fotos cargadas no se pasa y la tarjeta no enlaza. */
+  href?: string;
 };
 
-export function EventCard({ day, title, description, image, imageAlt }: EventCardProps) {
-  return (
-    <article className="group overflow-hidden rounded-[1.75rem] border border-white/10 bg-white/4 shadow-luxe transition hover:-translate-y-1 hover:border-gold-300/25">
+export function EventCard({
+  day,
+  title,
+  description,
+  image,
+  imageAlt,
+  href,
+}: EventCardProps) {
+  const card = (
+    <article className="group h-full overflow-hidden rounded-[1.75rem] border border-white/10 bg-white/4 shadow-luxe transition hover:-translate-y-1 hover:border-gold-300/25">
       <div className="relative aspect-[4/5] w-full overflow-hidden">
         <Image
           src={image}
@@ -38,7 +48,23 @@ export function EventCard({ day, title, description, image, imageAlt }: EventCar
 
       <div className="p-6">
         <p className="text-sm leading-7 text-slate-300">{description}</p>
+        {href && (
+          <p className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-gold-300 transition group-hover:text-gold-200">
+            Reviví el último <span aria-hidden="true">→</span>
+          </p>
+        )}
       </div>
     </article>
+  );
+
+  // Un solo anchor envolviendo la tarjeta entera. Adentro no hay ningún otro
+  // enlace — anidar <a> es HTML inválido y el navegador reacomoda el DOM en
+  // silencio, que es justo lo que nos pasó con los highlights del inicio.
+  if (!href) return card;
+
+  return (
+    <Link href={href} className="block h-full rounded-[1.75rem] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-300">
+      {card}
+    </Link>
   );
 }

@@ -608,6 +608,11 @@ async function main() {
       _type: "event",
       day: event.day,
       title: event.title,
+      // Mismo slug que deriva el `_id` de arriba. Si el seed no lo escribiera,
+      // el guard vería los slugs migrados como deriva y abortaría de gusto.
+      // El `_type` va sí o sí: es lo que escribe el Studio y lo que escribió la
+      // migración, y sin él los dos lados no coinciden.
+      slug: { _type: "slug", current: slugify(event.title) },
       description: event.description,
       image,
       imageAlt: event.imageAlt,
