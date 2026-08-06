@@ -26,6 +26,36 @@ export const siteSettings = defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
+      name: "phone",
+      title: "Teléfono",
+      type: "string",
+      description:
+        "Se muestra en la página de contacto. Escribilo como querés que se lea, por ejemplo (011) 4444-5555. Si lo dejás vacío, no aparece.",
+      // A diferencia del de WhatsApp, este NO se normaliza a dígitos pelados:
+      // se muestra tal cual se escribe, porque es un número para leer y
+      // marcar. Solo se controla que tenga suficientes dígitos para ser uno.
+      validation: (Rule) =>
+        Rule.custom((value?: string) => {
+          if (!value) return true;
+
+          const digits = value.replace(/\D/g, "");
+
+          return (
+            (digits.length >= 6 && digits.length <= 15) ||
+            "Tiene que ser un teléfono: entre 6 y 15 dígitos. Podés usar espacios, guiones y paréntesis."
+          );
+        }),
+    }),
+    defineField({
+      name: "email",
+      title: "Correo electrónico",
+      type: "string",
+      description:
+        "Se muestra en la página de contacto y es la dirección del botón «Escribir al equipo». Si lo dejás vacío, ese botón no aparece.",
+      validation: (Rule) =>
+        Rule.email().error("Escribí una dirección de correo válida."),
+    }),
+    defineField({
       name: "whatsapp",
       title: "WhatsApp",
       type: "object",
