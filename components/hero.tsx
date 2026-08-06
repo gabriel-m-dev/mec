@@ -65,7 +65,7 @@ export function Hero() {
           sizes="100vw"
         />
         <Image
-          src="/images/igle-background-desktop.png"
+          src="/images/new_hero_desktop.png"
           alt=""
           fill
           priority
