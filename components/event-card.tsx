@@ -3,6 +3,7 @@ import Link from "next/link";
 
 type EventCardProps = {
   day: string;
+  time?: string;
   title: string;
   description: string;
   image: string;
@@ -13,6 +14,7 @@ type EventCardProps = {
 
 export function EventCard({
   day,
+  time,
   title,
   description,
   image,
@@ -34,7 +36,9 @@ export function EventCard({
 
         <div className="absolute inset-x-0 top-0 p-6">
           <p className="inline-flex rounded-full border border-gold-300/35 bg-ink-950/50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.28em] text-gold-200 backdrop-blur-sm">
-            {day}
+            {/* El horario es opcional: sin cargar, la píldora queda igual que
+                antes en vez de mostrar un separador colgado. */}
+            {time ? `${day} · ${time}` : day}
           </p>
         </div>
 

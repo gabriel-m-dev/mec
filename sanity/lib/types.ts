@@ -92,6 +92,8 @@ export interface Event {
   _id: string;
   _type: "event";
   day: string;
+  /** Texto libre: "20:00", "20 hs", "de 19 a 22 hs". Opcional. */
+  time?: string;
   title: string;
   description: string;
   image: SanityImageSource;

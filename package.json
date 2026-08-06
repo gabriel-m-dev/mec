@@ -15,6 +15,7 @@
     "migrate:page-sections": "tsx scripts/migrate-page-sections.ts",
     "migrate:about": "tsx scripts/migrate-about-page.ts",
     "migrate:event-slugs": "tsx scripts/migrate-event-slugs.ts",
+    "migrate:event-times": "tsx scripts/migrate-event-times.ts",
     "repair:array-keys": "tsx scripts/repair-array-keys.ts"
   },
   "dependencies": {

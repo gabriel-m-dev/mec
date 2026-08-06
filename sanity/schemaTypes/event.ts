@@ -13,6 +13,16 @@ export const event = defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
+      name: "time",
+      title: "Horario",
+      type: "string",
+      // Texto libre, igual que `day`, y por el mismo motivo: una iglesia
+      // necesita poder escribir "20:00", "20 hs" o "de 19 a 22" sin pelearse
+      // con un formato. Un campo de hora estricto obligaría a inventar una
+      // convención que después no entra en los casos reales.
+      description: 'Opcional. Por ejemplo "20:00", "20 hs" o "de 19 a 22 hs".',
+    }),
+    defineField({
       name: "title",
       title: "Título",
       type: "string",
@@ -78,6 +88,11 @@ export const event = defineType({
     }),
   ],
   preview: {
-    select: { title: "title", subtitle: "day", media: "image" },
+    select: { title: "title", day: "day", time: "time", media: "image" },
+    prepare: ({ title, day, time, media }) => ({
+      title,
+      subtitle: [day, time].filter(Boolean).join(" · "),
+      media,
+    }),
   },
 });
