@@ -1,4 +1,9 @@
-﻿import type { Metadata, Viewport } from "next";
+﻿// Los estilos globales van acá, en el layout RAÍZ, y no en el de (site).
+// Estaban en (site) y por eso `app/not-found.tsx` -que se dibuja cuando no
+// coincide ninguna ruta, o sea fuera de (site)- salía sin una sola línea de
+// CSS: fondo blanco y enlaces azules.
+import "./globals.css";
+import type { Metadata, Viewport } from "next";
 import { Inter, Cormorant_Garamond } from "next/font/google";
 import { getSiteUrl } from "@/lib/site-url";
 import type { ReactNode } from "react";
