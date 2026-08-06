@@ -2,9 +2,9 @@ import { Hero } from "@/components/hero";
 import { HomeCarousel, type CarouselSlide } from "@/components/home-carousel";
 import { sanityClient } from "@/sanity/lib/client";
 import { urlForImage } from "@/sanity/lib/image";
-import { homeFeaturedQuery } from "@/sanity/lib/queries";
+import { homeFeaturedQuery, homeLiveQuery } from "@/sanity/lib/queries";
 import { SANITY_TAGS } from "@/sanity/lib/tags";
-import type { FeaturedItem } from "@/sanity/lib/types";
+import type { FeaturedItem, LiveStream } from "@/sanity/lib/types";
 
 /**
  * A dónde lleva el botón de cada destacado.
@@ -22,6 +22,15 @@ function hrefFor(item: FeaturedItem): string {
 }
 
 export default async function HomePage() {
+  const live = await sanityClient.fetch<LiveStream | null>(
+    homeLiveQuery,
+    {},
+    {
+      cache: "force-cache",
+      next: { tags: [SANITY_TAGS.homePage] },
+    },
+  );
+
   const featured = await sanityClient.fetch<FeaturedItem[] | null>(
     homeFeaturedQuery,
     {},
@@ -41,7 +50,24 @@ export default async function HomePage() {
   //   separa un destacado roto de un build caído.
   // - `slice(0, 5)` porque el máximo del schema solo se aplica en el Studio:
   //   la API de mutación no valida contra el schema.
-  const slides: CarouselSlide[] = (featured ?? [])
+  // La transmisión en vivo va SIEMPRE primera: es lo único con hora, y llegar
+  // tarde a un culto en vivo no se arregla más adelante.
+  const liveSlide: CarouselSlide[] = live
+    ? [
+        {
+          id: "live",
+          title: live.title,
+          description: live.description,
+          image: urlForImage(live.image).width(1600).url(),
+          imageAlt: live.imageAlt,
+          href: live.url,
+          cta: live.cta ?? "Ver en vivo",
+          external: true,
+        },
+      ]
+    : [];
+
+  const featuredSlides: CarouselSlide[] = (featured ?? [])
     .filter((item): item is FeaturedItem => Boolean(item))
     .slice(0, 5)
     .map((item) => ({
@@ -56,7 +82,7 @@ export default async function HomePage() {
   return (
     <main className="relative overflow-hidden bg-ink-950">
       <Hero />
-      <HomeCarousel slides={slides} />
+      <HomeCarousel slides={[...liveSlide, ...featuredSlides]} />
     </main>
   );
 }

@@ -98,6 +98,16 @@ export interface FeaturedItem {
   hasGallery?: boolean;
 }
 
+/** La diapositiva fija de transmisión en vivo, siempre primera en el carrusel. */
+export interface LiveStream {
+  title: string;
+  description: string;
+  url: string;
+  cta?: string;
+  image: SanityImageSource;
+  imageAlt: string;
+}
+
 export interface GalleryImage {
   _key: string;
   asset: SanityImageSource;

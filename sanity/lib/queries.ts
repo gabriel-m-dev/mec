@@ -63,6 +63,9 @@ export const eventBySlugQuery = /* groq */ `*[_type == "event" && slug.current =
  * Y nada de comentarios adentro del template: GROQ no los acepta, y un
  * backtick ahí adentro cierra el literal de TypeScript.
  */
+/** El bloque fijo de transmisión en vivo de la portada. */
+export const homeLiveQuery = /* groq */ `*[_type == "homePage"][0].live`;
+
 export const homeFeaturedQuery = /* groq */ `*[_type == "homePage"][0].featured[]->{
   _id,
   _type,
