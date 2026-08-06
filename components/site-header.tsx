@@ -10,8 +10,12 @@ export function SiteHeader() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname();
 
+  // Negro neutro y no `ink-950`: ese color es #02050c, con el canal azul seis
+  // veces el rojo, y a 75% de opacidad teñía de azul todo lo que pasaba por
+  // debajo. El `backdrop-blur` es lo que sostiene la legibilidad, así que el
+  // fondo puede ser mucho más transparente sin que el texto sufra.
   return (
-    <header className="sticky top-0 z-50 border-b border-white/8 bg-ink-950/75 backdrop-blur-xl">
+    <header className="sticky top-0 z-50 bg-black/25 backdrop-blur-xl">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
         <Link href="/" className="flex items-center gap-3">
           <span className="grid h-11 w-11 place-items-center rounded-full border border-gold-300/60 bg-white/5 text-sm font-semibold text-gold-100 shadow-glow">
@@ -100,7 +104,9 @@ export function SiteHeader() {
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.25, ease: "easeOut" }}
-            className="overflow-hidden border-t border-white/8 bg-ink-950/95 backdrop-blur-xl xl:hidden"
+            // El panel abierto sí necesita ser opaco: tapa contenido y hay que
+            // poder leerlo. Solo se neutraliza el azul, la opacidad se mantiene.
+            className="overflow-hidden border-t border-white/8 bg-black/95 backdrop-blur-xl xl:hidden"
           >
             <nav className="mx-auto flex max-w-7xl flex-col gap-1 px-4 py-4 sm:px-6 lg:px-8">
               {navItems.map((item) => (

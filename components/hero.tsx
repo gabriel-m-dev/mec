@@ -22,7 +22,7 @@ export function Hero() {
     <section id="inicio" className="relative overflow-hidden border-b border-white/6">
       <div className="absolute inset-0">
         <Image
-          src="/images/hero_mobile.png"
+          src="/images/new_hero_mobile.png"
           alt=""
           fill
           priority
