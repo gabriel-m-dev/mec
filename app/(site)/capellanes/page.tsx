@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ChaplainCard } from "@/components/chaplain-card";
-import { ChaplaincyActivityCard } from "@/components/chaplaincy-activity-card";
+import { ChaplaincyActivityRow } from "@/components/chaplaincy-activity-row";
 import { PageHeader } from "@/components/page-header";
-import { SectionHeading } from "@/components/section-heading";
 import { urlForBanner, urlForImage } from "@/sanity/lib/image";
 import { sanityClient } from "@/sanity/lib/client";
 import {
@@ -13,7 +12,6 @@ import {
 } from "@/sanity/lib/queries";
 import { SANITY_TAGS } from "@/sanity/lib/tags";
 import {
-  PAGE_SECTION_KEYS,
   type Chaplain,
   type ChaplaincyActivity,
   type PageBanner,
@@ -22,6 +20,43 @@ import {
 export const metadata: Metadata = {
   title: "Capellanía",
 };
+
+/**
+ * Los títulos de sección van escritos acá y no en el Studio a propósito: son
+ * la ESTRUCTURA de la página, no su contenido. Si fueran editables, un título
+ * cambiado por error dejaría la página sin sentido y nadie se daría cuenta.
+ *
+ * Editable queda lo que de verdad cambia con el tiempo: el párrafo que explica
+ * qué es la capellanía, las actividades y los capellanes.
+ *
+ * La ruta sigue siendo `/capellanes` aunque la sección se llame "Capellanía":
+ * cambiarla obligaría a migrar el `pageBanner` y a redirigir enlaces ya
+ * compartidos, sin que el visitante gane nada.
+ */
+
+/**
+ * Las situaciones salen del párrafo que la página ya venía mostrando —duelo,
+ * crisis familiar, enfermedad, y cuando la vida pesa demasiado—. No es
+ * contenido inventado: es el mismo, ordenado para que se lea de un vistazo.
+ */
+const SITUACIONES = [
+  {
+    title: "Duelo y pérdida",
+    copy: "Acompañamiento en los primeros días y también en el tiempo largo que viene después.",
+  },
+  {
+    title: "Crisis familiar",
+    copy: "Un espacio de escucha para conflictos de pareja, de familia y de crianza.",
+  },
+  {
+    title: "Enfermedad e internación",
+    copy: "Visita, oración y presencia concreta en el hospital y en casa.",
+  },
+  {
+    title: "Momentos de agobio",
+    copy: "Cuando la vida se siente demasiado pesada para llevarla solo, aunque no haya una crisis.",
+  },
+];
 
 export default async function CapellaniaPage() {
   const [banner, activities, chaplains] = await Promise.all([
@@ -40,9 +75,6 @@ export default async function CapellaniaPage() {
     }),
   ]);
 
-  const mainSection = banner?.sections?.find(
-    (section) => section.key === PAGE_SECTION_KEYS.MAIN,
-  );
 
   return (
     <main className="relative overflow-hidden bg-ink-950">
@@ -58,50 +90,89 @@ export default async function CapellaniaPage() {
 
       <section className="bg-white/[0.03] py-24 sm:py-28">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          {mainSection && (
-            <SectionHeading
-              eyebrow={mainSection.eyebrow ?? ""}
-              title={mainSection.title}
-              copy={mainSection.copy}
-            />
-          )}
+          <p className="text-xs font-semibold uppercase tracking-[0.36em] text-gold-300/90">
+            Capellanía
+          </p>
+          <h2 className="mt-4 font-serif text-4xl tracking-tight text-white sm:text-5xl">
+            Qué es la capellanía
+          </h2>
 
           {/* Este párrafo estaba escrito a mano en el código: explicaba de qué
               se trata la capellanía pero la iglesia no podía tocarlo. Ahora
               sale del Studio, y sin cargar no se dibuja. */}
           {banner?.chaplaincyIntro && (
-            <p className="mt-8 max-w-3xl whitespace-pre-line text-lg leading-8 text-slate-300">
+            <p className="mt-6 max-w-3xl whitespace-pre-line text-lg leading-8 text-slate-300">
               {banner.chaplaincyIntro}
             </p>
           )}
+        </div>
+      </section>
 
-          {activities.length > 0 && (
-            <div className="mt-16">
-              <h2 className="font-serif text-3xl tracking-tight text-white sm:text-4xl">
-                Qué hacemos
-              </h2>
-              <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-                {activities.map((activity) => (
-                  <ChaplaincyActivityCard
-                    key={activity._id}
-                    name={activity.name}
-                    day={activity.day}
-                    time={activity.time}
-                    description={activity.description}
-                    image={urlForImage(activity.image).url()}
-                    imageAlt={activity.imageAlt}
-                  />
-                ))}
+      <section className="py-20 sm:py-24">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <h2 className="font-serif text-3xl tracking-tight text-white sm:text-4xl">
+            Para qué sirve
+          </h2>
+          <p className="mt-4 max-w-2xl text-base leading-8 text-slate-300">
+            No hace falta atravesar una emergencia para pedir acompañamiento.
+            Estos son los momentos en los que solemos estar.
+          </p>
+
+          <div className="mt-10 grid gap-6 sm:grid-cols-2">
+            {SITUACIONES.map((situacion) => (
+              <div
+                key={situacion.title}
+                className="rounded-[1.5rem] border border-white/10 bg-white/4 p-6 shadow-luxe"
+              >
+                <div className="h-1 w-10 rounded-full bg-gradient-to-r from-gold-300 to-gold-500" />
+                <h3 className="mt-4 font-serif text-2xl text-white">
+                  {situacion.title}
+                </h3>
+                <p className="mt-2 text-sm leading-7 text-slate-300">
+                  {situacion.copy}
+                </p>
               </div>
-            </div>
-          )}
+            ))}
+          </div>
+        </div>
+      </section>
 
+      {activities.length > 0 && (
+        <section className="bg-white/[0.03] py-20 sm:py-24">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <h2 className="font-serif text-3xl tracking-tight text-white sm:text-4xl">
+              Qué hacemos
+            </h2>
+            <p className="mt-4 max-w-2xl text-base leading-8 text-slate-300">
+              Dónde está presente la capellanía y con qué frecuencia.
+            </p>
+
+            <div className="mt-14 space-y-16 lg:space-y-8">
+              {activities.map((activity, index) => (
+                <ChaplaincyActivityRow
+                  key={activity._id}
+                  name={activity.name}
+                  day={activity.day}
+                  time={activity.time}
+                  description={activity.description}
+                  image={urlForImage(activity.image).url()}
+                  imageAlt={activity.imageAlt}
+                  reversed={index % 2 === 1}
+                />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      <section className="py-20 sm:py-24">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           {chaplains.length > 0 && (
-            <div className="mt-20">
+            <>
               <h2 className="font-serif text-3xl tracking-tight text-white sm:text-4xl">
                 Quiénes acompañan
               </h2>
-              <div className="mt-8 grid gap-5 lg:grid-cols-3">
+              <div className="mt-10 grid gap-5 lg:grid-cols-3">
                 {chaplains.map((chaplain) => (
                   <ChaplainCard
                     key={chaplain._id}
@@ -113,7 +184,7 @@ export default async function CapellaniaPage() {
                   />
                 ))}
               </div>
-            </div>
+            </>
           )}
 
           <div className="mt-20 rounded-[2rem] border border-white/10 bg-ink-900/60 p-8 text-center shadow-luxe sm:p-12">
