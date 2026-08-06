@@ -1,39 +1,52 @@
 import type { StructureResolver } from "sanity/structure";
 
-// El título del schema es singular porque nombra un documento ("Nuevo Ministerio").
-// La entrada del menú apunta a una lista, así que va en plural.
-const COLLECTIONS = [
-  { type: "ministry", title: "Ministerios" },
-  { type: "chaplain", title: "Capellanes" },
-  { type: "worshipService", title: "Cultos" },
-  { type: "event", title: "Eventos" },
-  { type: "newsItem", title: "Noticias" },
-] as const;
-
 /**
- * Las 7 páginas del sitio, en el orden del menú de navegación.
+ * El menú del Studio espeja el menú del sitio: una entrada por sección, en el
+ * mismo orden que `navItems` en `lib/content.ts`.
  *
- * Van una por una y no como `S.documentTypeList("pageBanner")` porque el
- * conjunto es CERRADO: hay exactamente una página por ruta y no existe una
- * octava. Una lista de tipo trae el botón "Crear nuevo documento", que acá solo
- * puede producir documentos inservibles — y como `pageBanner` tiene la acción
- * `delete` sacada en `sanity.config.ts`, después no había forma de borrarlos.
+ * La alternativa —agrupar por tipo de dato, "Páginas" por un lado y las
+ * colecciones por otro— parte cada sección en dos ramas del menú y repite los
+ * mismos cinco nombres en las dos. El cliente tendría que saber que el título
+ * de /ministerios se edita en un lugar y los ministerios en otro, y no hay nada
+ * en la interfaz que se lo sugiera.
  *
- * De paso, entrar por el nombre de la página ("Cultos") en vez de por el título
- * del banner ("Un mismo mensaje, presencial y en vivo") dice mucho mejor qué se
- * está editando.
- *
- * `id` tiene que coincidir con el `_id` del documento en el dataset, que el
+ * `pageId` tiene que coincidir con el `_id` del documento en el dataset, que el
  * seed escribe como `pageBanner-<slug de la ruta>`.
  */
-const PAGES = [
-  { id: "pageBanner-quienes-somos", title: "Quiénes somos" },
-  { id: "pageBanner-ministerios", title: "Ministerios" },
-  { id: "pageBanner-capellanes", title: "Capellanes" },
-  { id: "pageBanner-cultos", title: "Cultos" },
-  { id: "pageBanner-eventos", title: "Eventos" },
-  { id: "pageBanner-noticias", title: "Noticias" },
-  { id: "pageBanner-contacto", title: "Contacto" },
+const SECTIONS = [
+  {
+    title: "Quiénes somos",
+    pageId: "pageBanner-quienes-somos",
+  },
+  {
+    title: "Ministerios",
+    pageId: "pageBanner-ministerios",
+    collection: { type: "ministry", title: "Lista de ministerios" },
+  },
+  {
+    title: "Capellanes",
+    pageId: "pageBanner-capellanes",
+    collection: { type: "chaplain", title: "Lista de capellanes" },
+  },
+  {
+    title: "Cultos",
+    pageId: "pageBanner-cultos",
+    collection: { type: "worshipService", title: "Lista de cultos" },
+  },
+  {
+    title: "Eventos",
+    pageId: "pageBanner-eventos",
+    collection: { type: "event", title: "Lista de eventos" },
+  },
+  {
+    title: "Noticias",
+    pageId: "pageBanner-noticias",
+    collection: { type: "newsItem", title: "Lista de noticias" },
+  },
+  {
+    title: "Contacto",
+    pageId: "pageBanner-contacto",
+  },
 ] as const;
 
 export const structure: StructureResolver = (S) =>
@@ -55,31 +68,40 @@ export const structure: StructureResolver = (S) =>
         .title("Salón / Sede")
         .child(S.document().schemaType("venue").documentId("venue")),
       S.divider(),
-      S.listItem()
-        .id("pageBanner")
-        .title("Páginas")
-        .child(
-          S.list()
-            .title("Páginas")
-            .items(
-              PAGES.map(({ id, title }) =>
+      ...SECTIONS.map((section) => {
+        const pageDocument = S.document()
+          .schemaType("pageBanner")
+          .documentId(section.pageId)
+          .title(section.title);
+
+        // Las secciones sin colección —Quiénes somos y Contacto— entran derecho
+        // al documento: un submenú de un solo ítem es un click de más que no
+        // informa nada.
+        if (!("collection" in section)) {
+          return S.listItem()
+            .id(section.pageId)
+            .title(section.title)
+            .child(pageDocument);
+        }
+
+        const { type, title } = section.collection;
+
+        return S.listItem()
+          .id(section.pageId)
+          .title(section.title)
+          .child(
+            S.list()
+              .title(section.title)
+              .items([
                 S.listItem()
-                  .id(id)
+                  .id("page")
+                  .title("Textos de la página")
+                  .child(pageDocument),
+                S.listItem()
+                  .id(type)
                   .title(title)
-                  .child(
-                    S.document()
-                      .schemaType("pageBanner")
-                      .documentId(id)
-                      .title(title),
-                  ),
-              ),
-            ),
-        ),
-      S.divider(),
-      ...COLLECTIONS.map(({ type, title }) =>
-        S.listItem()
-          .id(type)
-          .title(title)
-          .child(S.documentTypeList(type).title(title)),
-      ),
+                  .child(S.documentTypeList(type).title(title)),
+              ]),
+          );
+      }),
     ]);
