@@ -54,7 +54,7 @@ export default async function CultosPage() {
   const faqs = banner?.faqs ?? [];
 
   return (
-    <main className="relative overflow-hidden">
+    <main className="relative overflow-hidden bg-ink-950">
       {banner && (
         <PageHeader
           image={banner.image ? urlForImage(banner.image).url() : undefined}
