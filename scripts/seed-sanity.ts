@@ -193,6 +193,7 @@ const worshipServices = [
 const events = [
   {
     day: "Viernes",
+    time: "20:00",
     title: "Noche de adoración",
     description: "Un tiempo de ministración profunda y oración congregacional.",
     image: "/images/events/noche-adoracion.jpg",
@@ -200,6 +201,7 @@ const events = [
   },
   {
     day: "Domingo",
+    time: "11:00",
     title: "Encuentro de familias",
     description: "Herramientas prácticas para fortalecer el hogar y la fe.",
     image: "/images/events/encuentro-familias.jpg",
@@ -207,6 +209,7 @@ const events = [
   },
   {
     day: "Sábado",
+    time: "09:30",
     title: "Conferencia de liderazgo",
     description: "Formación para servidores, líderes y nuevos equipos.",
     image: "/images/events/conferencia-liderazgo.jpg",
@@ -214,6 +217,7 @@ const events = [
   },
   {
     day: "Jueves",
+    time: "22:00",
     title: "Vigilia de oración",
     description: "Una noche extendida de intercesión, quietud y búsqueda de Dios en comunidad.",
     image: "/images/events/vigilia-oracion.jpg",
@@ -221,6 +225,7 @@ const events = [
   },
   {
     day: "Martes",
+    time: "19:00",
     title: "Encuentro de mentoría",
     description: "Espacios uno a uno para acompañar procesos de discipulado y crecimiento personal.",
     image: "/images/events/encuentro-mentoria.jpg",
@@ -607,6 +612,7 @@ async function main() {
       _id: id,
       _type: "event",
       day: event.day,
+      time: event.time,
       title: event.title,
       // Mismo slug que deriva el `_id` de arriba. Si el seed no lo escribiera,
       // el guard vería los slugs migrados como deriva y abortaría de gusto.

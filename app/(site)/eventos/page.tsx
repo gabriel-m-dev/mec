@@ -64,6 +64,7 @@ export default async function EventosPage() {
               <EventCard
                 key={event._id}
                 day={event.day}
+                time={event.time}
                 title={event.title}
                 description={event.description}
                 image={urlForImage(event.image).url()}

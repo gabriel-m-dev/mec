@@ -74,7 +74,7 @@ export default async function EventoPage({ params }: { params: Promise<Params> }
           </Link>
 
           <p className="mt-8 inline-flex rounded-full border border-gold-300/35 bg-ink-900/50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.28em] text-gold-200">
-            {event.day}
+            {event.time ? `${event.day} · ${event.time}` : event.day}
           </p>
 
           <h1 className="mt-5 max-w-3xl font-serif text-4xl tracking-tight text-white sm:text-5xl">
