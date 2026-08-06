@@ -63,7 +63,7 @@ export default async function EventoPage({ params }: { params: Promise<Params> }
   }
 
   return (
-    <main className="relative overflow-hidden bg-ink-950">
+    <main className="relative overflow-hidden">
       <section className="py-24 sm:py-28">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <Link

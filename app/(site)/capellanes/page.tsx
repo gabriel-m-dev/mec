@@ -31,7 +31,7 @@ export default async function CapellanesPage() {
   );
 
   return (
-    <main className="relative overflow-hidden bg-ink-950">
+    <main className="relative overflow-hidden">
       {banner && (
         <PageHeader
           image={banner.image ? urlForImage(banner.image).url() : undefined}
