@@ -2,7 +2,9 @@
   { label: "Inicio", href: "/" },
   { label: "Quiénes somos", href: "/quienes-somos" },
   { label: "Ministerios", href: "/ministerios" },
-  { label: "Capellanes", href: "/capellanes" },
+  // El nombre visible es "Capellanía"; la ruta sigue siendo `/capellanes`
+  // para no romper los enlaces ya compartidos.
+  { label: "Capellanía", href: "/capellanes" },
   { label: "Cultos", href: "/cultos" },
   { label: "Eventos", href: "/eventos" },
   { label: "Noticias", href: "/noticias" },
@@ -24,8 +26,8 @@ export const featureHighlights = [
   },
   {
     icon: "shield",
-    label: "Capellanes",
-    cta: "Conócelos",
+    label: "Capellanía",
+    cta: "Conócela",
     href: "/capellanes",
   },
   {
