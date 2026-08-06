@@ -24,8 +24,12 @@ export const metadata: Metadata = {
     default: "MEC | Ministerio Evangélico Cristiano",
     template: "%s | MEC",
   },
+  // Este texto lo lee gente de la iglesia, no un cliente de diseño: sale en
+  // el resultado de Google y en la vista previa de WhatsApp. Antes decía
+  // "landing premium" y "experiencia digital dark-luxury", que era jerga
+  // nuestra filtrada a una página pública.
   description:
-    "Landing premium para MEC con culto presencial, transmisiones online, ministerios, capellanía, eventos y noticias.",
+    "Ministerio Evangélico Cristiano: cultos presenciales y transmisiones online, ministerios, capellanía, eventos y noticias de nuestra comunidad.",
   keywords: [
     "MEC",
     "iglesia",
@@ -37,9 +41,21 @@ export const metadata: Metadata = {
   openGraph: {
     title: "MEC | Ministerio Evangélico Cristiano",
     description:
-      "Una experiencia digital dark-luxury para presentar la comunidad, cultos, ministerios y actividades de MEC.",
+      "Conocé nuestra comunidad: cultos, ministerios, capellanía, eventos y noticias del Ministerio Evangélico Cristiano.",
+    siteName: "MEC",
+    url: "/",
     type: "website",
     locale: "es_AR",
+  },
+  // `summary_large_image` y no `summary`: con la tarjeta chica la imagen sale
+  // como un cuadradito al costado y recorta el logo. La imagen la aporta
+  // `app/opengraph-image.tsx`, que Next enchufa solo en og:image y en
+  // twitter:image.
+  twitter: {
+    card: "summary_large_image",
+    title: "MEC | Ministerio Evangélico Cristiano",
+    description:
+      "Conocé nuestra comunidad: cultos, ministerios, capellanía, eventos y noticias del Ministerio Evangélico Cristiano.",
   },
   robots: {
     index: true,
