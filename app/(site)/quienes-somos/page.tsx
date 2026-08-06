@@ -8,7 +8,7 @@ import {
   UsersIcon,
 } from "@/components/feature-icons";
 import { sanityClient } from "@/sanity/lib/client";
-import { urlForImage } from "@/sanity/lib/image";
+import { urlForBanner, urlForImage } from "@/sanity/lib/image";
 import { pageBannerByRouteQuery } from "@/sanity/lib/queries";
 import { SANITY_TAGS } from "@/sanity/lib/tags";
 import { PAGE_SECTION_KEYS, type PageBanner } from "@/sanity/lib/types";
@@ -46,7 +46,7 @@ export default async function QuienesSomosPage() {
     <main className="relative overflow-hidden bg-ink-950">
       {banner && (
         <PageHeader
-          image={banner.image ? urlForImage(banner.image).url() : undefined}
+          image={banner.image ? urlForBanner(banner.image).url() : undefined}
           imageAlt={banner.imageAlt ?? ""}
           eyebrow={banner.eyebrow ?? ""}
           title={banner.title}

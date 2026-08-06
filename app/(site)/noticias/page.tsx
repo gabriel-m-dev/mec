@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { NewsCard } from "@/components/news-card";
 import { PageHeader } from "@/components/page-header";
 import { SectionHeading } from "@/components/section-heading";
-import { urlForImage } from "@/sanity/lib/image";
+import { urlForBanner, urlForImage } from "@/sanity/lib/image";
 import { sanityClient } from "@/sanity/lib/client";
 import { newsItemsQuery, pageBannerByRouteQuery } from "@/sanity/lib/queries";
 import { SANITY_TAGS } from "@/sanity/lib/tags";
@@ -33,7 +33,7 @@ export default async function NoticiasPage() {
     <main className="relative overflow-hidden bg-ink-950">
       {banner && (
         <PageHeader
-          image={banner.image ? urlForImage(banner.image).url() : undefined}
+          image={banner.image ? urlForBanner(banner.image).url() : undefined}
           imageAlt={banner.imageAlt ?? ""}
           eyebrow={banner.eyebrow ?? ""}
           title={banner.title}
