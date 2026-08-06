@@ -14,7 +14,10 @@ type PageHeaderProps = {
 
 export function PageHeader({ image, imageAlt, eyebrow, title, description }: PageHeaderProps) {
   return (
-    <section className="relative isolate h-72 w-full overflow-hidden border-b border-white/10 bg-ink-950 sm:h-80 lg:h-96">
+    // Más alta que antes (era 288/320/384) para que entre más foto: en
+    // /eventos se perdía el 56% de la imagen. En móvil se sube menos, porque
+    // ahí la banda compite con la pantalla entera.
+    <section className="relative isolate h-80 w-full overflow-hidden border-b border-white/10 bg-ink-950 sm:h-[26rem] lg:h-[35rem]">
       {image && (
         <Image
           src={image}
