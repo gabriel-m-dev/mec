@@ -13,8 +13,8 @@ export type CarouselSlide = {
   href: string;
 };
 
-/** Cada cuánto avanza solo. */
-const AUTOPLAY_MS = 4000;
+/** Cada cuánto avanza solo. El reloj se reinicia con cada cambio manual. */
+const AUTOPLAY_MS = 5000;
 /** Recorrido mínimo del dedo para contar como gesto, en px. */
 const SWIPE_THRESHOLD = 40;
 
@@ -51,14 +51,18 @@ export function HomeCarousel({ slides }: { slides: CarouselSlide[] }) {
     [slides.length],
   );
 
-  // Avance automático. Se apaga con el puntero encima —nadie quiere que se le
-  // mueva lo que está leyendo— y con "reducir movimiento" activado, que es
-  // exactamente lo que esa preferencia pide evitar.
+  // Avance automático. Se apaga con el puntero encima o el foco adentro:
+  // nadie quiere que se le mueva lo que está leyendo.
+  //
+  // `active` está en las dependencias A PROPÓSITO: hace que el intervalo se
+  // tire y se rearme en cada cambio, así el reloj arranca de cero. Sin eso,
+  // cambiar de diapositiva a los 3 segundos dejaba solo 2 antes del salto
+  // automático.
   useEffect(() => {
-    if (slides.length < 2 || paused || reduceMotion) return;
-    const timer = window.setInterval(() => go(1), AUTOPLAY_MS);
-    return () => window.clearInterval(timer);
-  }, [slides.length, paused, reduceMotion, go]);
+    if (slides.length < 2 || paused) return;
+    const timer = window.setTimeout(() => go(1), AUTOPLAY_MS);
+    return () => window.clearTimeout(timer);
+  }, [slides.length, paused, active, go]);
 
   function onTouchStart(event: React.TouchEvent) {
     touchStartX.current = event.touches[0]?.clientX ?? null;
@@ -85,7 +89,9 @@ export function HomeCarousel({ slides }: { slides: CarouselSlide[] }) {
     <section
       aria-roledescription="carrusel"
       aria-label="Destacados"
-      className="relative"
+      // Aire contra el hero: sin esto el carrusel arranca pegado al borde y
+      // los dos bloques se leen como uno solo.
+      className="relative mt-20 sm:mt-28"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
       onFocusCapture={() => setPaused(true)}
@@ -102,9 +108,13 @@ export function HomeCarousel({ slides }: { slides: CarouselSlide[] }) {
             <div
               key={slide.id}
               aria-hidden={!isActive}
-              className={`absolute inset-0 ${
-                reduceMotion ? "" : "transition-opacity duration-700 ease-out"
-              } ${isActive ? "opacity-100" : "pointer-events-none opacity-0"}`}
+              // El fundido va SIEMPRE, también con "reducir movimiento". Esa
+              // preferencia apunta al desplazamiento, el parallax y el giro —
+              // lo que marea. Un cambio de opacidad no desplaza nada, y
+              // apagarlo solo lograba que las diapositivas saltaran de golpe.
+              className={`absolute inset-0 transition-opacity duration-700 ease-out ${
+                isActive ? "opacity-100" : "pointer-events-none opacity-0"
+              }`}
             >
               <Image
                 src={slide.image}
