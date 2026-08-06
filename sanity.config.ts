@@ -5,7 +5,7 @@ import { schemaTypes } from "./sanity/schemaTypes";
 import { structure } from "./sanity/deskStructure";
 
 // Existe exactamente un documento de cada uno de estos tipos.
-const SINGLETON_TYPES = ["siteSettings", "venue"];
+const SINGLETON_TYPES = ["homePage", "siteSettings", "venue"];
 
 // Conjunto fijo: hay un `pageBanner` por ruta y cada página lo busca por su
 // campo `route`. Un banner de más no se muestra en ninguna parte, y uno de

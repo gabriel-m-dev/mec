@@ -1,5 +1,6 @@
 import { chaplain } from "./chaplain";
 import { event } from "./event";
+import { homePage } from "./homePage";
 import { ministry } from "./ministry";
 import { newsItem } from "./newsItem";
 import { pageBanner } from "./pageBanner";
@@ -8,6 +9,7 @@ import { venue } from "./venue";
 import { worshipService } from "./worshipService";
 
 export const schemaTypes = [
+  homePage,
   siteSettings,
   venue,
   ministry,
