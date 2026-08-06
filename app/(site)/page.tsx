@@ -80,7 +80,7 @@ export default async function HomePage() {
     }));
 
   return (
-    <main className="relative overflow-hidden">
+    <main className="relative overflow-hidden bg-ink-950">
       <Hero />
       <HomeCarousel slides={[...liveSlide, ...featuredSlides]} />
     </main>

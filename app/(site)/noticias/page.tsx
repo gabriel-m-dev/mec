@@ -30,7 +30,7 @@ export default async function NoticiasPage() {
   );
 
   return (
-    <main className="relative overflow-hidden">
+    <main className="relative overflow-hidden bg-ink-950">
       {banner && (
         <PageHeader
           image={banner.image ? urlForImage(banner.image).url() : undefined}

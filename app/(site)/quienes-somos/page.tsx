@@ -43,7 +43,7 @@ export default async function QuienesSomosPage() {
   const values = banner?.values ?? [];
 
   return (
-    <main className="relative overflow-hidden">
+    <main className="relative overflow-hidden bg-ink-950">
       {banner && (
         <PageHeader
           image={banner.image ? urlForImage(banner.image).url() : undefined}
