@@ -19,9 +19,9 @@ export function SiteHeader() {
     <header className="sticky top-0 z-50 bg-black/25 backdrop-blur-xl">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
         <Link href="/" className="flex items-center gap-3">
-          {/* El `alt` no va vacío: el texto de al lado es `hidden sm:block`, así
-              que en móvil esta imagen es lo único dentro del enlace y sin `alt`
-              el enlace a la portada se quedaría sin nombre accesible. */}
+          {/* El `alt` se mantiene aunque ahora haya texto al lado en móvil:
+              si algún día vuelve a ocultarse, esta imagen queda siendo lo
+              único dentro del enlace a la portada. */}
           {/* `width`/`height` son los del archivo: fijan la relación de aspecto
               y evitan el salto de layout. El tamaño real lo pone `h-14 w-auto`,
               y `sizes` es lo que impide que Next sirva la variante de 828px
@@ -35,11 +35,17 @@ export function SiteHeader() {
             priority
             className="h-14 w-auto"
           />
-          <div className="hidden sm:block">
-            <p className="text-sm font-semibold uppercase tracking-[0.28em] text-white">
+          <div>
+            {/* "MEC" solo desde `sm`: en móvil el logo ya es la marca y el
+                ancho disponible entre el logo y el botón del menú son unos
+                200px. Meter dos líneas ahí deja la de abajo ilegible. */}
+            <p className="hidden text-sm font-semibold uppercase tracking-[0.28em] text-white sm:block">
               MEC
             </p>
-            <p className="text-[11px] uppercase tracking-[0.3em] text-gold-300/90">
+            {/* En móvil el nombre entra en dos renglones: con el `tracking` de
+                desktop no entra ni en tres. El `max-w` es lo que fuerza el
+                corte donde queremos en vez de dejarlo empujar al botón. */}
+            <p className="max-w-[10rem] text-[9px] uppercase leading-[1.4] tracking-[0.14em] text-gold-300/90 sm:max-w-none sm:text-[11px] sm:leading-normal sm:tracking-[0.3em]">
               Ministerio Evangélico Cristiano
             </p>
           </div>
