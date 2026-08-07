@@ -89,9 +89,16 @@ export interface ChosenActivity {
   _type: "chosenActivity";
   title: string;
   when: ChosenActivityWhen;
-  date?: string;
+  date: string;
+  /** Texto libre: "de 12 a 17 hs". Opcional. */
+  time?: string;
+  /** Solo si NO es en la iglesia. Opcional. */
+  place?: string;
   image: SanityImageSource;
   imageAlt: string;
+  /** `_type` incluido: es lo que escriben el Studio y las migraciones. */
+  slug?: { _type?: "slug"; current: string };
+  gallery?: GalleryImage[];
 }
 
 export interface Chaplain {

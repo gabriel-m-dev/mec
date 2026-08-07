@@ -21,6 +21,22 @@ export const metadata: Metadata = {
 };
 
 /**
+ * La tarjeta enlaza SOLO si la actividad tiene fotos cargadas. Sin galería la
+ * página sería el título y una fecha —menos de lo que ya muestra la tarjeta— y
+ * la ruta hace 404, así que enlazar llevaría a un callejón sin salida.
+ *
+ * La regla vive acá y no en la tarjeta para que sea la misma que usa
+ * `generateStaticParams`: si divergen, se prerenderiza una página que nadie
+ * enlaza, o se enlaza una que no existe.
+ */
+function galleryHref(activity: ChosenActivity): string | undefined {
+  const slug = activity.slug?.current;
+  const tieneFotos = (activity.gallery?.length ?? 0) > 0;
+
+  return slug && tieneFotos ? `/the-chosen/${slug}` : undefined;
+}
+
+/**
  * The Chosen — el grupo de chicos que organiza la iglesia.
  *
  * Reemplazó a `/ministerios`. El documento del banner conserva su `_id` viejo
@@ -105,8 +121,12 @@ export default async function TheChosenPage() {
                   key={activity._id}
                   title={activity.title}
                   date={activity.date}
+                  time={activity.time}
+                  place={activity.place}
                   image={urlForImage(activity.image).url()}
                   imageAlt={activity.imageAlt}
+                  isPast
+                  href={galleryHref(activity)}
                 />
               ))}
             </div>
@@ -130,8 +150,11 @@ export default async function TheChosenPage() {
                   key={activity._id}
                   title={activity.title}
                   date={activity.date}
+                  time={activity.time}
+                  place={activity.place}
                   image={urlForImage(activity.image).url()}
                   imageAlt={activity.imageAlt}
+                  href={galleryHref(activity)}
                 />
               ))}
             </div>

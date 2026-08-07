@@ -5,30 +5,33 @@ import { notFound } from "next/navigation";
 
 import { sanityClient } from "@/sanity/lib/client";
 import { urlForImage } from "@/sanity/lib/image";
-import { eventBySlugQuery, eventSlugsWithGalleryQuery } from "@/sanity/lib/queries";
+import {
+  chosenActivityBySlugQuery,
+  chosenActivitySlugsWithGalleryQuery,
+} from "@/sanity/lib/queries";
 import { SANITY_TAGS } from "@/sanity/lib/tags";
-import type { Event } from "@/sanity/lib/types";
+import type { ChosenActivity } from "@/sanity/lib/types";
 
 type Params = { slug: string };
 
-async function getEvent(slug: string): Promise<Event | null> {
-  return sanityClient.fetch<Event | null>(
-    eventBySlugQuery,
+async function getActivity(slug: string): Promise<ChosenActivity | null> {
+  return sanityClient.fetch<ChosenActivity | null>(
+    chosenActivityBySlugQuery,
     { slug },
-    { cache: "force-cache", next: { tags: [SANITY_TAGS.event] } },
+    { cache: "force-cache", next: { tags: [SANITY_TAGS.chosenActivity] } },
   );
 }
 
 /**
- * Prerrenderiza en el build una página por evento con fotos, para que estas
- * rutas queden estáticas como las otras 8. Un evento al que le carguen fotos
- * después del último deploy se renderiza a demanda la primera vez.
+ * Prerrenderiza en el build una página por actividad con fotos. Una actividad
+ * a la que le carguen fotos después del último deploy se renderiza a demanda
+ * la primera vez.
  */
 export async function generateStaticParams(): Promise<Params[]> {
   const slugs = await sanityClient.fetch<string[]>(
-    eventSlugsWithGalleryQuery,
+    chosenActivitySlugsWithGalleryQuery,
     {},
-    { cache: "force-cache", next: { tags: [SANITY_TAGS.event] } },
+    { cache: "force-cache", next: { tags: [SANITY_TAGS.chosenActivity] } },
   );
 
   return slugs.map((slug) => ({ slug }));
@@ -40,53 +43,61 @@ export async function generateMetadata({
   params: Promise<Params>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const event = await getEvent(slug);
+  const activity = await getActivity(slug);
 
-  if (!event) return { title: "Evento" };
+  if (!activity) return { title: "Actividad" };
 
   return {
-    title: event.title,
-    description: event.description,
+    title: activity.title,
+    description: `${activity.title} — The Chosen, ${activity.date}.`,
   };
 }
 
-export default async function EventoPage({ params }: { params: Promise<Params> }) {
+export default async function ChosenActivityPage({
+  params,
+}: {
+  params: Promise<Params>;
+}) {
   const { slug } = await params;
-  const event = await getEvent(slug);
+  const activity = await getActivity(slug);
 
-  // Sin fotos no hay página: sería el título y un párrafo, menos de lo que ya
+  // Sin fotos no hay página: sería el título y una fecha, menos de lo que ya
   // muestra la tarjeta. Es la misma condición con la que la tarjeta decide si
   // enlaza, así que una URL escrita a mano tampoco llega a una página vacía.
-  const gallery = event?.gallery ?? [];
-  if (!event || gallery.length === 0) {
+  const gallery = activity?.gallery ?? [];
+  if (!activity || gallery.length === 0) {
     notFound();
   }
+
+  const cuando = [activity.date, activity.time].filter(Boolean).join(" · ");
 
   return (
     <main className="relative overflow-hidden bg-ink-950">
       <section className="py-24 sm:py-28">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <Link
-            href="/eventos"
+            href="/the-chosen"
             className="inline-flex items-center gap-2 text-sm text-gold-300/90 transition hover:text-gold-200"
           >
-            <span aria-hidden="true">←</span> Volver a eventos
+            <span aria-hidden="true">←</span> Volver a The Chosen
           </Link>
 
           {/* `flex w-fit` y no `inline-flex`: el enlace de volver es un `<a>`
               inline, así que un `inline-flex` acá se acomoda A SU LADO en vez
               de empezar renglón, y la píldora termina pisando el "Volver". */}
           <p className="mt-8 flex w-fit rounded-full border border-gold-300/35 bg-ink-900/50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.28em] text-gold-200">
-            {event.time ? `${event.day} · ${event.time}` : event.day}
+            {cuando}
           </p>
 
           <h1 className="mt-5 max-w-3xl font-serif text-4xl tracking-tight text-white sm:text-5xl">
-            {event.title}
+            {activity.title}
           </h1>
 
-          <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-300">
-            {event.description}
-          </p>
+          {activity.place && (
+            <p className="mt-4 text-base leading-7 text-slate-300">
+              {activity.place}
+            </p>
+          )}
 
           <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {gallery.map((photo) => (
@@ -97,9 +108,9 @@ export default async function EventoPage({ params }: { params: Promise<Params> }
                 <Image
                   src={urlForImage(photo).width(900).url()}
                   // El alt es opcional en la galería: cargar 20 descripciones a
-                  // mano termina en 20 veces "foto". El título del evento dice
-                  // algo real cuando falta.
-                  alt={photo.alt ?? event.title}
+                  // mano termina en 20 veces "foto". El título de la actividad
+                  // dice algo real cuando falta.
+                  alt={photo.alt ?? activity.title}
                   fill
                   sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 90vw"
                   className="object-cover"
