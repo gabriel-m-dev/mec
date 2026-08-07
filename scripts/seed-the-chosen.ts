@@ -85,6 +85,18 @@ const ACTIVITIES = [
   },
 ];
 
+/**
+ * Una galería de ejemplo, para que la iglesia vea cómo queda una actividad con
+ * fotos y de dónde sale el enlace de la tarjeta. Se reusan las mismas fotos
+ * que ya están en el repo: son de relleno igual que el resto.
+ *
+ * Solo se carga si la actividad NO tiene galería todavía.
+ */
+const GALLERY = {
+  docId: "chosenActivity-dia-del-nino",
+  files: ["dia-del-nino.jpg", "juegos-cooperativos.jpg", "torneo-futbol.jpg"],
+};
+
 async function main() {
   if (!PROJECT_ID) throw new Error("Missing required env var: NEXT_PUBLIC_SANITY_PROJECT_ID");
   if (!DATASET) throw new Error("Missing required env var: NEXT_PUBLIC_SANITY_DATASET");
@@ -184,6 +196,34 @@ async function main() {
       }
       throw err;
     }
+  }
+
+  // --- galería de ejemplo ---
+  console.log("");
+
+  const conGaleria = await client.fetch<{ gallery?: unknown[] } | null>(
+    "*[_id == $id][0]{gallery}",
+    { id: GALLERY.docId },
+  );
+
+  if (!conGaleria) {
+    console.log(`  ${GALLERY.docId} — no existe, galería salteada`);
+  } else if ((conGaleria.gallery?.length ?? 0) > 0) {
+    console.log(`  ${GALLERY.docId} — ya tiene galería, salteada`);
+  } else if (DRY_RUN) {
+    console.log(`  ${GALLERY.docId} — cargaría ${GALLERY.files.length} fotos`);
+  } else {
+    const gallery = [];
+
+    for (const file of GALLERY.files) {
+      const image = await uploadImage(file);
+      // `_key` es obligatorio en los arrays de Sanity: sin él el Studio no
+      // puede reordenar ni borrar elementos, y React duplica claves.
+      gallery.push({ ...image, _key: file.replace(/\.[a-z]+$/i, "") });
+    }
+
+    await client.patch(GALLERY.docId).set({ gallery }).commit();
+    console.log(`  ${GALLERY.docId} — ${gallery.length} fotos cargadas`);
   }
 
   console.log("");

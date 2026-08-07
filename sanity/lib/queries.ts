@@ -18,6 +18,12 @@ export const chosenLeaderQuery = /* groq */ `*[_type == "chosenLeader"][0]`;
 
 export const chosenActivitiesQuery = /* groq */ `*[_type == "chosenActivity"] | order(_createdAt asc)`;
 
+/** Igual que en los eventos: solo las actividades CON fotos tienen página. */
+export const chosenActivitySlugsWithGalleryQuery = /* groq */ `*[_type == "chosenActivity" && defined(slug.current) && count(gallery) > 0].slug.current`;
+
+/** Parametrizada por `$slug`. Devuelve null si no existe. */
+export const chosenActivityBySlugQuery = /* groq */ `*[_type == "chosenActivity" && slug.current == $slug][0]`;
+
 export const chaplainsQuery = /* groq */ `*[_type == "chaplain"] | order(_createdAt asc)`;
 
 export const chaplaincyActivitiesQuery = /* groq */ `*[_type == "chaplaincyActivity"] | order(_createdAt asc)`;
