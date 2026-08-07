@@ -11,29 +11,38 @@
   { label: "Contacto", href: "/contacto" },
 ];
 
+/**
+ * Los cuatro accesos rápidos del hero.
+ *
+ * Cada etiqueta NOMBRA la sección a la que lleva. Antes no era así y tres de
+ * las cuatro mentían: "Ministros" llevaba a The Chosen —un grupo de chicos—,
+ * "Lugar de encuentro" llevaba a Cultos, y "Miembros ministeriales" no decía
+ * nada sobre /quienes-somos. Si la etiqueta no coincide con el destino, el
+ * visitante toca a ciegas.
+ */
 export const featureHighlights = [
   {
     icon: "users",
-    label: "Miembros ministeriales",
-    cta: "Conócelos",
+    label: "Quiénes somos",
+    cta: "Conocenos",
     href: "/quienes-somos",
   },
   {
-    icon: "podium",
-    label: "Ministros",
-    cta: "Ver ministros",
+    icon: "hands",
+    label: "The Chosen",
+    cta: "Ver el grupo",
     href: "/the-chosen",
   },
   {
     icon: "shield",
     label: "Capellanía",
-    cta: "Conócela",
+    cta: "Conocela",
     href: "/capellanes",
   },
   {
-    icon: "map",
-    label: "Lugar de encuentro",
-    cta: "Ver lugar",
+    icon: "podium",
+    label: "Cultos",
+    cta: "Ver horarios",
     href: "/cultos",
   },
 ] as const;
