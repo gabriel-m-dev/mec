@@ -76,7 +76,7 @@ export function Hero() {
             initial={shouldReduceMotion ? false : { opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: shouldReduceMotion ? 0 : 0.9, delay: shouldReduceMotion ? 0 : 0.32 }}
-            className="mx-auto mt-2 max-w-3xl text-balance font-serif text-xs italic tracking-[0.08em] text-gold-300/80 sm:text-base"
+            className="mx-auto mt-3 max-w-3xl text-balance font-serif text-base italic tracking-[0.08em] text-gold-300/90 sm:mt-4 sm:text-2xl"
           >
             Cristo poder y sabiduría de Dios
           </motion.p>
