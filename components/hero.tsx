@@ -3,16 +3,20 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
-import { MapPinIcon } from "@/components/contact-icons";
 import { FeatureHighlight } from "@/components/feature-highlight";
-import { PodiumIcon, ShieldCrossIcon, UsersIcon } from "@/components/feature-icons";
+import {
+  PodiumIcon,
+  ServeHandsIcon,
+  ShieldCrossIcon,
+  UsersIcon,
+} from "@/components/feature-icons";
 import { featureHighlights } from "@/lib/content";
 
 const featureIcons = {
   users: UsersIcon,
-  podium: PodiumIcon,
+  hands: ServeHandsIcon,
   shield: ShieldCrossIcon,
-  map: MapPinIcon,
+  podium: PodiumIcon,
 };
 
 export function Hero() {
