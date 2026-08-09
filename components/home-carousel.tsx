@@ -141,12 +141,21 @@ export function HomeCarousel({
   const loops = total > 1;
   const startIndex = loops ? total : 0;
 
-  const [index, setIndex] = useState(startIndex);
-  const [animated, setAnimated] = useState(true);
+  /**
+   * Dónde está parado el riel y si el próximo cambio se anima.
+   *
+   * Los dos datos van en UN solo estado porque siempre se deciden juntos: hay
+   * movimientos que tienen que reubicar el índice Y apagar la animación en la
+   * misma tanda, y eso no se puede hacer con dos estados sueltos (no se puede
+   * llamar a otro `set` desde adentro de un actualizador).
+   */
+  const [view, setView] = useState({ index: startIndex, animated: true });
   const [hasInteracted, setHasInteracted] = useState(false);
   const [reduceMotion, setReduceMotion] = useState(false);
   const [paused, setPaused] = useState(false);
   const touchStartX = useRef<number | null>(null);
+
+  const { index, animated } = view;
 
   // Cuál de las diapositivas REALES se está mirando, sin importar en qué copia
   // esté parado el índice. Es lo que miran los puntos y el resaltado.
@@ -160,9 +169,39 @@ export function HomeCarousel({
     return () => query.removeEventListener("change", update);
   }, []);
 
-  const go = useCallback((direction: 1 | -1) => {
-    setIndex((current) => current + direction);
-  }, []);
+  /**
+   * Un paso, sin dejar nunca que el índice se salga de lo dibujado.
+   *
+   * La banda segura es la copia del medio más UNA posición a cada lado: ahí
+   * siempre existen la diapositiva y sus dos vecinas. Un paso dentro de la
+   * banda se anima normal.
+   *
+   * Pasarse de la banda es lo que rompía: la reubicación a la copia del medio
+   * está detrás de un temporizador que se reinicia con cada movimiento, así
+   * que en una ráfaga no llegaba a correr, el índice se iba más allá del array
+   * de tres copias y el riel quedaba trasladado a un lugar donde no hay nada.
+   * Los puntos seguían bien porque leen `wrap(index)`, que siempre da un valor
+   * válido — de ahí que cambiaran los puntos y no se viera ninguna foto.
+   *
+   * Cuando el paso se pasaría de la banda, se reubica y se aplica el paso en la
+   * misma tanda, sin animar: se pierde el deslizamiento de ESE paso, pero solo
+   * ocurre deslizando más rápido de lo que tarda en asentarse, y es preferible
+   * a quedarse en blanco.
+   */
+  const go = useCallback(
+    (direction: 1 | -1) => {
+      setView(({ index: current }) => {
+        const next = current + direction;
+
+        if (!loops || (next >= total - 1 && next <= total * 2)) {
+          return { index: next, animated: true };
+        }
+
+        return { index: total + wrap(next, total), animated: false };
+      });
+    },
+    [loops, total],
+  );
 
   /**
    * Devuelve el índice a la copia del medio cuando se sale de ella.
@@ -177,10 +216,7 @@ export function HomeCarousel({
     if (index >= total && index < total * 2) return;
 
     const timer = window.setTimeout(
-      () => {
-        setAnimated(false);
-        setIndex(total + wrap(index, total));
-      },
+      () => setView({ index: total + wrap(index, total), animated: false }),
       reduceMotion ? 0 : TRANSITION_MS,
     );
 
@@ -192,7 +228,9 @@ export function HomeCarousel({
   // se vería el riel cruzando todas las diapositivas de golpe.
   useEffect(() => {
     if (animated) return;
-    const frame = requestAnimationFrame(() => setAnimated(true));
+    const frame = requestAnimationFrame(() =>
+      setView((current) => (current.animated ? current : { ...current, animated: true })),
+    );
     return () => cancelAnimationFrame(frame);
   }, [animated]);
 
@@ -402,7 +440,10 @@ export function HomeCarousel({
               onClick={() => {
                 // Siempre a la copia del medio: desde ahí quedan las tres
                 // copias disponibles para seguir girando en cualquier sentido.
-                setIndex(loops ? total + position : position);
+                setView({
+                  index: loops ? total + position : position,
+                  animated: true,
+                });
                 setHasInteracted(true);
               }}
               aria-label={`Ir al destacado ${position + 1}: ${slide.title}`}
