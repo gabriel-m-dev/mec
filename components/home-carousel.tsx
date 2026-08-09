@@ -184,7 +184,10 @@ export function HomeCarousel({
       // El aire contra el hero solo tiene sentido cuando el carrusel va
       // DEBAJO del hero. La tarjeta va adentro y ahí el espacio lo reparte
       // la grilla del hero.
-      className={`relative ${variant === "full" ? "mt-20 sm:mt-28" : ""} ${className}`}
+      // `min-w-0` para que el componente sea seguro adentro de una grilla o un
+      // flex: el riel de adentro no se puede encoger, y sin esto el contenedor
+      // se estiraría a lo que mida el riel entero en vez de recortarlo.
+      className={`relative min-w-0 ${variant === "full" ? "mt-20 sm:mt-28" : ""} ${className}`}
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
       onFocusCapture={() => setPaused(true)}

@@ -201,8 +201,18 @@ export function Hero({
           abajo y deja esta en el medio con el sobrante repartido en partes
           iguales — que es justo donde el cliente la quiere.
         */}
+        {/*
+          `min-w-0` NO es decorativo. El riel del carrusel mide la suma de
+          todas sus diapositivas y no puede encogerse. El tamaño mínimo
+          automático de un item de grilla es su contenido, así que sin esto la
+          columna se estira a lo que mida el riel —en celular, más del doble
+          del ancho de la pantalla— y el centrado del carrusel, que se calcula
+          con un `calc(50% …)`, sale medido contra esa columna inflada.
+          El `overflow-hidden` de adentro recorta a la vista, pero no evita
+          que el contenido infle la columna.
+        */}
         {carousel && (
-          <div className="relative z-10 w-full sm:hidden">{carousel}</div>
+          <div className="relative z-10 w-full min-w-0 sm:hidden">{carousel}</div>
         )}
 
         <div className="relative z-10 mt-[1.875rem] grid grid-cols-4 gap-x-1.5 gap-y-6 sm:mt-12 sm:gap-x-8 sm:gap-y-8">
