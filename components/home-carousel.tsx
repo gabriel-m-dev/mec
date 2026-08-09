@@ -74,6 +74,10 @@ const VARIANTS = {
     cta: "mt-4 px-5 py-2.5 text-xs sm:mt-5 sm:text-sm",
     dots: "mt-5",
     showArrows: true,
+    // Va debajo del hero, fuera de la primera pantalla: para cuando alguien
+    // baja, la entrada ya pasó. Se deja corta para que no quede a medias si
+    // llega scrolleado desde otra página.
+    neighborsDelayMs: 400,
     // Va SIEMPRE debajo del hero, o sea fuera de la primera pantalla: pedirla
     // con prioridad la ponía a competir con la imagen de fondo del hero, que
     // es la que de verdad decide el LCP.
@@ -93,6 +97,10 @@ const VARIANTS = {
     dots: "mt-3",
     // La tarjeta solo existe en celular, donde las flechas nunca se muestran.
     showArrows: false,
+    // Las vecinas esperan a que la del medio TERMINE de entrar. El hero mete
+    // el carrusel a los 0.52s y la animación dura 0.9s, así que recién a los
+    // 1.42s la del medio está en su lugar. Entrar antes las pisaría.
+    neighborsDelayMs: 1450,
     // Esta sí entra en la primera pantalla: va adentro del hero.
     priorityFirstSlide: true,
   },
@@ -155,6 +163,15 @@ export function HomeCarousel({
   const [view, setView] = useState({ index: startIndex, animated: true });
   const [hasInteracted, setHasInteracted] = useState(false);
   const [reduceMotion, setReduceMotion] = useState(false);
+  /**
+   * Si las vecinas ya entraron.
+   *
+   * Arranca en `false` y lo cambia un efecto, NO un valor leído del navegador:
+   * así el servidor y el primer dibujo del cliente coinciden. Calcularlo de
+   * entrada con algo que solo existe en el navegador es justo lo que provocaba
+   * el aviso de hidratación desajustada en el hero.
+   */
+  const [neighborsIn, setNeighborsIn] = useState(false);
   const [paused, setPaused] = useState(false);
   const touchStartX = useRef<number | null>(null);
 
@@ -191,6 +208,15 @@ export function HomeCarousel({
    * ocurre deslizando más rápido de lo que tarda en asentarse, y es preferible
    * a quedarse en blanco.
    */
+  // Las vecinas entran desde los costados una vez que la del medio terminó de
+  // aparecer. Con "reducir movimiento" no esperan ni se desplazan: están desde
+  // el arranque.
+  useEffect(() => {
+    const delay = reduceMotion ? 0 : styles.neighborsDelayMs;
+    const timer = window.setTimeout(() => setNeighborsIn(true), delay);
+    return () => window.clearTimeout(timer);
+  }, [reduceMotion, styles.neighborsDelayMs]);
+
   const go = useCallback(
     (direction: 1 | -1) => {
       setView(({ index: current }) => step(current, direction, total, loops));
@@ -302,6 +328,21 @@ export function HomeCarousel({
           >
             {rendered.map((slide, position) => {
               const isActive = position === index;
+              /*
+                Todavía afuera: entra desde el costado que le toca. Solo aplica
+                a las vecinas — la del medio ya entró con el resto del hero y
+                volver a moverla sería animarla dos veces.
+
+                El desplazamiento va en el ENVOLTORIO y no en el marco: el
+                marco tiene su propia transición de opacidad para apagar las
+                vecinas, y el riel tiene la suya para desplazarse. Tres
+                transiciones sobre el mismo elemento se pisan.
+              */
+              const enteringFrom = !neighborsIn && !isActive
+                ? position > index
+                  ? "2.5rem"
+                  : "-2.5rem"
+                : undefined;
 
               return (
                 <div
@@ -309,8 +350,15 @@ export function HomeCarousel({
                   // Solo la del medio se anuncia: las vecinas y las copias
                   // repetirían el mismo contenido tres veces.
                   aria-hidden={!isActive}
-                  className="shrink-0"
-                  style={{ width: slideWidth }}
+                  className={`shrink-0 ${
+                    reduceMotion
+                      ? ""
+                      : "transition-[opacity,transform] duration-700 ease-out"
+                  } ${enteringFrom ? "opacity-0" : "opacity-100"}`}
+                  style={{
+                    width: slideWidth,
+                    transform: enteringFrom ? `translateX(${enteringFrom})` : undefined,
+                  }}
                 >
                   {/*
                     Las vecinas quedan apagadas: se ven lo suficiente para
