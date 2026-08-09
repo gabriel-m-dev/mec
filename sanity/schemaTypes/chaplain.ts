@@ -18,6 +18,21 @@ export const chaplain = defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
+      name: "badgeNumber",
+      title: "Número de placa",
+      type: "string",
+      description:
+        "El número de la credencial de capellán, tal como figura en la placa. Si todavía no lo tenés a mano, dejalo vacío: la tarjeta simplemente no lo muestra.",
+      // Es TEXTO y no número a propósito: un número descarta los ceros a la
+      // izquierda —"0042" se guardaría como 42— y no admite guiones ni letras,
+      // que estas credenciales suelen tener. Acá no se hacen cuentas con el
+      // valor, se muestra tal como lo escribieron.
+      //
+      // Opcional para no trabar el documento: los capellanes ya cargados no lo
+      // tienen, y exigirlo dejaría sus fichas sin poder guardarse hasta
+      // conseguir el dato de cada uno.
+    }),
+    defineField({
       name: "description",
       title: "Descripción",
       type: "text",

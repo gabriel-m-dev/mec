@@ -181,6 +181,7 @@ export default async function CapellaniaPage() {
                     name={chaplain.name}
                     role={chaplain.role}
                     description={chaplain.description}
+                    badgeNumber={chaplain.badgeNumber}
                     image={urlForImage(chaplain.image).url()}
                     imageAlt={chaplain.imageAlt}
                   />

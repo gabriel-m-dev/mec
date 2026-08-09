@@ -107,6 +107,11 @@ export interface Chaplain {
   name: string;
   role: string;
   description: string;
+  /**
+   * Opcional: los capellanes ya cargados no lo tienen y la tarjeta lo omite
+   * cuando falta. Es texto porque puede traer ceros a la izquierda o letras.
+   */
+  badgeNumber?: string;
   image: SanityImageSource;
   imageAlt: string;
 }

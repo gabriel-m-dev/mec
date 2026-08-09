@@ -4,11 +4,20 @@ type ChaplainCardProps = {
   name: string;
   role: string;
   description: string;
+  /** Opcional: sin número, la tarjeta no dibuja la placa. */
+  badgeNumber?: string;
   image: string;
   imageAlt: string;
 };
 
-export function ChaplainCard({ name, role, description, image, imageAlt }: ChaplainCardProps) {
+export function ChaplainCard({
+  name,
+  role,
+  description,
+  badgeNumber,
+  image,
+  imageAlt,
+}: ChaplainCardProps) {
   return (
     <article className="group overflow-hidden rounded-[1.75rem] border border-white/10 bg-white/4 shadow-luxe transition hover:-translate-y-1 hover:border-gold-300/25">
       <div className="relative aspect-[3/4] w-full overflow-hidden">
@@ -34,6 +43,18 @@ export function ChaplainCard({ name, role, description, image, imageAlt }: Chapl
       </div>
 
       <div className="p-6">
+        {/* La placa va ANTES de la descripción y no dentro de la foto: es un
+            dato de identidad, y sobre la imagen tendría que competir con el
+            nombre y el cargo, que son lo primero que hay que leer.
+
+            `tabular-nums` para que todas las cifras midan lo mismo: sin eso,
+            en una fila de tres capellanes los números quedan de distinto largo
+            aunque tengan la misma cantidad de dígitos. */}
+        {badgeNumber && (
+          <p className="mb-4 inline-flex rounded-full border border-gold-300/25 bg-gold-400/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-gold-200 tabular-nums">
+            Placa N.º {badgeNumber}
+          </p>
+        )}
         <p className="text-sm leading-7 text-slate-300">{description}</p>
       </div>
     </article>
