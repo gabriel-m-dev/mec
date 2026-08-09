@@ -10,6 +10,33 @@ html {
   scroll-behavior: smooth;
 }
 
+/*
+  PRUEBA — el sitio en celular al 70%.
+  Pedido para mostrarle al cliente, que ve todo muy grande.
+
+  Se hace acá y no clase por clase porque TODA la escala del proyecto está en
+  `rem` —la tipografía del `tailwind.config`, los `p-*`, los `gap-*`, los
+  `max-w-*`—, y `rem` se mide contra este tamaño. Bajarlo un 30% achica todo
+  junto y de forma proporcional, con UN número que se sube o se baja para
+  probar otro porcentaje. Tocar clase por clase sería el mismo cambio repetido
+  cientos de veces y con la escala desalineada al primer descuido.
+
+  NO achica lo que no está en `rem`, que es lo correcto en los tres casos:
+  - `min-h-[100svh]` y el `34svh` de la tarjeta: son alto de pantalla, y la
+    pantalla no se achicó.
+  - las medidas en `px` de los `ring`/`border`: un borde de 1px tiene que
+    seguir siendo de 1px.
+  - las imágenes, que se miden contra su contenedor.
+
+  El corte es 639.98px para caer justo debajo del `sm:` de Tailwind (640px) y
+  que esto no toque escritorio.
+*/
+@media (max-width: 639.98px) {
+  html {
+    font-size: 70%;
+  }
+}
+
 body {
   min-height: 100vh;
   background:
