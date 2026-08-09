@@ -286,9 +286,15 @@ export function HomeCarousel({
                     activa va SIEMPRE al 100%.
                   */}
                   <div
-                    className={`relative transition-opacity duration-500 ${styles.frame} ${
-                      isActive ? "opacity-100" : "opacity-40"
-                    }`}
+                    className={`relative ${styles.frame} ${
+                      // Durante el salto de copia NO se anima la opacidad. En
+                      // ese instante cambia qué NODO es el activo: el que
+                      // entra al centro venía apagado, y animarlo lo mostraría
+                      // subiendo de 0.4 a 1 — se ve como si la tarjeta
+                      // desapareciera y volviera. La del riel ya estaba
+                      // apagada; faltaba esta.
+                      animated ? "transition-opacity duration-500" : ""
+                    } ${isActive ? "opacity-100" : "opacity-40"}`}
                   >
                     <Image
                       src={slide.image}
@@ -306,9 +312,12 @@ export function HomeCarousel({
                       y encima competiría con el mensaje que sí hay que leer.
                     */}
                     <div
-                      className={`absolute inset-x-0 bottom-0 transition-opacity duration-300 ${
-                        isActive ? "opacity-100" : "opacity-0"
-                      }`}
+                      className={`absolute inset-x-0 bottom-0 ${
+                        // Mismo motivo que el marco: en el salto de copia el
+                        // texto entraría animando de 0 a 1 y se lo vería
+                        // aparecer de la nada.
+                        animated ? "transition-opacity duration-300" : ""
+                      } ${isActive ? "opacity-100" : "opacity-0"}`}
                     >
                       <div className={styles.textBox}>
                         <h3 className={styles.title}>{slide.title}</h3>
