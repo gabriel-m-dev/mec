@@ -18,9 +18,11 @@ export type CarouselSlide = {
 };
 
 /** Cada cuánto avanza solo. El reloj se reinicia con cada cambio manual. */
-const AUTOPLAY_MS = 5000;
+const AUTOPLAY_MS = 3500;
 /** Recorrido mínimo del dedo para contar como gesto, en px. */
 const SWIPE_THRESHOLD = 40;
+/** Lo que dura el desplazamiento del riel. Igual que la clase `duration-500`. */
+const TRANSITION_MS = 500;
 
 /**
  * Dónde se está dibujando el carrusel.
@@ -88,13 +90,28 @@ const VARIANTS = {
   },
 } as const satisfies Record<CarouselVariant, unknown>;
 
+/** Resto siempre positivo: `-1 % 5` da `-1` en JavaScript, y acá hace falta 4. */
+function wrap(value: number, length: number): number {
+  return ((value % length) + length) % length;
+}
+
 /**
  * Carrusel de destacados de la portada.
  *
- * Es un RIEL que se desplaza y deja asomar la diapositiva anterior y la
- * siguiente a los costados, apagadas. Las vecinas no son decoración: son lo
- * que le avisa al visitante que hay más contenido. Antes era una pila con
- * fundido y nada indicaba que el carrusel siguiera.
+ * Es un RIEL que se desplaza y deja ver la diapositiva anterior y la siguiente
+ * a los costados, apagadas. Las vecinas no son decoración: son lo que le avisa
+ * al visitante que hay más contenido.
+ *
+ * DA LA VUELTA: en la primera se ve la última a la izquierda, y en la última
+ * se ve la primera a la derecha. Para eso la lista se dibuja TRES VECES y el
+ * índice se mantiene en la copia del medio, así siempre hay una copia entera a
+ * cada lado de donde sacar las vecinas. Cuando el índice se sale de esa copia
+ * se lo devuelve a su equivalente con la transición apagada: como la posición
+ * visual es idéntica, el salto no se ve.
+ *
+ * La otra opción era mover cada diapositiva por separado con distancia
+ * circular, pero ahí la que da la vuelta viaja del extremo derecho al
+ * izquierdo CRUZANDO el centro, o sea por delante de la que se está mirando.
  *
  * El centrado se resuelve en CSS, sin medir nada en JavaScript:
  *
@@ -105,11 +122,8 @@ const VARIANTS = {
  * - A partir de ahí, correr el riel `n * (ancho + separación)` centra la
  *   diapositiva `n`.
  *
- * Medir el contenedor con JavaScript habría significado un `useEffect`, un
- * `ResizeObserver` y un primer cuadro con el riel en el lugar equivocado.
- *
- * El gesto sigue avanzando exactamente UNA diapositiva, por rápido que se
- * deslice: con `scroll-snap` la inercia del navegador se comía varias.
+ * El gesto avanza exactamente UNA diapositiva, por rápido que se deslice: con
+ * `scroll-snap` la inercia del navegador se comía varias.
  */
 export function HomeCarousel({
   slides,
@@ -122,11 +136,21 @@ export function HomeCarousel({
   className?: string;
 }) {
   const styles = VARIANTS[variant];
-  const [active, setActive] = useState(0);
+  const total = slides.length;
+  // Con una sola diapositiva no hay nada que rotar ni vecinas que mostrar.
+  const loops = total > 1;
+  const startIndex = loops ? total : 0;
+
+  const [index, setIndex] = useState(startIndex);
+  const [animated, setAnimated] = useState(true);
   const [hasInteracted, setHasInteracted] = useState(false);
   const [reduceMotion, setReduceMotion] = useState(false);
   const [paused, setPaused] = useState(false);
   const touchStartX = useRef<number | null>(null);
+
+  // Cuál de las diapositivas REALES se está mirando, sin importar en qué copia
+  // esté parado el índice. Es lo que miran los puntos y el resaltado.
+  const activeSlide = loops ? wrap(index, total) : 0;
 
   useEffect(() => {
     const query = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -136,23 +160,53 @@ export function HomeCarousel({
     return () => query.removeEventListener("change", update);
   }, []);
 
-  const go = useCallback(
-    (direction: 1 | -1) => {
-      setActive((current) => (current + direction + slides.length) % slides.length);
-    },
-    [slides.length],
-  );
+  const go = useCallback((direction: 1 | -1) => {
+    setIndex((current) => current + direction);
+  }, []);
+
+  /**
+   * Devuelve el índice a la copia del medio cuando se sale de ella.
+   *
+   * Espera a que termine el desplazamiento: saltar antes cortaría la animación
+   * a la mitad. El salto va con la transición apagada porque la diapositiva y
+   * su posición en pantalla son exactamente las mismas — lo único que cambia
+   * es en qué copia estamos parados.
+   */
+  useEffect(() => {
+    if (!loops) return;
+    if (index >= total && index < total * 2) return;
+
+    const timer = window.setTimeout(
+      () => {
+        setAnimated(false);
+        setIndex(total + wrap(index, total));
+      },
+      reduceMotion ? 0 : TRANSITION_MS,
+    );
+
+    return () => window.clearTimeout(timer);
+  }, [index, total, loops, reduceMotion]);
+
+  // Se vuelve a habilitar la animación recién en el cuadro SIGUIENTE al salto.
+  // Hacerlo en el mismo cuadro dejaría la transición activa durante el salto y
+  // se vería el riel cruzando todas las diapositivas de golpe.
+  useEffect(() => {
+    if (animated) return;
+    const frame = requestAnimationFrame(() => setAnimated(true));
+    return () => cancelAnimationFrame(frame);
+  }, [animated]);
 
   // Avance automático. Se apaga con el puntero encima o el foco adentro:
   // nadie quiere que se le mueva lo que está leyendo.
   //
-  // `active` está en las dependencias A PROPÓSITO: hace que el intervalo se
-  // tire y se rearme en cada cambio, así el reloj arranca de cero.
+  // Depende de `activeSlide` y NO de `index` a propósito: el salto de copia
+  // cambia el índice sin cambiar lo que se ve, y si el reloj mirara el índice
+  // se reiniciaría en cada vuelta y esa diapositiva duraría de más.
   useEffect(() => {
-    if (slides.length < 2 || paused) return;
+    if (total < 2 || paused) return;
     const timer = window.setTimeout(() => go(1), AUTOPLAY_MS);
     return () => window.clearTimeout(timer);
-  }, [slides.length, paused, active, go]);
+  }, [total, paused, activeSlide, go]);
 
   function onTouchStart(event: React.TouchEvent) {
     touchStartX.current = event.touches[0]?.clientX ?? null;
@@ -171,22 +225,24 @@ export function HomeCarousel({
     setHasInteracted(true);
   }
 
-  if (slides.length === 0) return null;
+  if (total === 0) return null;
 
-  const hasControls = slides.length > 1;
+  const hasControls = total > 1;
   const { slideWidth, slideGap } = styles;
   const centerOffset = `calc(50% - (${slideWidth}) / 2)`;
+  // Tres copias para que siempre haya una entera a cada lado de la del medio.
+  const rendered = loops ? [...slides, ...slides, ...slides] : slides;
 
   return (
     <section
       aria-roledescription="carrusel"
       aria-label="Destacados"
-      // El aire contra el hero solo tiene sentido cuando el carrusel va
-      // DEBAJO del hero. La tarjeta va adentro y ahí el espacio lo reparte
-      // la grilla del hero.
       // `min-w-0` para que el componente sea seguro adentro de una grilla o un
       // flex: el riel de adentro no se puede encoger, y sin esto el contenedor
       // se estiraría a lo que mida el riel entero en vez de recortarlo.
+      //
+      // El aire contra el hero solo tiene sentido cuando el carrusel va DEBAJO
+      // del hero. La tarjeta va adentro y ahí el espacio lo reparte la grilla.
       className={`relative min-w-0 ${variant === "full" ? "mt-20 sm:mt-28" : ""} ${className}`}
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
@@ -200,22 +256,26 @@ export function HomeCarousel({
           onTouchEnd={onTouchEnd}
         >
           <div
-            className={`flex ${reduceMotion ? "" : "transition-transform duration-500 ease-out"}`}
+            className={`flex ${
+              animated && !reduceMotion ? "transition-transform duration-500 ease-out" : ""
+            }`}
             style={{
               gap: slideGap,
               // Centra la PRIMERA diapositiva. El `50%` se mide contra el
               // ancho del contenedor, que es justo lo que hace falta.
               paddingLeft: centerOffset,
               paddingRight: centerOffset,
-              transform: `translateX(calc(-1 * ${active} * ((${slideWidth}) + (${slideGap}))))`,
+              transform: `translateX(calc(-1 * ${index} * ((${slideWidth}) + (${slideGap}))))`,
             }}
           >
-            {slides.map((slide, index) => {
-              const isActive = index === active;
+            {rendered.map((slide, position) => {
+              const isActive = position === index;
 
               return (
                 <div
-                  key={slide.id}
+                  key={`${slide.id}-${position}`}
+                  // Solo la del medio se anuncia: las vecinas y las copias
+                  // repetirían el mismo contenido tres veces.
                   aria-hidden={!isActive}
                   className="shrink-0"
                   style={{ width: slideWidth }}
@@ -235,7 +295,7 @@ export function HomeCarousel({
                       alt={slide.imageAlt}
                       fill
                       sizes={styles.imageSizes}
-                      priority={styles.priorityFirstSlide && index === 0}
+                      priority={styles.priorityFirstSlide && position === startIndex}
                       className="object-cover"
                     />
                     <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(2,5,12,0.2)_30%,rgba(2,5,12,0.85)_75%,rgba(2,5,12,0.97)_100%)]" />
@@ -326,18 +386,22 @@ export function HomeCarousel({
           como parte de esa tarjeta y no del carrusel. */}
       {hasControls && (
         <div className={`flex justify-center gap-2 ${styles.dots}`}>
-          {slides.map((slide, index) => (
+          {slides.map((slide, position) => (
             <button
               key={slide.id}
               type="button"
               onClick={() => {
-                setActive(index);
+                // Siempre a la copia del medio: desde ahí quedan las tres
+                // copias disponibles para seguir girando en cualquier sentido.
+                setIndex(loops ? total + position : position);
                 setHasInteracted(true);
               }}
-              aria-label={`Ir al destacado ${index + 1}: ${slide.title}`}
-              aria-current={index === active}
+              aria-label={`Ir al destacado ${position + 1}: ${slide.title}`}
+              aria-current={position === activeSlide}
               className={`h-1.5 rounded-full transition-all ${
-                index === active ? "w-7 bg-gold-300" : "w-2.5 bg-white/30 hover:bg-white/50"
+                position === activeSlide
+                  ? "w-7 bg-gold-300"
+                  : "w-2.5 bg-white/30 hover:bg-white/50"
               }`}
             />
           ))}
