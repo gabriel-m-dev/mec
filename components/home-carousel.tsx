@@ -58,7 +58,8 @@ const VARIANTS = {
       "max-w-2xl font-serif text-2xl text-white drop-shadow-[0_4px_16px_rgba(0,0,0,0.65)] sm:text-4xl",
     description: "mt-2 max-w-2xl text-sm leading-6 text-slate-200 sm:mt-3 sm:text-base sm:leading-7",
     cta: "mt-4 px-5 py-2.5 text-xs sm:mt-5 sm:text-sm",
-    dots: "bottom-5",
+    dots: "absolute inset-x-0 bottom-5",
+    dotsOutside: false,
     hint: "bottom-12",
     showArrows: true,
     // Va SIEMPRE debajo del hero, o sea fuera de la primera pantalla: pedirla
@@ -77,13 +78,19 @@ const VARIANTS = {
     frame:
       "relative mx-auto aspect-square w-[min(18rem,34svh)] overflow-hidden rounded-3xl shadow-luxe ring-1 ring-white/15",
     imageSizes: `${CARD_SIZE_PX}px`,
-    textBox: "px-4 pb-11",
+    // Sin puntos adentro que esquivar, el texto baja hasta el borde: solo
+    // queda el aire que necesita para no pegarse.
+    textBox: "px-4 pb-4",
     title:
       "font-serif text-lg leading-tight text-white drop-shadow-[0_4px_16px_rgba(0,0,0,0.65)]",
     description: "mt-1 line-clamp-2 text-xs leading-5 text-slate-200",
     cta: "mt-2.5 px-4 py-1.5 text-[11px]",
-    dots: "bottom-3",
-    hint: "bottom-8",
+    // Afuera del cuadrado: no es posición absoluta sino una fila debajo.
+    dots: "mt-3",
+    dotsOutside: true,
+    // Arriba, no abajo: abajo está el texto. Sobre la imagen, en una zona que
+    // suele estar despejada.
+    hint: "top-3",
     // La tarjeta solo existe en celular, donde las flechas nunca se muestran:
     // dibujarlas sería DOM muerto.
     showArrows: false,
@@ -168,6 +175,28 @@ export function HomeCarousel({
   if (slides.length === 0) return null;
 
   const hasControls = slides.length > 1;
+
+  // Se arma una vez y se ubica según la variante: adentro del marco o debajo.
+  // El mismo marcado en los dos lados, para que no se desincronicen.
+  const dots = hasControls ? (
+    <div className={`flex justify-center gap-2 ${styles.dots}`}>
+      {slides.map((slide, index) => (
+        <button
+          key={slide.id}
+          type="button"
+          onClick={() => {
+            setActive(index);
+            setHasInteracted(true);
+          }}
+          aria-label={`Ir al destacado ${index + 1}: ${slide.title}`}
+          aria-current={index === active}
+          className={`h-1.5 rounded-full transition-all ${
+            index === active ? "w-7 bg-gold-300" : "w-2.5 bg-white/30 hover:bg-white/50"
+          }`}
+        />
+      ))}
+    </div>
+  ) : null;
 
   return (
     <section
@@ -280,26 +309,15 @@ export function HomeCarousel({
           </>
         )}
 
-        {hasControls && (
-          <div className={`absolute inset-x-0 flex justify-center gap-2 ${styles.dots}`}>
-            {slides.map((slide, index) => (
-              <button
-                key={slide.id}
-                type="button"
-                onClick={() => {
-                  setActive(index);
-                  setHasInteracted(true);
-                }}
-                aria-label={`Ir al destacado ${index + 1}: ${slide.title}`}
-                aria-current={index === active}
-                className={`h-1.5 rounded-full transition-all ${
-                  index === active ? "w-7 bg-gold-300" : "w-2.5 bg-white/30 hover:bg-white/50"
-                }`}
-              />
-            ))}
-          </div>
-        )}
+        {/* Adentro del cuadrado solo en la variante ancha, donde sobra alto
+            y los puntos se apoyan sobre la imagen. */}
+        {!styles.dotsOutside && dots}
       </div>
+
+      {/* En la tarjeta van AFUERA: el cuadrado es chico y unos puntos encima
+          del texto no se distinguen del fondo. Tienen que quedar fuera del
+          marco también porque el marco es `overflow-hidden` y los recortaría. */}
+      {styles.dotsOutside && dots}
     </section>
   );
 }
