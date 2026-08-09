@@ -228,8 +228,27 @@ export function Hero({
           El `overflow-hidden` de adentro recorta a la vista, pero no evita
           que el contenido infle la columna.
         */}
+        {/*
+          Entra con el resto del hero. El carrusel quedaba quieto mientras
+          todo lo demás aparecía, y se leía como si fuera parte del fondo.
+
+          El 0.52 no es arbitrario: la secuencia del hero va 0.1 (MEC), 0.28,
+          0.32, 0.36, 0.46 (los botones) y 0.58 (los accesos rápidos). El
+          carrusel está entre los botones y los accesos, así que ocupa el hueco
+          que ya dejaba esa cuenta.
+        */}
         {carousel && (
-          <div className="relative z-10 w-full min-w-0 sm:hidden">{carousel}</div>
+          <motion.div
+            initial={ENTRADA_TEXTO}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{
+              duration: shouldReduceMotion ? 0 : 0.9,
+              delay: shouldReduceMotion ? 0 : 0.52,
+            }}
+            className="relative z-10 w-full min-w-0 sm:hidden"
+          >
+            {carousel}
+          </motion.div>
         )}
 
         <div className="relative z-10 mt-[1.875rem] grid grid-cols-4 gap-x-1.5 gap-y-6 sm:mt-12 sm:gap-x-8 sm:gap-y-8">
