@@ -36,16 +36,16 @@ export function SiteHeader() {
             className="h-14 w-auto"
           />
           <div>
-            {/* "MEC" solo desde `sm`: en móvil el logo ya es la marca y el
-                ancho disponible entre el logo y el botón del menú son unos
-                200px. Meter dos líneas ahí deja la de abajo ilegible. */}
-            <p className="hidden text-sm font-semibold uppercase tracking-[0.28em] text-white sm:block">
+            {/* En móvil la sigla es TODO el texto de la marca: entre el logo y
+                el botón del menú hay unos 200px, y ahí el nombre completo
+                entraba solo partido en dos renglones de 9px. Una sigla de una
+                línea se lee de un golpe; dos renglones diminutos, no. */}
+            <p className="text-lg font-semibold uppercase tracking-[0.28em] text-white sm:text-sm">
               MEC
             </p>
-            {/* En móvil el nombre entra en dos renglones: con el `tracking` de
-                desktop no entra ni en tres. El `max-w` es lo que fuerza el
-                corte donde queremos en vez de dejarlo empujar al botón. */}
-            <p className="max-w-[10rem] text-[9px] uppercase leading-[1.4] tracking-[0.14em] text-gold-300/90 sm:max-w-none sm:text-[11px] sm:leading-normal sm:tracking-[0.3em]">
+            {/* El nombre completo, solo desde `sm`, donde sí hay ancho para
+                una línea. En móvil lo reemplaza la sigla de arriba. */}
+            <p className="hidden text-[11px] uppercase leading-normal tracking-[0.3em] text-gold-300/90 sm:block">
               Ministerio Evangélico Cristiano
             </p>
           </div>
