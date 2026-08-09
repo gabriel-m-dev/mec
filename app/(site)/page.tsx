@@ -30,22 +30,19 @@ function hrefFor(item: FeaturedItem): string {
 }
 
 export default async function HomePage() {
-  const hero = await fetchContent<HomeHero | null>(
-    homeHeroQuery,
-    SANITY_TAGS.homePage,
-  );
-
-  const live = await fetchContent<LiveStream | null>(
-    homeLiveQuery,
-    SANITY_TAGS.homePage,
-  );
-
-  // Los tres tipos: cambiar QUÉ se destaca toca `homePage`, pero editar el
-  // evento o la noticia destacada también tiene que refrescar la portada.
-  const featured = await fetchContent<FeaturedItem[] | null>(homeFeaturedQuery, [
-    SANITY_TAGS.homePage,
-    SANITY_TAGS.event,
-    SANITY_TAGS.newsItem,
+  // Las tres juntas y no una tras otra: ninguna necesita el resultado de la
+  // anterior, así que encadenarlas solo sumaba viajes de ida y vuelta antes de
+  // poder empezar a dibujar.
+  const [hero, live, featured] = await Promise.all([
+    fetchContent<HomeHero | null>(homeHeroQuery, SANITY_TAGS.homePage),
+    fetchContent<LiveStream | null>(homeLiveQuery, SANITY_TAGS.homePage),
+    // Los tres tipos: cambiar QUÉ se destaca toca `homePage`, pero editar el
+    // evento o la noticia destacada también tiene que refrescar la portada.
+    fetchContent<FeaturedItem[] | null>(homeFeaturedQuery, [
+      SANITY_TAGS.homePage,
+      SANITY_TAGS.event,
+      SANITY_TAGS.newsItem,
+    ]),
   ]);
 
   // Dos redes, y las dos hacen falta:
