@@ -76,7 +76,21 @@ export function Hero({ desktopImage, mobileImage }: HeroProps = {}) {
 
       <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/70 to-transparent" />
 
-      <div className="relative mx-auto grid min-h-[100svh] max-w-7xl items-center px-4 pb-16 pt-20 sm:px-6 lg:px-8 lg:pb-20 lg:pt-24">
+      {/*
+        En celular las dos filas se separan a los extremos —el texto arriba de
+        todo, los accesos rápidos abajo de todo— y el hueco que queda en el
+        medio es donde va a entrar el carrusel.
+
+        Es `content-between` (align-content) y no `justify-*`: lo que se
+        reparte es el espacio sobrante ENTRE LAS FILAS de la grilla, no el
+        contenido adentro de cada una. Con las filas al alto de su contenido,
+        el `items-center` de al lado ya no cambia nada en celular; se deja
+        porque desde `sm:` vuelve a mandar.
+
+        Desde `sm:` se restaura `normal`, que es el valor por defecto de la
+        grilla: en escritorio el bloque sigue centrado como hasta ahora.
+      */}
+      <div className="relative mx-auto grid min-h-[100svh] max-w-7xl content-between items-center px-4 pb-16 pt-20 sm:content-normal sm:px-6 lg:px-8 lg:pb-20 lg:pt-24">
         <div className="relative z-10 mx-auto max-w-4xl text-center">
           <motion.h1
             initial={shouldReduceMotion ? false : { opacity: 0, y: 18 }}
