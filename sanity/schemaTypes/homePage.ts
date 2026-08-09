@@ -1,7 +1,14 @@
 import { defineField, defineType } from "sanity";
+import {
+  HERO_DESKTOP_SPEC,
+  HERO_MOBILE_SPEC,
+  formatDimensions,
+  heroImageIssue,
+} from "./heroImageValidation";
 
 /**
- * El contenido propio de la portada. Hoy solo el carrusel de destacados.
+ * El contenido propio de la portada: la imagen de fondo grande y el carrusel
+ * de destacados.
  *
  * Es un tipo aparte y no un `pageBanner` porque la portada no tiene banner:
  * no dibuja `<PageHeader>`, así que heredar `title`, `description` e `image`
@@ -14,6 +21,46 @@ export const homePage = defineType({
   title: "Inicio",
   type: "document",
   fields: [
+    defineField({
+      name: "hero",
+      title: "Imagen de portada",
+      type: "object",
+      description:
+        "El fondo grande que se ve al entrar al sitio, detrás del nombre de la iglesia. Son DOS imágenes distintas y conviene cargar las dos: la pantalla de una computadora es apaisada y la de un celular es parada, así que la misma foto no puede servir para las dos sin recortarse mal. Si dejás alguna vacía, se sigue usando la que está puesta hoy.",
+      options: { collapsible: true, collapsed: false },
+      fields: [
+        defineField({
+          name: "desktopImage",
+          title: "Imagen para computadora (apaisada)",
+          type: "image",
+          description: `Horizontal. Subila de ${formatDimensions(
+            HERO_DESKTOP_SPEC.recommended,
+          )} píxeles, que es la medida ideal; el mínimo es ${formatDimensions(
+            HERO_DESKTOP_SPEC.minimum,
+          )}. Más chica que eso se ve borrosa, porque ocupa la pantalla entera. Usá el recuadro de recorte para marcar qué parte NO se puede perder: en pantallas muy anchas o muy altas el resto se recorta solo.`,
+          options: { hotspot: true },
+          validation: (Rule) =>
+            Rule.warning().custom((value) =>
+              heroImageIssue(value, HERO_DESKTOP_SPEC),
+            ),
+        }),
+        defineField({
+          name: "mobileImage",
+          title: "Imagen para celular (parada)",
+          type: "image",
+          description: `Vertical. Subila de ${formatDimensions(
+            HERO_MOBILE_SPEC.recommended,
+          )} píxeles, que es la medida ideal; el mínimo es ${formatDimensions(
+            HERO_MOBILE_SPEC.minimum,
+          )}. Tiene que ser una imagen PARADA: si subís acá la misma que en computadora, en el celular se le van a recortar los costados y puede quedar cortada justo lo importante.`,
+          options: { hotspot: true },
+          validation: (Rule) =>
+            Rule.warning().custom((value) =>
+              heroImageIssue(value, HERO_MOBILE_SPEC),
+            ),
+        }),
+      ],
+    }),
     defineField({
       name: "live",
       title: "Transmisión en vivo",

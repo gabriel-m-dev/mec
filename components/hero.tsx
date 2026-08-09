@@ -19,14 +19,36 @@ const featureIcons = {
   podium: PodiumIcon,
 };
 
-export function Hero() {
+/**
+ * Las imágenes que se usan mientras el cliente no cargue las suyas en el
+ * Studio. Sin este respaldo, un campo vacío dejaría la portada sin fondo y el
+ * texto blanco sobre negro.
+ */
+const FALLBACK_DESKTOP_IMAGE = "/images/new_hero_desktop.png";
+const FALLBACK_MOBILE_IMAGE = "/images/new_hero_mobile.png";
+
+type HeroProps = {
+  /** Desde Sanity. Si falta, se usa la imagen que está hoy en el repo. */
+  desktopImage?: string;
+  mobileImage?: string;
+};
+
+export function Hero({ desktopImage, mobileImage }: HeroProps = {}) {
   const shouldReduceMotion = useReducedMotion();
 
   return (
     <section id="inicio" className="relative overflow-hidden border-b border-white/6">
+      {/*
+        Dos <Image> y no uno con `srcSet`: son fotos DISTINTAS, no dos tamaños
+        de la misma. `sizes` elige resolución, no contenido — para cambiar qué
+        se ve hace falta que el CSS muestre una u otra.
+
+        `sm:` (640px) es el mismo corte que usa el resto de la portada: abajo de
+        ahí la pantalla es más alta que ancha y pide la imagen parada.
+      */}
       <div className="absolute inset-0">
         <Image
-          src="/images/new_hero_mobile.png"
+          src={mobileImage ?? FALLBACK_MOBILE_IMAGE}
           alt=""
           fill
           priority
@@ -34,7 +56,7 @@ export function Hero() {
           sizes="100vw"
         />
         <Image
-          src="/images/new_hero_desktop.png"
+          src={desktopImage ?? FALLBACK_DESKTOP_IMAGE}
           alt=""
           fill
           priority

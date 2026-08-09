@@ -27,3 +27,24 @@ export function urlForImage(source: SanityImageSource) {
 export function urlForBanner(source: SanityImageSource) {
   return builder.image(source).width(1800).height(720).fit("crop").auto("format");
 }
+
+/**
+ * Las dos imágenes de fondo de la portada.
+ *
+ * Se piden con ancho Y alto y `fit("crop")` por lo mismo que `urlForBanner`:
+ * **el hotspot solo se aplica si se piden las dos dimensiones**. Sin ellas el
+ * recorte lo haría entero el navegador con `object-cover`, siempre desde el
+ * centro, y el recuadro que el cliente marca en el Studio no haría nada — que
+ * es justo el control que necesita para que su foto no quede cortada al medio.
+ *
+ * Las medidas son las mismas que el Studio le pide a quien edita
+ * (`HERO_DESKTOP_SPEC` / `HERO_MOBILE_SPEC`): subiendo lo recomendado, el CDN
+ * no reescala nada.
+ */
+export function urlForHeroDesktop(source: SanityImageSource) {
+  return builder.image(source).width(2560).height(1440).fit("crop").auto("format");
+}
+
+export function urlForHeroMobile(source: SanityImageSource) {
+  return builder.image(source).width(1080).height(1920).fit("crop").auto("format");
+}

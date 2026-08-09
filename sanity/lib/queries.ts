@@ -74,6 +74,8 @@ export const eventBySlugQuery = /* groq */ `*[_type == "event" && slug.current =
  * backtick ahí adentro cierra el literal de TypeScript.
  */
 /** El bloque fijo de transmisión en vivo de la portada. */
+export const homeHeroQuery = /* groq */ `*[_type == "homePage"][0].hero`;
+
 export const homeLiveQuery = /* groq */ `*[_type == "homePage"][0].live`;
 
 export const homeFeaturedQuery = /* groq */ `*[_type == "homePage"][0].featured[]->{

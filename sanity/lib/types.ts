@@ -148,6 +148,16 @@ export interface FeaturedItem {
 }
 
 /** La diapositiva fija de transmisión en vivo, siempre primera en el carrusel. */
+/**
+ * Las dos imágenes de fondo de la portada. Las dos opcionales: sin ellas el
+ * hero cae en las que están hoy en `public/images`, así que la portada nunca
+ * queda sin fondo.
+ */
+export interface HomeHero {
+  desktopImage?: SanityImageSource;
+  mobileImage?: SanityImageSource;
+}
+
 export interface LiveStream {
   title: string;
   description: string;

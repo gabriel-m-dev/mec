@@ -1,10 +1,18 @@
 import { Hero } from "@/components/hero";
 import { HomeCarousel, type CarouselSlide } from "@/components/home-carousel";
 import { sanityClient } from "@/sanity/lib/client";
-import { urlForImage } from "@/sanity/lib/image";
-import { homeFeaturedQuery, homeLiveQuery } from "@/sanity/lib/queries";
+import {
+  urlForHeroDesktop,
+  urlForHeroMobile,
+  urlForImage,
+} from "@/sanity/lib/image";
+import {
+  homeFeaturedQuery,
+  homeHeroQuery,
+  homeLiveQuery,
+} from "@/sanity/lib/queries";
 import { SANITY_TAGS } from "@/sanity/lib/tags";
-import type { FeaturedItem, LiveStream } from "@/sanity/lib/types";
+import type { FeaturedItem, HomeHero, LiveStream } from "@/sanity/lib/types";
 
 /**
  * A dónde lleva el botón de cada destacado.
@@ -22,6 +30,15 @@ function hrefFor(item: FeaturedItem): string {
 }
 
 export default async function HomePage() {
+  const hero = await sanityClient.fetch<HomeHero | null>(
+    homeHeroQuery,
+    {},
+    {
+      cache: "force-cache",
+      next: { tags: [SANITY_TAGS.homePage] },
+    },
+  );
+
   const live = await sanityClient.fetch<LiveStream | null>(
     homeLiveQuery,
     {},
@@ -81,7 +98,18 @@ export default async function HomePage() {
 
   return (
     <main className="relative overflow-hidden bg-ink-950">
-      <Hero />
+      {/* Cada imagen se resuelve por separado: cargar solo la de escritorio
+          tiene que dejar la de celular en la que está hoy, no romperla. */}
+      <Hero
+        desktopImage={
+          hero?.desktopImage
+            ? urlForHeroDesktop(hero.desktopImage).url()
+            : undefined
+        }
+        mobileImage={
+          hero?.mobileImage ? urlForHeroMobile(hero.mobileImage).url() : undefined
+        }
+      />
       <HomeCarousel slides={[...liveSlide, ...featuredSlides]} />
     </main>
   );
