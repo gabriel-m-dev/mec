@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 type ChosenLeaderCardProps = {
   name: string;
@@ -10,19 +11,41 @@ type ChosenLeaderCardProps = {
 };
 
 /**
+ * Grupo de personas. Marca el bloque de invitación del pie como una llamada a
+ * sumarse, no como un dato más de la persona a cargo.
+ */
+function GroupIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.5}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      className="h-8 w-8"
+    >
+      <path d="M16 19v-1a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v1" />
+      <circle cx="9" cy="7" r="3" />
+      <path d="M22 19v-1a4 4 0 0 0-3-3.87" />
+      <path d="M16 4.13a4 4 0 0 1 0 5.75" />
+    </svg>
+  );
+}
+
+/**
  * La persona a cargo de The Chosen.
  *
- * Antes la tarjeta ocupaba los 1280px del contenedor con una foto vertical de
- * 320px y una descripción corta: quedaba un vacío enorme a la derecha. La
- * versión anterior tenía razón en ser ancha —hay UNA sola persona y una
- * tarjeta angosta en una grilla de tres deja huecos— pero se pasó para el otro
- * lado.
+ * La tarjeta ocupa el ancho completo del contenedor y parte en dos: la foto
+ * grande a la izquierda, y a la derecha la jerarquía de lectura —rol, nombre,
+ * a qué responde, presentación—. Al pie, separada por una línea, la invitación
+ * a sumarse: es lo que el visitante puede HACER después de leer, y por eso va
+ * última y centrada, no mezclada con la presentación.
  *
- * Ahora se limita a `max-w-4xl` y NO se centra: alinea a la izquierda con el
- * título de la sección. El ancho lo pone el texto, no el contenedor.
- *
- * La foto pasa a cuadrada y chica. En una tarjeta de presentación la cara
- * alcanza; una vertical de 4/5 pedía relleno alrededor para no quedar sola.
+ * El texto fijo ("Responsable de The Chosen", la invitación del pie) vive acá y
+ * no en Sanity, igual que los títulos de sección: es la estructura de la
+ * tarjeta. Lo editable es la persona.
  */
 export function ChosenLeaderCard({
   name,
@@ -32,39 +55,113 @@ export function ChosenLeaderCard({
   imageAlt,
 }: ChosenLeaderCardProps) {
   return (
-    <article className="max-w-4xl overflow-hidden rounded-[1.75rem] border border-white/10 bg-gradient-to-b from-white/[0.07] to-white/[0.02] shadow-luxe backdrop-blur-sm">
-      <div className="flex flex-col gap-7 p-7 sm:flex-row sm:items-center sm:gap-9 sm:p-9">
-        {image && (
-          <div className="relative h-36 w-36 shrink-0 overflow-hidden rounded-2xl ring-1 ring-white/10 sm:h-44 sm:w-44">
-            <Image
-              src={image}
-              alt={imageAlt ?? ""}
-              fill
-              sizes="176px"
-              className="object-cover"
-            />
+    /* Borde de un pixel hecho con degradado: nace dorado en la esquina
+       superior derecha y se apaga hacia abajo a la izquierda. Un `border`
+       plano no puede cambiar de color a lo largo del trazo. */
+    <div className="rounded-[1.75rem] bg-gradient-to-bl from-gold-300/70 via-white/10 to-white/[0.06] p-px shadow-[0_30px_90px_rgba(0,0,0,0.55)]">
+      <article className="relative overflow-hidden rounded-[calc(1.75rem-1px)] bg-gradient-to-b from-white/[0.07] via-white/[0.04] to-white/[0.02] backdrop-blur-sm">
+        {/* Luz cálida detrás de la esquina que enciende el borde. Decorativa. */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -right-24 -top-24 h-64 w-64 rounded-full bg-gold-400/10 blur-3xl"
+        />
+
+        <div className="relative p-7 sm:p-10 lg:p-16">
+          <div className="flex flex-col gap-8 lg:flex-row lg:items-start lg:gap-[4.5rem]">
+            {image && (
+              /* Mismo recurso que el borde de la tarjeta, en chico: el marco
+                 dorado de la foto es un degradado de un pixel. */
+              <div className="w-full shrink-0 rounded-[1.25rem] bg-gradient-to-br from-gold-300/60 via-gold-400/20 to-gold-500/10 p-px lg:w-[26.75rem]">
+                <div className="relative aspect-square overflow-hidden rounded-[calc(1.25rem-1px)] lg:aspect-[107/110]">
+                  <Image
+                    src={image}
+                    alt={imageAlt ?? ""}
+                    fill
+                    sizes="(min-width: 1024px) 428px, 100vw"
+                    className="object-cover"
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* `min-w-0` para que el texto largo pueda encogerse dentro del
+                flex en vez de empujar la foto fuera de la tarjeta. */}
+            <div className="min-w-0">
+              <p className="inline-flex rounded-full border border-gold-300/40 bg-gold-400/[0.07] px-5 py-2 text-[13px] font-semibold uppercase tracking-[0.16em] text-gold-200 shadow-[0_0_24px_rgba(227,170,53,0.15)]">
+                {role}
+              </p>
+
+              <h3 className="mt-6 font-serif text-4xl tracking-tight text-white sm:text-5xl lg:text-7xl">
+                {name}
+              </h3>
+
+              <p className="mt-4 text-lg text-slate-300 sm:text-2xl">
+                Responsable de{" "}
+                <span className="font-serif italic text-gold-300">
+                  The Chosen
+                </span>
+              </p>
+
+              <div
+                aria-hidden="true"
+                className="mt-7 h-0.5 w-16 rounded-full bg-gradient-to-r from-gold-400 to-gold-500/20"
+              />
+
+              <p className="mt-7 max-w-[37rem] whitespace-pre-line text-base leading-[2] text-slate-300 lg:text-[17px] lg:leading-[38px]">
+                {description}
+              </p>
+            </div>
           </div>
-        )}
 
-        {/* `min-w-0` para que el texto largo pueda encogerse dentro del flex
-            en vez de empujar la foto fuera de la tarjeta. */}
-        <div className="min-w-0">
-          {/* El rol como píldora y no como línea de versalitas anchas: ocupa
-              menos, se lee de un golpe y deja el nombre como lo primero
-              grande que ve el ojo. */}
-          <p className="inline-flex rounded-full border border-gold-300/25 bg-gold-400/10 px-3 py-1 text-[11px] font-medium uppercase tracking-[0.16em] text-gold-200">
-            {role}
-          </p>
+          {/* La invitación a sumarse. Centrada y al pie: cierra la tarjeta con
+              la única acción que ofrece. */}
+          <div className="mt-12 border-t border-white/10 pt-10 lg:mt-14">
+            <div className="flex flex-col items-center gap-6 text-center lg:flex-row lg:justify-center lg:gap-10 lg:text-left">
+              <span
+                aria-hidden="true"
+                className="grid h-[84px] w-[84px] shrink-0 place-items-center rounded-full border border-gold-300/40 text-gold-300"
+              >
+                <GroupIcon />
+              </span>
 
-          <h3 className="mt-4 font-serif text-3xl tracking-tight text-white sm:text-4xl">
-            {name}
-          </h3>
+              <div className="min-w-0">
+                <p className="font-serif text-xl text-white sm:text-2xl">
+                  ¿Querés que tu hijo o hija se sume?
+                </p>
+                <p className="mt-1.5 text-base leading-7 text-slate-400">
+                  Si te interesa colaborar como voluntario, escribinos y te
+                  ponemos en contacto con el equipo.
+                </p>
+              </div>
 
-          <p className="mt-3 whitespace-pre-line text-[15px] leading-7 text-slate-300">
-            {description}
-          </p>
+              <span
+                aria-hidden="true"
+                className="hidden h-16 w-px shrink-0 bg-white/10 lg:block"
+              />
+
+              <Link
+                href="/contacto"
+                className="group inline-flex shrink-0 items-center gap-3 rounded-full border border-gold-300/50 px-8 py-3.5 text-[13px] font-semibold uppercase tracking-[0.14em] text-gold-200 transition hover:border-gold-200/80 hover:bg-gold-400/10"
+              >
+                Ponete en contacto
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={1.75}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                  className="h-4 w-4 transition-transform group-hover:translate-x-1"
+                >
+                  <path d="M5 12h14" />
+                  <path d="m13 6 6 6-6 6" />
+                </svg>
+              </Link>
+            </div>
+          </div>
         </div>
-      </div>
-    </article>
+      </article>
+    </div>
   );
 }
