@@ -3,7 +3,7 @@ import { NewsCard } from "@/components/news-card";
 import { PageHeader } from "@/components/page-header";
 import { SectionHeading } from "@/components/section-heading";
 import { urlForBanner, urlForImage } from "@/sanity/lib/image";
-import { sanityClient } from "@/sanity/lib/client";
+import { fetchContent } from "@/sanity/lib/fetch";
 import { newsItemsQuery, pageBannerByRouteQuery } from "@/sanity/lib/queries";
 import { SANITY_TAGS } from "@/sanity/lib/tags";
 import { PAGE_SECTION_KEYS, type NewsItem, type PageBanner } from "@/sanity/lib/types";
@@ -14,15 +14,10 @@ export const metadata: Metadata = {
 
 export default async function NoticiasPage() {
   const [banner, news] = await Promise.all([
-    sanityClient.fetch<PageBanner | null>(
-      pageBannerByRouteQuery,
-      { route: "/noticias" },
-      { cache: "force-cache", next: { tags: [SANITY_TAGS.pageBanner] } },
-    ),
-    sanityClient.fetch<NewsItem[]>(newsItemsQuery, {}, {
-      cache: "force-cache",
-      next: { tags: [SANITY_TAGS.newsItem] },
+    fetchContent<PageBanner | null>(pageBannerByRouteQuery, SANITY_TAGS.pageBanner, {
+      route: "/noticias",
     }),
+    fetchContent<NewsItem[]>(newsItemsQuery, SANITY_TAGS.newsItem),
   ]);
 
   const mainSection = banner?.sections?.find(

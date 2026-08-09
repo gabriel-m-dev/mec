@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { PhotoGallery } from "@/components/photo-gallery";
-import { sanityClient } from "@/sanity/lib/client";
+import { fetchContent } from "@/sanity/lib/fetch";
 import { urlForImage } from "@/sanity/lib/image";
 import { eventBySlugQuery, eventSlugsWithGalleryQuery } from "@/sanity/lib/queries";
 import { SANITY_TAGS } from "@/sanity/lib/tags";
@@ -12,11 +12,7 @@ import type { Event } from "@/sanity/lib/types";
 type Params = { slug: string };
 
 async function getEvent(slug: string): Promise<Event | null> {
-  return sanityClient.fetch<Event | null>(
-    eventBySlugQuery,
-    { slug },
-    { cache: "force-cache", next: { tags: [SANITY_TAGS.event] } },
-  );
+  return fetchContent<Event | null>(eventBySlugQuery, SANITY_TAGS.event, { slug });
 }
 
 /**
@@ -25,10 +21,9 @@ async function getEvent(slug: string): Promise<Event | null> {
  * después del último deploy se renderiza a demanda la primera vez.
  */
 export async function generateStaticParams(): Promise<Params[]> {
-  const slugs = await sanityClient.fetch<string[]>(
+  const slugs = await fetchContent<string[]>(
     eventSlugsWithGalleryQuery,
-    {},
-    { cache: "force-cache", next: { tags: [SANITY_TAGS.event] } },
+    SANITY_TAGS.event,
   );
 
   return slugs.map((slug) => ({ slug }));

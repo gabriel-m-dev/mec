@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 import { getSiteUrl } from "@/lib/site-url";
-import { sanityClient } from "@/sanity/lib/client";
+import { fetchContent } from "@/sanity/lib/fetch";
 import {
   chosenActivitySlugsWithGalleryQuery,
   eventSlugsWithGalleryQuery,
@@ -25,15 +25,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Misma query que usa `generateStaticParams` de la galería, para que el
   // sitemap no pueda listar una página que no existe ni omitir una que sí.
   const [eventSlugs, chosenSlugs] = await Promise.all([
-    sanityClient.fetch<string[]>(
-      eventSlugsWithGalleryQuery,
-      {},
-      { cache: "force-cache", next: { tags: [SANITY_TAGS.event] } },
-    ),
-    sanityClient.fetch<string[]>(
+    fetchContent<string[]>(eventSlugsWithGalleryQuery, SANITY_TAGS.event),
+    fetchContent<string[]>(
       chosenActivitySlugsWithGalleryQuery,
-      {},
-      { cache: "force-cache", next: { tags: [SANITY_TAGS.chosenActivity] } },
+      SANITY_TAGS.chosenActivity,
     ),
   ]);
 

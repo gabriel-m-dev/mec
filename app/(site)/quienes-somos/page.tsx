@@ -7,7 +7,7 @@ import {
   ShieldCrossIcon,
   UsersIcon,
 } from "@/components/feature-icons";
-import { sanityClient } from "@/sanity/lib/client";
+import { fetchContent } from "@/sanity/lib/fetch";
 import { urlForBanner, urlForImage } from "@/sanity/lib/image";
 import { pageBannerByRouteQuery } from "@/sanity/lib/queries";
 import { SANITY_TAGS } from "@/sanity/lib/tags";
@@ -24,10 +24,10 @@ const valueIcons = {
 };
 
 export default async function QuienesSomosPage() {
-  const banner = await sanityClient.fetch<PageBanner | null>(
+  const banner = await fetchContent<PageBanner | null>(
     pageBannerByRouteQuery,
+    SANITY_TAGS.pageBanner,
     { route: "/quienes-somos" },
-    { cache: "force-cache", next: { tags: [SANITY_TAGS.pageBanner] } },
   );
 
   const mainSection = banner?.sections?.find(

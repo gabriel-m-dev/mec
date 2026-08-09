@@ -1,6 +1,6 @@
 import { WhatsAppIcon } from "@/components/contact-icons";
 import { buildWhatsAppUrl } from "@/lib/whatsapp";
-import { sanityClient } from "@/sanity/lib/client";
+import { fetchContent } from "@/sanity/lib/fetch";
 import { siteSettingsQuery } from "@/sanity/lib/queries";
 import { SANITY_TAGS } from "@/sanity/lib/tags";
 import type { SiteSettings } from "@/sanity/lib/types";
@@ -17,10 +17,9 @@ import type { SiteSettings } from "@/sanity/lib/types";
  * cargado no se renderiza nada.
  */
 export async function WhatsAppButton() {
-  const siteSettings = await sanityClient.fetch<SiteSettings | null>(
+  const siteSettings = await fetchContent<SiteSettings | null>(
     siteSettingsQuery,
-    {},
-    { cache: "force-cache", next: { tags: [SANITY_TAGS.siteSettings] } },
+    SANITY_TAGS.siteSettings,
   );
 
   const href = buildWhatsAppUrl(

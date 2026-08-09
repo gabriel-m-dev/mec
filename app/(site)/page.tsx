@@ -1,6 +1,6 @@
 import { Hero } from "@/components/hero";
 import { HomeCarousel, type CarouselSlide } from "@/components/home-carousel";
-import { sanityClient } from "@/sanity/lib/client";
+import { fetchContent } from "@/sanity/lib/fetch";
 import {
   urlForHeroDesktop,
   urlForHeroMobile,
@@ -30,36 +30,23 @@ function hrefFor(item: FeaturedItem): string {
 }
 
 export default async function HomePage() {
-  const hero = await sanityClient.fetch<HomeHero | null>(
+  const hero = await fetchContent<HomeHero | null>(
     homeHeroQuery,
-    {},
-    {
-      cache: "force-cache",
-      next: { tags: [SANITY_TAGS.homePage] },
-    },
+    SANITY_TAGS.homePage,
   );
 
-  const live = await sanityClient.fetch<LiveStream | null>(
+  const live = await fetchContent<LiveStream | null>(
     homeLiveQuery,
-    {},
-    {
-      cache: "force-cache",
-      next: { tags: [SANITY_TAGS.homePage] },
-    },
+    SANITY_TAGS.homePage,
   );
 
-  const featured = await sanityClient.fetch<FeaturedItem[] | null>(
-    homeFeaturedQuery,
-    {},
-    {
-      cache: "force-cache",
-      // Los tres tipos: cambiar QUÉ se destaca toca `homePage`, pero editar el
-      // evento o la noticia destacada también tiene que refrescar la portada.
-      next: {
-        tags: [SANITY_TAGS.homePage, SANITY_TAGS.event, SANITY_TAGS.newsItem],
-      },
-    },
-  );
+  // Los tres tipos: cambiar QUÉ se destaca toca `homePage`, pero editar el
+  // evento o la noticia destacada también tiene que refrescar la portada.
+  const featured = await fetchContent<FeaturedItem[] | null>(homeFeaturedQuery, [
+    SANITY_TAGS.homePage,
+    SANITY_TAGS.event,
+    SANITY_TAGS.newsItem,
+  ]);
 
   // Dos redes, y las dos hacen falta:
   // - `filter(Boolean)` porque una referencia a un documento borrado se

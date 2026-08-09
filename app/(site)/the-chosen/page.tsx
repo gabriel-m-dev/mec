@@ -3,7 +3,7 @@ import { ChosenActivityCard } from "@/components/chosen-activity-card";
 import { ChosenLeaderCard } from "@/components/chosen-leader-card";
 import { PageHeader } from "@/components/page-header";
 import { urlForBanner, urlForImage } from "@/sanity/lib/image";
-import { sanityClient } from "@/sanity/lib/client";
+import { fetchContent } from "@/sanity/lib/fetch";
 import {
   chosenActivitiesQuery,
   chosenLeaderQuery,
@@ -50,19 +50,11 @@ function galleryHref(activity: ChosenActivity): string | undefined {
  */
 export default async function TheChosenPage() {
   const [banner, leader, activities] = await Promise.all([
-    sanityClient.fetch<PageBanner | null>(
-      pageBannerByRouteQuery,
-      { route: "/the-chosen" },
-      { cache: "force-cache", next: { tags: [SANITY_TAGS.pageBanner] } },
-    ),
-    sanityClient.fetch<ChosenLeader | null>(chosenLeaderQuery, {}, {
-      cache: "force-cache",
-      next: { tags: [SANITY_TAGS.chosenLeader] },
+    fetchContent<PageBanner | null>(pageBannerByRouteQuery, SANITY_TAGS.pageBanner, {
+      route: "/the-chosen",
     }),
-    sanityClient.fetch<ChosenActivity[]>(chosenActivitiesQuery, {}, {
-      cache: "force-cache",
-      next: { tags: [SANITY_TAGS.chosenActivity] },
-    }),
+    fetchContent<ChosenLeader | null>(chosenLeaderQuery, SANITY_TAGS.chosenLeader),
+    fetchContent<ChosenActivity[]>(chosenActivitiesQuery, SANITY_TAGS.chosenActivity),
   ]);
 
   // Un solo viaje a Sanity y dos listas: separar por el campo `when` acá es

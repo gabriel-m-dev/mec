@@ -3,7 +3,7 @@ import { EventCard } from "@/components/event-card";
 import { PageHeader } from "@/components/page-header";
 import { SectionHeading } from "@/components/section-heading";
 import { urlForBanner, urlForImage } from "@/sanity/lib/image";
-import { sanityClient } from "@/sanity/lib/client";
+import { fetchContent } from "@/sanity/lib/fetch";
 import { eventsQuery, pageBannerByRouteQuery } from "@/sanity/lib/queries";
 import { SANITY_TAGS } from "@/sanity/lib/tags";
 import { PAGE_SECTION_KEYS, type Event, type PageBanner } from "@/sanity/lib/types";
@@ -14,15 +14,10 @@ export const metadata: Metadata = {
 
 export default async function EventosPage() {
   const [banner, events] = await Promise.all([
-    sanityClient.fetch<PageBanner | null>(
-      pageBannerByRouteQuery,
-      { route: "/eventos" },
-      { cache: "force-cache", next: { tags: [SANITY_TAGS.pageBanner] } },
-    ),
-    sanityClient.fetch<Event[]>(eventsQuery, {}, {
-      cache: "force-cache",
-      next: { tags: [SANITY_TAGS.event] },
+    fetchContent<PageBanner | null>(pageBannerByRouteQuery, SANITY_TAGS.pageBanner, {
+      route: "/eventos",
     }),
+    fetchContent<Event[]>(eventsQuery, SANITY_TAGS.event),
   ]);
 
   const mainSection = banner?.sections?.find(

@@ -4,7 +4,7 @@ import { ChaplainCard } from "@/components/chaplain-card";
 import { ChaplaincyActivityRow } from "@/components/chaplaincy-activity-row";
 import { PageHeader } from "@/components/page-header";
 import { urlForBanner, urlForImage } from "@/sanity/lib/image";
-import { sanityClient } from "@/sanity/lib/client";
+import { fetchContent } from "@/sanity/lib/fetch";
 import {
   chaplaincyActivitiesQuery,
   chaplainsQuery,
@@ -62,23 +62,15 @@ const SITUACIONES = [
 
 export default async function CapellaniaPage() {
   const [banner, activities, chaplains, siteSettings] = await Promise.all([
-    sanityClient.fetch<PageBanner | null>(
-      pageBannerByRouteQuery,
-      { route: "/capellanes" },
-      { cache: "force-cache", next: { tags: [SANITY_TAGS.pageBanner] } },
+    fetchContent<PageBanner | null>(pageBannerByRouteQuery, SANITY_TAGS.pageBanner, {
+      route: "/capellanes",
+    }),
+    fetchContent<ChaplaincyActivity[]>(
+      chaplaincyActivitiesQuery,
+      SANITY_TAGS.chaplaincyActivity,
     ),
-    sanityClient.fetch<ChaplaincyActivity[]>(chaplaincyActivitiesQuery, {}, {
-      cache: "force-cache",
-      next: { tags: [SANITY_TAGS.chaplaincyActivity] },
-    }),
-    sanityClient.fetch<Chaplain[]>(chaplainsQuery, {}, {
-      cache: "force-cache",
-      next: { tags: [SANITY_TAGS.chaplain] },
-    }),
-    sanityClient.fetch<SiteSettings | null>(siteSettingsQuery, {}, {
-      cache: "force-cache",
-      next: { tags: [SANITY_TAGS.siteSettings] },
-    }),
+    fetchContent<Chaplain[]>(chaplainsQuery, SANITY_TAGS.chaplain),
+    fetchContent<SiteSettings | null>(siteSettingsQuery, SANITY_TAGS.siteSettings),
   ]);
 
   const rnc = siteSettings?.rnc;

@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { PhotoGallery } from "@/components/photo-gallery";
-import { sanityClient } from "@/sanity/lib/client";
+import { fetchContent } from "@/sanity/lib/fetch";
 import { urlForImage } from "@/sanity/lib/image";
 import {
   chosenActivityBySlugQuery,
@@ -15,10 +15,10 @@ import type { ChosenActivity } from "@/sanity/lib/types";
 type Params = { slug: string };
 
 async function getActivity(slug: string): Promise<ChosenActivity | null> {
-  return sanityClient.fetch<ChosenActivity | null>(
+  return fetchContent<ChosenActivity | null>(
     chosenActivityBySlugQuery,
+    SANITY_TAGS.chosenActivity,
     { slug },
-    { cache: "force-cache", next: { tags: [SANITY_TAGS.chosenActivity] } },
   );
 }
 
@@ -28,10 +28,9 @@ async function getActivity(slug: string): Promise<ChosenActivity | null> {
  * la primera vez.
  */
 export async function generateStaticParams(): Promise<Params[]> {
-  const slugs = await sanityClient.fetch<string[]>(
+  const slugs = await fetchContent<string[]>(
     chosenActivitySlugsWithGalleryQuery,
-    {},
-    { cache: "force-cache", next: { tags: [SANITY_TAGS.chosenActivity] } },
+    SANITY_TAGS.chosenActivity,
   );
 
   return slugs.map((slug) => ({ slug }));

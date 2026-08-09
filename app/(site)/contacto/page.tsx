@@ -14,7 +14,7 @@ import { PageHeader } from "@/components/page-header";
 import { VenueMap } from "@/components/venue-map";
 import { mailtoHref, telHref } from "@/lib/contact-links";
 import { urlForBanner } from "@/sanity/lib/image";
-import { sanityClient } from "@/sanity/lib/client";
+import { fetchContent } from "@/sanity/lib/fetch";
 import { pageBannerByRouteQuery, siteSettingsQuery, venueQuery } from "@/sanity/lib/queries";
 import { SANITY_TAGS } from "@/sanity/lib/tags";
 import type { PageBanner, SiteSettings, Venue } from "@/sanity/lib/types";
@@ -32,19 +32,11 @@ const socialIcons = {
 
 export default async function ContactoPage() {
   const [banner, siteSettings, venue] = await Promise.all([
-    sanityClient.fetch<PageBanner | null>(
-      pageBannerByRouteQuery,
-      { route: "/contacto" },
-      { cache: "force-cache", next: { tags: [SANITY_TAGS.pageBanner] } },
-    ),
-    sanityClient.fetch<SiteSettings | null>(siteSettingsQuery, {}, {
-      cache: "force-cache",
-      next: { tags: [SANITY_TAGS.siteSettings] },
+    fetchContent<PageBanner | null>(pageBannerByRouteQuery, SANITY_TAGS.pageBanner, {
+      route: "/contacto",
     }),
-    sanityClient.fetch<Venue | null>(venueQuery, {}, {
-      cache: "force-cache",
-      next: { tags: [SANITY_TAGS.venue] },
-    }),
+    fetchContent<SiteSettings | null>(siteSettingsQuery, SANITY_TAGS.siteSettings),
+    fetchContent<Venue | null>(venueQuery, SANITY_TAGS.venue),
   ]);
 
   // El teléfono se muestra tal como lo escribió la iglesia y el `href` va

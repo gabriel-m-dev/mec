@@ -4,7 +4,7 @@ import { SectionHeading } from "@/components/section-heading";
 import { VenueCard } from "@/components/venue-card";
 import { WorshipServiceCard } from "@/components/worship-service-card";
 import { urlForBanner, urlForImage } from "@/sanity/lib/image";
-import { sanityClient } from "@/sanity/lib/client";
+import { fetchContent } from "@/sanity/lib/fetch";
 import {
   pageBannerByRouteQuery,
   siteSettingsQuery,
@@ -26,23 +26,12 @@ export const metadata: Metadata = {
 
 export default async function CultosPage() {
   const [banner, siteSettings, venue, worshipServices] = await Promise.all([
-    sanityClient.fetch<PageBanner | null>(
-      pageBannerByRouteQuery,
-      { route: "/cultos" },
-      { cache: "force-cache", next: { tags: [SANITY_TAGS.pageBanner] } },
-    ),
-    sanityClient.fetch<SiteSettings | null>(siteSettingsQuery, {}, {
-      cache: "force-cache",
-      next: { tags: [SANITY_TAGS.siteSettings] },
+    fetchContent<PageBanner | null>(pageBannerByRouteQuery, SANITY_TAGS.pageBanner, {
+      route: "/cultos",
     }),
-    sanityClient.fetch<Venue | null>(venueQuery, {}, {
-      cache: "force-cache",
-      next: { tags: [SANITY_TAGS.venue] },
-    }),
-    sanityClient.fetch<WorshipService[]>(worshipServicesQuery, {}, {
-      cache: "force-cache",
-      next: { tags: [SANITY_TAGS.worshipService] },
-    }),
+    fetchContent<SiteSettings | null>(siteSettingsQuery, SANITY_TAGS.siteSettings),
+    fetchContent<Venue | null>(venueQuery, SANITY_TAGS.venue),
+    fetchContent<WorshipService[]>(worshipServicesQuery, SANITY_TAGS.worshipService),
   ]);
 
   const mainSection = banner?.sections?.find(
