@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { PhotoGallery } from "@/components/photo-gallery";
 import { sanityClient } from "@/sanity/lib/client";
 import { urlForImage } from "@/sanity/lib/image";
 import {
@@ -99,25 +99,22 @@ export default async function ChosenActivityPage({
             </p>
           )}
 
-          <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {gallery.map((photo) => (
-              <div
-                key={photo._key}
-                className="relative aspect-[4/3] overflow-hidden rounded-[1.5rem] border border-white/10 bg-white/4 shadow-luxe"
-              >
-                <Image
-                  src={urlForImage(photo).width(900).url()}
-                  // El alt es opcional en la galería: cargar 20 descripciones a
-                  // mano termina en 20 veces "foto". El título de la actividad
-                  // dice algo real cuando falta.
-                  alt={photo.alt ?? activity.title}
-                  fill
-                  sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 90vw"
-                  className="object-cover"
-                />
-              </div>
-            ))}
-          </div>
+          {/* Las URLs se arman acá, en el servidor: así el constructor de
+              Sanity no viaja al navegador con la galería. */}
+          <PhotoGallery
+            className="mt-14"
+            photos={gallery.map((photo) => ({
+              key: photo._key,
+              thumb: urlForImage(photo).width(900).url(),
+              // El doble que la miniatura: en el visor la foto se ve entera y
+              // a pantalla completa, no recortada en una celda de la grilla.
+              full: urlForImage(photo).width(1800).url(),
+              // El alt es opcional en la galería: cargar 20 descripciones a
+              // mano termina en 20 veces "foto". El título de la actividad
+              // dice algo real cuando falta.
+              alt: photo.alt ?? activity.title,
+            }))}
+          />
         </div>
       </section>
     </main>
