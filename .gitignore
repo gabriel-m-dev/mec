@@ -15,3 +15,16 @@ dist
 # preview/starfield-background. Quedan en la carpeta local para poder
 # retomarla, pero fuera de main porque ahi nadie los usa.
 public/images/background_page_*.png
+
+# La nota de la iglesia a la Municipalidad de Hurlingham. De ahi salieron los
+# datos institucionales que hoy estan cargados en Sanity, asi que conviene
+# tenerla a mano en local — pero es documentacion interna con datos de la
+# institucion y NO va a un repositorio publico.
+public/images/info.jpg
+
+# Maquetas y capturas de referencia que se usan para trabajar una pantalla y
+# despues no sirven mas. Pesan megabytes y no son recursos del sitio.
+public/images/redise*.png
+
+# Carpeta de herramientas locales.
+public/images/.atl/
