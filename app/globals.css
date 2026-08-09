@@ -11,8 +11,9 @@ html {
 }
 
 /*
-  PRUEBA — el sitio en celular al 70%.
-  Pedido para mostrarle al cliente, que ve todo muy grande.
+  El sitio en celular al 82.5%, o sea 13.2px de base.
+  El cliente veía todo muy grande; se probó al 70% (11.2px) y quedó bien de
+  proporción pero corto de tamaño, así que se le sumaron 2px.
 
   Se hace acá y no clase por clase porque TODA la escala del proyecto está en
   `rem` —la tipografía del `tailwind.config`, los `p-*`, los `gap-*`, los
@@ -33,7 +34,7 @@ html {
 */
 @media (max-width: 639.98px) {
   html {
-    font-size: 70%;
+    font-size: 82.5%;
   }
 }
 
