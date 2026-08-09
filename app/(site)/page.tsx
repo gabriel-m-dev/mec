@@ -96,6 +96,8 @@ export default async function HomePage() {
       href: hrefFor(item),
     }));
 
+  const slides: CarouselSlide[] = [...liveSlide, ...featuredSlides];
+
   return (
     <main className="relative overflow-hidden bg-ink-950">
       {/* Cada imagen se resuelve por separado: cargar solo la de escritorio
@@ -109,8 +111,27 @@ export default async function HomePage() {
         mobileImage={
           hero?.mobileImage ? urlForHeroMobile(hero.mobileImage).url() : undefined
         }
+        carousel={
+          slides.length > 0 ? (
+            <HomeCarousel slides={slides} variant="card" />
+          ) : undefined
+        }
       />
-      <HomeCarousel slides={[...liveSlide, ...featuredSlides]} />
+      {/*
+        El mismo carrusel dos veces, cada uno tapado en el otro tamaño de
+        pantalla. Son DOS instancias con su propio estado y su propio reloj, lo
+        que no es gratis — pero un solo elemento no puede estar adentro de la
+        grilla del hero en celular Y debajo del hero en escritorio, que son
+        padres distintos. Alternarlos por CSS es el mismo recurso que ya usa el
+        encabezado para su menú de celular y el de escritorio.
+
+        Lo que sí sería caro es que la instancia tapada se bajara sus imágenes:
+        piden tamaños distintos, así que serían URLs distintas y bytes de más.
+        No pasa porque solo la tarjeta marca `priority`; en la de escritorio
+        las diapositivas quedan en carga diferida, y una imagen diferida
+        adentro de un `display:none` nunca entra en pantalla ni se pide.
+      */}
+      <HomeCarousel slides={slides} className="hidden sm:block" />
     </main>
   );
 }

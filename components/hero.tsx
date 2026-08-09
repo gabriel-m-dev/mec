@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import type { ReactNode } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { FeatureHighlight } from "@/components/feature-highlight";
 import {
@@ -31,9 +32,20 @@ type HeroProps = {
   /** Desde Sanity. Si falta, se usa la imagen que está hoy en el repo. */
   desktopImage?: string;
   mobileImage?: string;
+  /**
+   * Va en el hueco del medio, SOLO en celular. Se recibe armado desde afuera
+   * en vez de que el hero lo construya: así el hero no necesita saber qué es
+   * un destacado ni hablar con Sanity, que es de lo único que se ocupa la
+   * página.
+   */
+  carousel?: ReactNode;
 };
 
-export function Hero({ desktopImage, mobileImage }: HeroProps = {}) {
+export function Hero({
+  desktopImage,
+  mobileImage,
+  carousel,
+}: HeroProps = {}) {
   const shouldReduceMotion = useReducedMotion();
 
   return (
@@ -153,6 +165,19 @@ export function Hero({ desktopImage, mobileImage }: HeroProps = {}) {
             </Link>
           </motion.div>
         </div>
+
+        {/*
+          El carrusel, solo en celular. `sm:hidden` no lo esconde nada más:
+          `display:none` lo saca de la grilla, así que en escritorio vuelven a
+          quedar DOS filas y el hero es exactamente el de antes.
+
+          Con tres filas, `content-between` manda la primera arriba, la última
+          abajo y deja esta en el medio con el sobrante repartido en partes
+          iguales — que es justo donde el cliente la quiere.
+        */}
+        {carousel && (
+          <div className="relative z-10 w-full sm:hidden">{carousel}</div>
+        )}
 
         <div className="relative z-10 mt-[1.875rem] grid grid-cols-4 gap-x-1.5 gap-y-6 sm:mt-12 sm:gap-x-8 sm:gap-y-8">
           {featureHighlights.map((item, index) => {
