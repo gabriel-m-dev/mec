@@ -28,6 +28,23 @@ const featureIcons = {
 const FALLBACK_DESKTOP_IMAGE = "/images/new_hero_desktop.png";
 const FALLBACK_MOBILE_IMAGE = "/images/new_hero_mobile.png";
 
+/**
+ * De dónde entra cada bloque del hero.
+ *
+ * Son CONSTANTES y no dependen de la preferencia de movimiento a propósito.
+ * `useReducedMotion` no se puede leer en el servidor: ahí devuelve siempre
+ * "no", y en el primer dibujo del navegador ya devuelve el valor real. Si el
+ * `initial` se calculara con eso, el HTML servido y el primer render del
+ * cliente saldrían distintos —uno con `opacity: 0`, el otro con `opacity: 1`—
+ * y React avisa de hidratación desajustada.
+ *
+ * La preferencia sigue respetándose, pero por donde corresponde: la DURACIÓN.
+ * Con `duration: 0` el bloque aparece en su lugar final sin desplazarse, que
+ * es exactamente lo que pide "reducir movimiento".
+ */
+const ENTRADA_TEXTO = { opacity: 0, y: 18 };
+const ENTRADA_ACCESOS = { opacity: 0, y: 22 };
+
 type HeroProps = {
   /** Desde Sanity. Si falta, se usa la imagen que está hoy en el repo. */
   desktopImage?: string;
@@ -131,7 +148,7 @@ export function Hero({
       <div className="relative mx-auto grid min-h-[calc(100svh-5.5rem)] max-w-7xl content-start items-center gap-y-5 px-4 pb-16 pt-8 sm:content-normal sm:gap-y-0 sm:px-6 sm:pt-2.5 lg:px-8 lg:pb-20">
         <div className="relative z-10 mx-auto max-w-4xl text-center">
           <motion.h1
-            initial={shouldReduceMotion ? false : { opacity: 0, y: 18 }}
+            initial={ENTRADA_TEXTO}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: shouldReduceMotion ? 0 : 0.9, delay: shouldReduceMotion ? 0 : 0.1 }}
             className="font-serif text-3xl tracking-tight text-white drop-shadow-[0_8px_40px_rgba(0,0,0,0.7)] sm:text-5xl md:text-6xl"
@@ -140,7 +157,7 @@ export function Hero({
           </motion.h1>
 
           <motion.p
-            initial={shouldReduceMotion ? false : { opacity: 0, y: 18 }}
+            initial={ENTRADA_TEXTO}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: shouldReduceMotion ? 0 : 0.9, delay: shouldReduceMotion ? 0 : 0.28 }}
             className="mx-auto mt-2 max-w-3xl text-balance font-serif text-sm font-semibold uppercase tracking-[0.1em] text-gold-200 sm:mt-3 sm:text-xl sm:tracking-[0.14em]"
@@ -151,7 +168,7 @@ export function Hero({
           {/* El lema, debajo del nombre. La iglesia usa los DOS juntos: así
               aparece en su membrete institucional, no uno o el otro. */}
           <motion.p
-            initial={shouldReduceMotion ? false : { opacity: 0, y: 18 }}
+            initial={ENTRADA_TEXTO}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: shouldReduceMotion ? 0 : 0.9, delay: shouldReduceMotion ? 0 : 0.32 }}
             className="mx-auto mt-3 max-w-3xl text-balance font-serif text-base italic tracking-[0.08em] text-gold-300/90 sm:mt-4 sm:text-2xl"
@@ -160,7 +177,7 @@ export function Hero({
           </motion.p>
 
           <motion.p
-            initial={shouldReduceMotion ? false : { opacity: 0, y: 18 }}
+            initial={ENTRADA_TEXTO}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: shouldReduceMotion ? 0 : 0.9, delay: shouldReduceMotion ? 0 : 0.36 }}
             className="mx-auto mt-3 max-w-2xl text-pretty text-xs leading-5 text-slate-200 sm:mt-4 sm:text-base sm:leading-6"
@@ -171,7 +188,7 @@ export function Hero({
           </motion.p>
 
           <motion.div
-            initial={shouldReduceMotion ? false : { opacity: 0, y: 18 }}
+            initial={ENTRADA_TEXTO}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: shouldReduceMotion ? 0 : 0.9, delay: shouldReduceMotion ? 0 : 0.46 }}
             className="mt-5 flex flex-col items-center justify-center gap-2.5 sm:mt-7 sm:flex-row sm:gap-3"
@@ -221,7 +238,7 @@ export function Hero({
             return (
               <motion.div
                 key={item.label}
-                initial={shouldReduceMotion ? false : { opacity: 0, y: 22 }}
+                initial={ENTRADA_ACCESOS}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{
                   duration: shouldReduceMotion ? 0 : 0.8,
