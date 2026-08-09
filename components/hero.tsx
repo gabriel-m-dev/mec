@@ -116,7 +116,19 @@ export function Hero({
         Desde `sm:` se restauran los valores por defecto de la grilla y el
         escritorio queda exactamente como estaba.
       */}
-      <div className="relative mx-auto grid min-h-[100svh] max-w-7xl content-start items-center gap-y-5 px-4 pb-16 pt-8 sm:content-normal sm:gap-y-0 sm:px-6 sm:pt-20 lg:px-8 lg:pb-20 lg:pt-24">
+      {/*
+        El alto pedido es la pantalla MENOS el encabezado. El encabezado es
+        `sticky` pero ocupa su lugar en el flujo, así que un `100svh` pelado
+        daba una sección de 100svh + el alto del encabezado: siempre sobresalía
+        del pliegue justo por ese alto, y como en escritorio el contenido va
+        centrado dentro de esa caja agrandada, quedaba empujado hacia abajo y
+        se cortaba.
+
+        `5.5rem` no es un número al azar: es exactamente lo que mide el
+        encabezado, y como está en `rem` acompaña solo al 82.5% de celular
+        (5.5 × 13.2 = 72.6px) igual que al 100% de escritorio (5.5 × 16 = 88px).
+      */}
+      <div className="relative mx-auto grid min-h-[calc(100svh-5.5rem)] max-w-7xl content-start items-center gap-y-5 px-4 pb-16 pt-8 sm:content-normal sm:gap-y-0 sm:px-6 sm:pt-2.5 lg:px-8 lg:pb-20">
         <div className="relative z-10 mx-auto max-w-4xl text-center">
           <motion.h1
             initial={shouldReduceMotion ? false : { opacity: 0, y: 18 }}
