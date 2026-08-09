@@ -37,16 +37,20 @@ const SWIPE_THRESHOLD = 40;
 export type CarouselVariant = "full" | "card";
 
 /**
- * El lado MÁXIMO de la tarjeta en celular, en px — el 18rem de `w-[min(...)]`.
- * Solo se usa para el `sizes` de la imagen: en pantallas chicas la tarjeta es
- * más angosta, así que esto pide de más y nunca de menos.
+ * El lado MÁXIMO de la tarjeta en celular, en px — el 210px de `w-[min(...)]`.
+ * Solo se usa para el `sizes` de la imagen: en pantallas muy bajas la tarjeta
+ * es más chica, así que esto pide de más y nunca de menos.
  *
- * Va escrito acá y como literal en la clase de abajo a propósito: Tailwind
- * escanea el código como TEXTO, así que una clase armada con template string
- * (`w-[min(${x}rem,34svh)]`) no se genera nunca y el estilo desaparece sin dar
+ * Va en PÍXELES y no en `rem` a propósito: es una medida que se pidió exacta.
+ * En `rem` quedaría atada al 82.5% de celular y cambiaría sola si algún día se
+ * toca ese porcentaje.
+ *
+ * Está escrito acá y como literal en la clase de abajo: Tailwind escanea el
+ * código como TEXTO, así que una clase armada con template string
+ * (`w-[min(${x}px,34svh)]`) no se genera nunca y el estilo desaparece sin dar
  * un solo error.
  */
-const CARD_SIZE_PX = 288;
+const CARD_SIZE_PX = 210;
 
 const VARIANTS = {
   full: {
@@ -70,13 +74,12 @@ const VARIANTS = {
     priorityFirstSlide: false,
   },
   card: {
-    // El lado es el MENOR entre 18rem y 34svh, no una medida fija. En un
-    // teléfono alto manda 18rem y la tarjeta queda de 288px; en uno chico
-    // manda el alto de pantalla y se achica sola. Con 288px fijos, un 360×640
-    // no cierra: entre el texto, la tarjeta y los accesos no entra en una
-    // pantalla y los accesos se caen abajo del pliegue.
+    // El lado es el MENOR entre 210px y 34svh. En la mayoría de los teléfonos
+    // manda el 210; el tope por alto de pantalla sigue puesto para los muy
+    // bajos (abajo de ~620px de alto), donde una tarjeta fija empujaría los
+    // accesos rápidos afuera del pliegue.
     frame:
-      "relative mx-auto aspect-square w-[min(18rem,34svh)] overflow-hidden rounded-3xl shadow-luxe ring-1 ring-white/15",
+      "relative mx-auto aspect-square w-[min(210px,34svh)] overflow-hidden rounded-3xl shadow-luxe ring-1 ring-white/15",
     imageSizes: `${CARD_SIZE_PX}px`,
     // Sin puntos adentro que esquivar, el texto baja hasta el borde: solo
     // queda el aire que necesita para no pegarse.
