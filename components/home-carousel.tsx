@@ -25,77 +25,63 @@ const SWIPE_THRESHOLD = 40;
 /**
  * Dónde se está dibujando el carrusel.
  *
- * - `full`: a lo ancho de la página, debajo del hero. Es el de siempre.
- * - `card`: una tarjeta chica y cuadrada, metida en el hueco del medio del
- *   hero. Solo se usa en celular.
+ * - `full`: debajo del hero, en pantallas grandes.
+ * - `card`: metido en el hueco del medio del hero. Solo en celular.
  *
- * La tarjeta no es el mismo carrusel "más chico": adentro de 288px de alto el
+ * La tarjeta no es el mismo carrusel "más chico": adentro de 210px de lado el
  * texto grande del `full` no entra, así que el título, la bajada y el botón
- * bajan de tamaño y la bajada se corta a dos renglones. Sin eso el contenido
- * desborda la tarjeta y tapa los puntos.
+ * bajan de tamaño y la bajada se corta a dos renglones.
  */
 export type CarouselVariant = "full" | "card";
 
 /**
- * El lado MÁXIMO de la tarjeta en celular, en px — el 210px de `w-[min(...)]`.
- * Solo se usa para el `sizes` de la imagen: en pantallas muy bajas la tarjeta
- * es más chica, así que esto pide de más y nunca de menos.
+ * El lado de la tarjeta en celular, en px. Se usa para el `sizes` de la
+ * imagen; el ancho real lo pone `slideWidth`, que dice lo mismo.
  *
  * Va en PÍXELES y no en `rem` a propósito: es una medida que se pidió exacta.
  * En `rem` quedaría atada al 82.5% de celular y cambiaría sola si algún día se
  * toca ese porcentaje.
- *
- * Está escrito acá y como literal en la clase de abajo: Tailwind escanea el
- * código como TEXTO, así que una clase armada con template string
- * (`w-[min(${x}px,34svh)]`) no se genera nunca y el estilo desaparece sin dar
- * un solo error.
  */
 const CARD_SIZE_PX = 210;
 
 const VARIANTS = {
   full: {
-    frame:
-      "relative aspect-[4/5] w-full overflow-hidden sm:aspect-[21/9]",
-    imageSizes: "100vw",
-    textBox: "mx-auto max-w-7xl px-4 pb-24 sm:px-6 sm:pb-16 lg:px-8",
+    /**
+     * Ancho de UNA diapositiva. Va como texto y no como número porque entra
+     * en `calc()`: así el ancho puede depender del viewport sin que el
+     * componente tenga que medir nada en JavaScript.
+     */
+    slideWidth: "min(66vw, 56rem)",
+    slideGap: "1.5rem",
+    frame: "aspect-[21/9] overflow-hidden rounded-2xl ring-1 ring-white/10",
+    // 56rem son 896px, y 66vw llega a 896 cuando el viewport mide 1358.
+    // Arriba de ahí manda el tope y pedir 66vw seria pedir de mas.
+    imageSizes: "(min-width: 1358px) 896px, 66vw",
+    textBox: "mx-auto max-w-7xl px-6 pb-10 lg:px-10",
     title:
       "max-w-2xl font-serif text-2xl text-white drop-shadow-[0_4px_16px_rgba(0,0,0,0.65)] sm:text-4xl",
     description: "mt-2 max-w-2xl text-sm leading-6 text-slate-200 sm:mt-3 sm:text-base sm:leading-7",
     cta: "mt-4 px-5 py-2.5 text-xs sm:mt-5 sm:text-sm",
-    dots: "absolute inset-x-0 bottom-5",
-    dotsOutside: false,
-    hint: "bottom-12",
+    dots: "mt-5",
     showArrows: true,
     // Va SIEMPRE debajo del hero, o sea fuera de la primera pantalla: pedirla
     // con prioridad la ponía a competir con la imagen de fondo del hero, que
-    // es la que de verdad decide el LCP. Sin prioridad, las diapositivas
-    // quedan en carga diferida y ni siquiera se bajan mientras esta instancia
-    // está tapada en celular.
+    // es la que de verdad decide el LCP.
     priorityFirstSlide: false,
   },
   card: {
-    // El lado es el MENOR entre 210px y 34svh. En la mayoría de los teléfonos
-    // manda el 210; el tope por alto de pantalla sigue puesto para los muy
-    // bajos (abajo de ~620px de alto), donde una tarjeta fija empujaría los
-    // accesos rápidos afuera del pliegue.
-    frame:
-      "relative mx-auto aspect-square w-[min(210px,34svh)] overflow-hidden rounded-3xl shadow-luxe ring-1 ring-white/15",
+    slideWidth: "210px",
+    slideGap: "12px",
+    frame: "aspect-square overflow-hidden rounded-3xl shadow-luxe ring-1 ring-white/15",
     imageSizes: `${CARD_SIZE_PX}px`,
-    // Sin puntos adentro que esquivar, el texto baja hasta el borde: solo
-    // queda el aire que necesita para no pegarse.
+    // Sin puntos adentro que esquivar, el texto baja hasta el borde.
     textBox: "px-4 pb-4",
     title:
       "font-serif text-lg leading-tight text-white drop-shadow-[0_4px_16px_rgba(0,0,0,0.65)]",
     description: "mt-1 line-clamp-2 text-xs leading-5 text-slate-200",
     cta: "mt-2.5 px-4 py-1.5 text-[11px]",
-    // Afuera del cuadrado: no es posición absoluta sino una fila debajo.
     dots: "mt-3",
-    dotsOutside: true,
-    // Arriba, no abajo: abajo está el texto. Sobre la imagen, en una zona que
-    // suele estar despejada.
-    hint: "top-3",
-    // La tarjeta solo existe en celular, donde las flechas nunca se muestran:
-    // dibujarlas sería DOM muerto.
+    // La tarjeta solo existe en celular, donde las flechas nunca se muestran.
     showArrows: false,
     // Esta sí entra en la primera pantalla: va adentro del hero.
     priorityFirstSlide: true,
@@ -105,13 +91,25 @@ const VARIANTS = {
 /**
  * Carrusel de destacados de la portada.
  *
- * Es una PILA con fundido, no un riel que se desplaza. Esa decisión resuelve
- * dos cosas a la vez que el scroll nativo no podía:
+ * Es un RIEL que se desplaza y deja asomar la diapositiva anterior y la
+ * siguiente a los costados, apagadas. Las vecinas no son decoración: son lo
+ * que le avisa al visitante que hay más contenido. Antes era una pila con
+ * fundido y nada indicaba que el carrusel siguiera.
  *
- * - El gesto avanza exactamente UNA diapositiva, por rápido que se deslice.
- *   Con `scroll-snap` la inercia del navegador se comía varias de un saque y
- *   terminaba en la última.
- * - La transición es de opacidad. Un riel, por definición, desliza.
+ * El centrado se resuelve en CSS, sin medir nada en JavaScript:
+ *
+ * - El riel lleva `padding-left: calc(50% - anchoDiapositiva / 2)`. Los
+ *   porcentajes de `padding` se calculan contra el ANCHO DEL CONTENEDOR, así
+ *   que eso deja la primera diapositiva centrada exacta, sea cual sea el
+ *   ancho de la pantalla.
+ * - A partir de ahí, correr el riel `n * (ancho + separación)` centra la
+ *   diapositiva `n`.
+ *
+ * Medir el contenedor con JavaScript habría significado un `useEffect`, un
+ * `ResizeObserver` y un primer cuadro con el riel en el lugar equivocado.
+ *
+ * El gesto sigue avanzando exactamente UNA diapositiva, por rápido que se
+ * deslice: con `scroll-snap` la inercia del navegador se comía varias.
  */
 export function HomeCarousel({
   slides,
@@ -149,9 +147,7 @@ export function HomeCarousel({
   // nadie quiere que se le mueva lo que está leyendo.
   //
   // `active` está en las dependencias A PROPÓSITO: hace que el intervalo se
-  // tire y se rearme en cada cambio, así el reloj arranca de cero. Sin eso,
-  // cambiar de diapositiva a los 3 segundos dejaba solo 2 antes del salto
-  // automático.
+  // tire y se rearme en cada cambio, así el reloj arranca de cero.
   useEffect(() => {
     if (slides.length < 2 || paused) return;
     const timer = window.setTimeout(() => go(1), AUTOPLAY_MS);
@@ -178,104 +174,113 @@ export function HomeCarousel({
   if (slides.length === 0) return null;
 
   const hasControls = slides.length > 1;
-
-  // Se arma una vez y se ubica según la variante: adentro del marco o debajo.
-  // El mismo marcado en los dos lados, para que no se desincronicen.
-  const dots = hasControls ? (
-    <div className={`flex justify-center gap-2 ${styles.dots}`}>
-      {slides.map((slide, index) => (
-        <button
-          key={slide.id}
-          type="button"
-          onClick={() => {
-            setActive(index);
-            setHasInteracted(true);
-          }}
-          aria-label={`Ir al destacado ${index + 1}: ${slide.title}`}
-          aria-current={index === active}
-          className={`h-1.5 rounded-full transition-all ${
-            index === active ? "w-7 bg-gold-300" : "w-2.5 bg-white/30 hover:bg-white/50"
-          }`}
-        />
-      ))}
-    </div>
-  ) : null;
+  const { slideWidth, slideGap } = styles;
+  const centerOffset = `calc(50% - (${slideWidth}) / 2)`;
 
   return (
     <section
       aria-roledescription="carrusel"
       aria-label="Destacados"
       // El aire contra el hero solo tiene sentido cuando el carrusel va
-      // DEBAJO del hero: sin él los dos bloques se leen como uno solo. La
-      // tarjeta va adentro del hero y ahí el espacio lo reparte la grilla.
+      // DEBAJO del hero. La tarjeta va adentro y ahí el espacio lo reparte
+      // la grilla del hero.
       className={`relative ${variant === "full" ? "mt-20 sm:mt-28" : ""} ${className}`}
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
       onFocusCapture={() => setPaused(true)}
       onBlurCapture={() => setPaused(false)}
     >
-      <div
-        className={styles.frame}
-        onTouchStart={onTouchStart}
-        onTouchEnd={onTouchEnd}
-      >
-        {slides.map((slide, index) => {
-          const isActive = index === active;
-          return (
-            <div
-              key={slide.id}
-              aria-hidden={!isActive}
-              // El fundido va SIEMPRE, también con "reducir movimiento". Esa
-              // preferencia apunta al desplazamiento, el parallax y el giro —
-              // lo que marea. Un cambio de opacidad no desplaza nada, y
-              // apagarlo solo lograba que las diapositivas saltaran de golpe.
-              className={`absolute inset-0 transition-opacity duration-700 ease-out ${
-                isActive ? "opacity-100" : "pointer-events-none opacity-0"
-              }`}
-            >
-              <Image
-                src={slide.image}
-                alt={slide.imageAlt}
-                fill
-                sizes={styles.imageSizes}
-                priority={styles.priorityFirstSlide && index === 0}
-                className="object-cover"
-              />
-              <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(2,5,12,0.2)_30%,rgba(2,5,12,0.85)_75%,rgba(2,5,12,0.97)_100%)]" />
+      <div className="relative">
+        <div
+          className="overflow-hidden"
+          onTouchStart={onTouchStart}
+          onTouchEnd={onTouchEnd}
+        >
+          <div
+            className={`flex ${reduceMotion ? "" : "transition-transform duration-500 ease-out"}`}
+            style={{
+              gap: slideGap,
+              // Centra la PRIMERA diapositiva. El `50%` se mide contra el
+              // ancho del contenedor, que es justo lo que hace falta.
+              paddingLeft: centerOffset,
+              paddingRight: centerOffset,
+              transform: `translateX(calc(-1 * ${active} * ((${slideWidth}) + (${slideGap}))))`,
+            }}
+          >
+            {slides.map((slide, index) => {
+              const isActive = index === active;
 
-              <div className="absolute inset-x-0 bottom-0">
-                {/* En móvil el texto deja lugar para la pista de deslizar Y
-                    para los puntos, que van debajo. */}
-                <div className={styles.textBox}>
-                  <h3 className={styles.title}>{slide.title}</h3>
-                  <p className={styles.description}>{slide.description}</p>
-                  <Link
-                    href={slide.href}
-                    // Fuera de la diapositiva visible el enlace no debe recibir
-                    // foco: se llega tabulando a algo que no se ve.
-                    tabIndex={isActive ? undefined : -1}
-                    // `noopener` no es opcional en un enlace externo con
-                    // target: sin él la página destino puede manipular la
-                    // nuestra a través de `window.opener`.
-                    {...(slide.external
-                      ? { target: "_blank", rel: "noopener noreferrer" }
-                      : {})}
-                    className={`inline-flex items-center gap-2 rounded-full bg-gold-400 font-semibold text-ink-950 transition hover:-translate-y-0.5 hover:bg-gold-300 ${styles.cta}`}
+              return (
+                <div
+                  key={slide.id}
+                  aria-hidden={!isActive}
+                  className="shrink-0"
+                  style={{ width: slideWidth }}
+                >
+                  {/*
+                    Las vecinas quedan apagadas: se ven lo suficiente para
+                    saber que hay más, sin competir con la del medio. La
+                    activa va SIEMPRE al 100%.
+                  */}
+                  <div
+                    className={`relative transition-opacity duration-500 ${styles.frame} ${
+                      isActive ? "opacity-100" : "opacity-40"
+                    }`}
                   >
-                    {slide.cta ?? "Ir"} <span aria-hidden="true">→</span>
-                  </Link>
+                    <Image
+                      src={slide.image}
+                      alt={slide.imageAlt}
+                      fill
+                      sizes={styles.imageSizes}
+                      priority={styles.priorityFirstSlide && index === 0}
+                      className="object-cover"
+                    />
+                    <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(2,5,12,0.2)_30%,rgba(2,5,12,0.85)_75%,rgba(2,5,12,0.97)_100%)]" />
+
+                    {/*
+                      El texto solo en la del medio. En las vecinas sería
+                      ilegible —están apagadas y, en celular, dentro de 210px—
+                      y encima competiría con el mensaje que sí hay que leer.
+                    */}
+                    <div
+                      className={`absolute inset-x-0 bottom-0 transition-opacity duration-300 ${
+                        isActive ? "opacity-100" : "opacity-0"
+                      }`}
+                    >
+                      <div className={styles.textBox}>
+                        <h3 className={styles.title}>{slide.title}</h3>
+                        <p className={styles.description}>{slide.description}</p>
+                        <Link
+                          href={slide.href}
+                          // Fuera de la diapositiva del medio el enlace no debe
+                          // recibir foco: se llega tabulando a algo apagado.
+                          tabIndex={isActive ? undefined : -1}
+                          // `noopener` no es opcional en un enlace externo con
+                          // target: sin él la página destino puede manipular la
+                          // nuestra a través de `window.opener`.
+                          {...(slide.external
+                            ? { target: "_blank", rel: "noopener noreferrer" }
+                            : {})}
+                          className={`inline-flex items-center gap-2 rounded-full bg-gold-400 font-semibold text-ink-950 transition hover:-translate-y-0.5 hover:bg-gold-300 ${styles.cta}`}
+                        >
+                          {slide.cta ?? "Ir"} <span aria-hidden="true">→</span>
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-          );
-        })}
+              );
+            })}
+          </div>
+        </div>
 
         {/* Pista de deslizar, solo en móvil y solo hasta que se use por
-            primera vez: después de eso sería ruido sobre el contenido. */}
+            primera vez: después de eso sería ruido sobre el contenido. Va
+            arriba porque abajo está el texto de la diapositiva. */}
         {hasControls && !hasInteracted && (
           <div
             aria-hidden="true"
-            className={`pointer-events-none absolute inset-x-0 flex justify-center sm:hidden ${styles.hint}`}
+            className="pointer-events-none absolute inset-x-0 top-3 flex justify-center sm:hidden"
           >
             <span className="inline-flex items-center gap-1.5 rounded-full bg-black/45 px-3 py-1.5 text-[0.68rem] uppercase tracking-[0.18em] text-white/85 backdrop-blur">
               <span className={reduceMotion ? "" : "animate-pulse"}>←</span>
@@ -294,7 +299,7 @@ export function HomeCarousel({
                 setHasInteracted(true);
               }}
               aria-label="Destacado anterior"
-              className="absolute left-4 top-1/2 hidden h-11 w-11 -translate-y-1/2 place-items-center rounded-full border border-white/15 bg-ink-950/50 text-white backdrop-blur transition hover:border-gold-300/50 hover:bg-ink-950/75 sm:grid"
+              className="absolute left-6 top-1/2 hidden h-11 w-11 -translate-y-1/2 place-items-center rounded-full border border-white/15 bg-ink-950/50 text-white backdrop-blur transition hover:border-gold-300/50 hover:bg-ink-950/75 sm:grid"
             >
               <span aria-hidden="true">←</span>
             </button>
@@ -305,22 +310,36 @@ export function HomeCarousel({
                 setHasInteracted(true);
               }}
               aria-label="Destacado siguiente"
-              className="absolute right-4 top-1/2 hidden h-11 w-11 -translate-y-1/2 place-items-center rounded-full border border-white/15 bg-ink-950/50 text-white backdrop-blur transition hover:border-gold-300/50 hover:bg-ink-950/75 sm:grid"
+              className="absolute right-6 top-1/2 hidden h-11 w-11 -translate-y-1/2 place-items-center rounded-full border border-white/15 bg-ink-950/50 text-white backdrop-blur transition hover:border-gold-300/50 hover:bg-ink-950/75 sm:grid"
             >
               <span aria-hidden="true">→</span>
             </button>
           </>
         )}
-
-        {/* Adentro del cuadrado solo en la variante ancha, donde sobra alto
-            y los puntos se apoyan sobre la imagen. */}
-        {!styles.dotsOutside && dots}
       </div>
 
-      {/* En la tarjeta van AFUERA: el cuadrado es chico y unos puntos encima
-          del texto no se distinguen del fondo. Tienen que quedar fuera del
-          marco también porque el marco es `overflow-hidden` y los recortaría. */}
-      {styles.dotsOutside && dots}
+      {/* Debajo del riel en las dos variantes: ahora las diapositivas son
+          tarjetas con borde, y unos puntos encima de una de ellas se leerían
+          como parte de esa tarjeta y no del carrusel. */}
+      {hasControls && (
+        <div className={`flex justify-center gap-2 ${styles.dots}`}>
+          {slides.map((slide, index) => (
+            <button
+              key={slide.id}
+              type="button"
+              onClick={() => {
+                setActive(index);
+                setHasInteracted(true);
+              }}
+              aria-label={`Ir al destacado ${index + 1}: ${slide.title}`}
+              aria-current={index === active}
+              className={`h-1.5 rounded-full transition-all ${
+                index === active ? "w-7 bg-gold-300" : "w-2.5 bg-white/30 hover:bg-white/50"
+              }`}
+            />
+          ))}
+        </div>
+      )}
     </section>
   );
 }
