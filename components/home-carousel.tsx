@@ -4,6 +4,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import {
+  activeSlide as slideAt,
+  isCentered,
+  recenter,
+  startIndex as firstIndex,
+  step,
+} from "@/lib/carousel-index";
+
 export type CarouselSlide = {
   id: string;
   title: string;
@@ -90,11 +98,6 @@ const VARIANTS = {
   },
 } as const satisfies Record<CarouselVariant, unknown>;
 
-/** Resto siempre positivo: `-1 % 5` da `-1` en JavaScript, y acá hace falta 4. */
-function wrap(value: number, length: number): number {
-  return ((value % length) + length) % length;
-}
-
 /**
  * Carrusel de destacados de la portada.
  *
@@ -139,7 +142,7 @@ export function HomeCarousel({
   const total = slides.length;
   // Con una sola diapositiva no hay nada que rotar ni vecinas que mostrar.
   const loops = total > 1;
-  const startIndex = loops ? total : 0;
+  const startIndex = firstIndex(total, loops);
 
   /**
    * Dónde está parado el riel y si el próximo cambio se anima.
@@ -159,7 +162,7 @@ export function HomeCarousel({
 
   // Cuál de las diapositivas REALES se está mirando, sin importar en qué copia
   // esté parado el índice. Es lo que miran los puntos y el resaltado.
-  const activeSlide = loops ? wrap(index, total) : 0;
+  const activeSlide = slideAt(index, total, loops);
 
   useEffect(() => {
     const query = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -190,15 +193,7 @@ export function HomeCarousel({
    */
   const go = useCallback(
     (direction: 1 | -1) => {
-      setView(({ index: current }) => {
-        const next = current + direction;
-
-        if (!loops || (next >= total - 1 && next <= total * 2)) {
-          return { index: next, animated: true };
-        }
-
-        return { index: total + wrap(next, total), animated: false };
-      });
+      setView(({ index: current }) => step(current, direction, total, loops));
     },
     [loops, total],
   );
@@ -212,11 +207,10 @@ export function HomeCarousel({
    * es en qué copia estamos parados.
    */
   useEffect(() => {
-    if (!loops) return;
-    if (index >= total && index < total * 2) return;
+    if (!loops || isCentered(index, total)) return;
 
     const timer = window.setTimeout(
-      () => setView({ index: total + wrap(index, total), animated: false }),
+      () => setView({ index: recenter(index, total), animated: false }),
       reduceMotion ? 0 : TRANSITION_MS,
     );
 
