@@ -101,18 +101,22 @@ export function Hero({
         carrusel, y con el `mt-[1.875rem]` de los accesos dan los 40px de
         abajo— así que el bloque se ve igual en cualquier teléfono.
 
-        En celular el `pt` es CERO a propósito: el bloque arranca pegado al
-        borde de abajo del encabezado. El encabezado es `sticky` pero ocupa su
-        lugar en el flujo, así que ya empuja al hero 88px hacia abajo — el
-        `pt-20` que había acá se sumaba a esos 88 y dejaba el título a 168px
-        del tope de la pantalla.
+        Las medidas de celular están pensadas SOBRE el sitio al 70% (ver la
+        media query en `globals.css`): como el `rem` vale 11.2px, `pt-8` son
+        22px reales y `gap-y-5` son 14px. Leerlas como si el `rem` valiera
+        16px da casi el doble de lo que se ve.
+
+        El `pt` de celular es chico a propósito. El encabezado es `sticky` pero
+        ocupa su lugar en el flujo, así que ya empuja al hero hacia abajo por
+        su cuenta: lo que se ponga acá se SUMA a eso. El `pt-20` original daba
+        168px hasta el título y era demasiado.
 
         Con las filas al alto de su contenido, el `items-center` de al lado no
         cambia nada en celular; se deja porque desde `sm:` vuelve a mandar.
         Desde `sm:` se restauran los valores por defecto de la grilla y el
         escritorio queda exactamente como estaba.
       */}
-      <div className="relative mx-auto grid min-h-[100svh] max-w-7xl content-start items-center gap-y-2.5 px-4 pb-16 pt-0 sm:content-normal sm:gap-y-0 sm:px-6 sm:pt-20 lg:px-8 lg:pb-20 lg:pt-24">
+      <div className="relative mx-auto grid min-h-[100svh] max-w-7xl content-start items-center gap-y-5 px-4 pb-16 pt-8 sm:content-normal sm:gap-y-0 sm:px-6 sm:pt-20 lg:px-8 lg:pb-20 lg:pt-24">
         <div className="relative z-10 mx-auto max-w-4xl text-center">
           <motion.h1
             initial={shouldReduceMotion ? false : { opacity: 0, y: 18 }}
