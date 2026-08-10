@@ -33,6 +33,16 @@ export const eventsQuery = /* groq */ `*[_type == "event"] | order(_createdAt as
 export const newsItemsQuery = /* groq */ `*[_type == "newsItem"] | order(_createdAt asc)`;
 
 /**
+ * A diferencia de eventos y actividades, acá NO se exige contenido extra: toda
+ * noticia con dirección tiene página. La página suma la portada grande y el
+ * resumen completo, así que aporta algo aunque el cuerpo esté vacío.
+ */
+export const newsItemSlugsQuery = /* groq */ `*[_type == "newsItem" && defined(slug.current)].slug.current`;
+
+/** Parametrizada por `$slug`. Devuelve null si no existe. */
+export const newsItemBySlugQuery = /* groq */ `*[_type == "newsItem" && slug.current == $slug][0]`;
+
+/**
  * Los slugs que tienen página propia. Solo los eventos CON fotos: sin galería
  * la página sería el título y un párrafo, o sea menos de lo que ya muestra la
  * tarjeta, así que esos eventos no linkean a ningún lado.

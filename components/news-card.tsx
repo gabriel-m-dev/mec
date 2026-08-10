@@ -7,6 +7,11 @@ type NewsCardProps = {
   summary: string;
   image: string;
   imageAlt: string;
+  /**
+   * La página de la noticia. Sin dirección cargada no hay página, así que se
+   * cae a la lista en vez de enlazar a un 404.
+   */
+  href?: string;
 };
 
 /**
@@ -21,7 +26,14 @@ type NewsCardProps = {
  * En horizontal la foto es una franja y la noticia se lee de un vistazo, así
  * que entran varias sin scrollear.
  */
-export function NewsCard({ category, title, summary, image, imageAlt }: NewsCardProps) {
+export function NewsCard({
+  category,
+  title,
+  summary,
+  image,
+  imageAlt,
+  href,
+}: NewsCardProps) {
   return (
     <article className="group flex flex-row overflow-hidden rounded-[1.25rem] border border-white/10 bg-white/4 shadow-luxe transition hover:-translate-y-1 hover:border-gold-300/25 sm:rounded-[1.75rem]">
       {/* `shrink-0` para que la franja de la foto no se achique cuando el
@@ -59,8 +71,10 @@ export function NewsCard({ category, title, summary, image, imageAlt }: NewsCard
         <p className="mt-2 text-xs leading-5 text-slate-300 sm:mt-4 sm:text-sm sm:leading-7">
           {summary}
         </p>
+        {/* Antes esto apuntaba a `/contacto`, así que "Leer más" llevaba al
+            formulario de contacto en TODAS las noticias. */}
         <Link
-          href="/contacto"
+          href={href ?? "/noticias"}
           className="mt-3 inline-flex text-xs font-semibold text-gold-200 transition hover:text-gold-100 sm:mt-6 sm:text-sm"
         >
           Leer más →

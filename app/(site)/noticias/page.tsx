@@ -62,6 +62,9 @@ export default async function NoticiasPage() {
                 summary={item.summary}
                 image={urlForImage(item.image).url()}
                 imageAlt={item.imageAlt}
+                href={
+                  item.slug?.current ? `/noticias/${item.slug.current}` : undefined
+                }
               />
             ))}
           </div>

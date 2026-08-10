@@ -4,6 +4,7 @@ import { fetchContent } from "@/sanity/lib/fetch";
 import {
   chosenActivitySlugsWithGalleryQuery,
   eventSlugsWithGalleryQuery,
+  newsItemSlugsQuery,
 } from "@/sanity/lib/queries";
 import { SANITY_TAGS } from "@/sanity/lib/tags";
 
@@ -24,12 +25,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   // Misma query que usa `generateStaticParams` de la galería, para que el
   // sitemap no pueda listar una página que no existe ni omitir una que sí.
-  const [eventSlugs, chosenSlugs] = await Promise.all([
+  const [eventSlugs, chosenSlugs, newsSlugs] = await Promise.all([
     fetchContent<string[]>(eventSlugsWithGalleryQuery, SANITY_TAGS.event),
     fetchContent<string[]>(
       chosenActivitySlugsWithGalleryQuery,
       SANITY_TAGS.chosenActivity,
     ),
+    fetchContent<string[]>(newsItemSlugsQuery, SANITY_TAGS.newsItem),
   ]);
 
   return [
@@ -47,6 +49,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     })),
     ...chosenSlugs.map((slug) => ({
       url: `${url}/the-chosen/${slug}`,
+      lastModified,
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    })),
+    ...newsSlugs.map((slug) => ({
+      url: `${url}/noticias/${slug}`,
       lastModified,
       changeFrequency: "monthly" as const,
       priority: 0.6,

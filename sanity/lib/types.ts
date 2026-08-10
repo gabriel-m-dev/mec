@@ -194,12 +194,30 @@ export interface Event {
   gallery?: GalleryImage[];
 }
 
+/**
+ * Un bloque del texto enriquecido, tal como lo guarda Sanity.
+ *
+ * Se deja abierto a propósito: la forma exacta —marcas, anotaciones, listas
+ * anidadas— la conoce el renderizador de Portable Text, no nosotros. Cerrarla
+ * acá sería copiar un contrato ajeno que además cambia entre versiones.
+ */
+export interface PortableTextBlock {
+  _type: string;
+  _key: string;
+  [key: string]: unknown;
+}
+
 export interface NewsItem {
   _id: string;
   _type: "newsItem";
   category: string;
   title: string;
+  /** Da la dirección de la página. Opcional en el tipo porque las noticias
+   *  cargadas antes de que existiera el campo no lo tienen. */
+  slug?: { current?: string };
   summary: string;
+  /** El cuerpo. Opcional: sin él la página muestra portada, título y resumen. */
+  body?: PortableTextBlock[];
   image: SanityImageSource;
   imageAlt: string;
 }
