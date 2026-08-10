@@ -34,8 +34,8 @@ export function NewsCard({
   imageAlt,
   href,
 }: NewsCardProps) {
-  return (
-    <article className="group flex flex-row overflow-hidden rounded-[1.25rem] border border-white/10 bg-white/4 shadow-luxe transition hover:-translate-y-1 hover:border-gold-300/25 sm:rounded-[1.75rem]">
+  const card = (
+    <article className="group flex h-full flex-row overflow-hidden rounded-[1.25rem] border border-white/10 bg-white/4 shadow-luxe transition hover:-translate-y-1 hover:border-gold-300/25 sm:rounded-[1.75rem]">
       {/* `shrink-0` para que la franja de la foto no se achique cuando el
           texto de al lado es largo. El alto no se declara: lo pone la fila, o
           sea la columna de texto. El mínimo es para las noticias de resumen
@@ -71,15 +71,29 @@ export function NewsCard({
         <p className="mt-2 text-xs leading-5 text-slate-300 sm:mt-4 sm:text-sm sm:leading-7">
           {summary}
         </p>
-        {/* Antes esto apuntaba a `/contacto`, así que "Leer más" llevaba al
-            formulario de contacto en TODAS las noticias. */}
-        <Link
-          href={href ?? "/noticias"}
-          className="mt-3 inline-flex text-xs font-semibold text-gold-200 transition hover:text-gold-100 sm:mt-6 sm:text-sm"
-        >
-          Leer más →
-        </Link>
+        {/* Es un `<p>`, NO un enlace: el enlace envuelve la tarjeta entera y
+            anidar anchors es HTML inválido. Se pinta con `group-hover` para
+            que siga reaccionando al pasar por encima de cualquier parte. */}
+        <p className="mt-3 inline-flex text-xs font-semibold text-gold-200 transition group-hover:text-gold-100 sm:mt-6 sm:text-sm">
+          Leer más <span aria-hidden="true">→</span>
+        </p>
       </div>
     </article>
+  );
+
+  // Un solo anchor envolviendo la tarjeta entera, igual que en las tarjetas de
+  // eventos y de The Chosen: así se puede tocar en cualquier parte y no solo
+  // en "Leer más", que en celular es un blanco de pocos milímetros.
+  //
+  // Sin dirección cargada la tarjeta no enlaza, en vez de llevar a un 404.
+  if (!href) return card;
+
+  return (
+    <Link
+      href={href}
+      className="block h-full rounded-[1.25rem] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-300 sm:rounded-[1.75rem]"
+    >
+      {card}
+    </Link>
   );
 }
