@@ -54,6 +54,69 @@ body {
   color: #fff;
 }
 
+/*
+  Transiciones entre páginas. Las dispara `components/view-transitions.tsx`.
+
+  El navegador saca una foto de la página vieja y otra de la nueva, y anima
+  entre las dos. Sin estas reglas hace un fundido cruzado por defecto, que ya
+  se ve bien pero no dice hacia dónde se fue el visitante; con el
+  desplazamiento leve queda claro que entró contenido nuevo.
+
+  `--vt-shift` es lo único que se toca para regular cuánto se mueve.
+*/
+@keyframes vt-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes vt-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(var(--vt-shift));
+  }
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  /* Se apaga la animación por defecto para poner la nuestra. */
+  animation: none;
+  /* Las dos fotos se pintan una encima de la otra en vez de mezclarse por
+     transparencia: sin esto, durante el cruce se ve el fondo a través de las
+     dos y la página parpadea. */
+  mix-blend-mode: normal;
+}
+
+::view-transition-old(root) {
+  animation: vt-fade-out 180ms cubic-bezier(0.4, 0, 1, 1) forwards;
+}
+
+::view-transition-new(root) {
+  --vt-shift: 12px;
+  animation: vt-fade-in 320ms cubic-bezier(0, 0, 0.2, 1) 60ms backwards;
+}
+
+/*
+  Con "reducir movimiento" queda el fundido pero SIN desplazamiento. Es la
+  misma distinción que ya usa el carrusel: lo que molesta de verdad es que las
+  cosas se muevan, no que cambien de opacidad.
+*/
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-new(root) {
+    --vt-shift: 0px;
+  }
+}
+
+/*
+  El encabezado no participa del cruce: se le da nombre propio para que el
+  navegador lo trate como un elemento que persiste. Sin esto se desvanece y
+  vuelve a aparecer en cada navegación, y es justamente la parte de la pantalla
+  que NO cambia.
+*/
+[data-view-transition="site-header"] {
+  view-transition-name: site-header;
+}
+
 .text-balance {
   text-wrap: balance;
 }

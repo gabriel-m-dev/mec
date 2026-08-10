@@ -16,7 +16,13 @@ export function SiteHeader() {
   // debajo. El `backdrop-blur` es lo que sostiene la legibilidad, así que el
   // fondo puede ser mucho más transparente sin que el texto sufra.
   return (
-    <header className="sticky top-0 z-50 bg-black/25 backdrop-blur-xl">
+    <header
+      // Lo saca del fundido entre páginas: el navegador lo trata como un
+      // elemento que persiste en vez de desvanecerlo y volverlo a dibujar. Es
+      // justamente la parte de la pantalla que NO cambia al navegar.
+      data-view-transition="site-header"
+      className="sticky top-0 z-50 bg-black/25 backdrop-blur-xl"
+    >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
         <Link href="/" className="flex items-center gap-3">
           {/* El `alt` se mantiene aunque ahora haya texto al lado en móvil:
