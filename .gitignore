@@ -32,3 +32,7 @@ public/images/.atl/
 # Copias de seguridad del contenido: megabytes de fotos, y contenido de la
 # iglesia que no tiene por que vivir en un repositorio publico.
 backups/
+
+# Guia del panel de edicion. Es material de trabajo con el cliente, no del
+# sitio: se comparte como pagina web, no desde el repositorio.
+GUIA-DE-EDICION.md
