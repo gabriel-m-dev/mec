@@ -24,7 +24,7 @@ function GroupIcon() {
       strokeLinecap="round"
       strokeLinejoin="round"
       aria-hidden="true"
-      className="h-8 w-8"
+      className="h-5 w-5"
     >
       <path d="M16 19v-1a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v1" />
       <circle cx="9" cy="7" r="3" />
@@ -58,26 +58,34 @@ export function ChosenLeaderCard({
     /* Borde de un pixel hecho con degradado: nace dorado en la esquina
        superior derecha y se apaga hacia abajo a la izquierda. Un `border`
        plano no puede cambiar de color a lo largo del trazo. */
-    <div className="rounded-[1.75rem] bg-gradient-to-bl from-gold-300/70 via-white/10 to-white/[0.06] p-px shadow-[0_30px_90px_rgba(0,0,0,0.55)]">
-      <article className="relative overflow-hidden rounded-[calc(1.75rem-1px)] bg-gradient-to-b from-white/[0.07] via-white/[0.04] to-white/[0.02] backdrop-blur-sm">
+    /* `max-w-4xl` acota la tarjeta: presentar a UNA persona no necesita los
+       1216px del contenedor. A ancho completo la foto quedaba enorme y el
+       texto nadaba, y la tarjeta se comía el 85% del alto de la pantalla. */
+    <div className="max-w-4xl rounded-[1.5rem] bg-gradient-to-bl from-gold-300/70 via-white/10 to-white/[0.06] p-px shadow-[0_20px_60px_rgba(0,0,0,0.5)]">
+      <article className="relative overflow-hidden rounded-[calc(1.5rem-1px)] bg-gradient-to-b from-white/[0.07] via-white/[0.04] to-white/[0.02] backdrop-blur-sm">
         {/* Luz cálida detrás de la esquina que enciende el borde. Decorativa. */}
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute -right-24 -top-24 h-64 w-64 rounded-full bg-gold-400/10 blur-3xl"
+          className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-gold-400/10 blur-3xl"
         />
 
-        <div className="relative p-7 sm:p-10 lg:p-16">
-          <div className="flex flex-col gap-8 lg:flex-row lg:items-start lg:gap-[4.5rem]">
+        <div className="relative p-6 sm:p-8">
+          <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:gap-8">
             {image && (
               /* Mismo recurso que el borde de la tarjeta, en chico: el marco
-                 dorado de la foto es un degradado de un pixel. */
-              <div className="w-full shrink-0 rounded-[1.25rem] bg-gradient-to-br from-gold-300/60 via-gold-400/20 to-gold-500/10 p-px lg:w-[26.75rem]">
-                <div className="relative aspect-square overflow-hidden rounded-[calc(1.25rem-1px)] lg:aspect-[107/110]">
+                 dorado de la foto es un degradado de un pixel.
+
+                 El ancho está acotado en los dos tamaños. Antes en celular
+                 ocupaba todo el ancho —una foto de 298px solo para la cara— y
+                 en escritorio 428px, que era el bloque más alto de la tarjeta
+                 y el que la estiraba. */
+              <div className="w-full max-w-[11rem] shrink-0 self-center rounded-[1rem] bg-gradient-to-br from-gold-300/60 via-gold-400/20 to-gold-500/10 p-px sm:max-w-none sm:w-44 sm:self-start">
+                <div className="relative aspect-square overflow-hidden rounded-[calc(1rem-1px)]">
                   <Image
                     src={image}
                     alt={imageAlt ?? ""}
                     fill
-                    sizes="(min-width: 1024px) 428px, 100vw"
+                    sizes="(min-width: 640px) 176px, 176px"
                     className="object-cover"
                   />
                 </div>
@@ -87,15 +95,15 @@ export function ChosenLeaderCard({
             {/* `min-w-0` para que el texto largo pueda encogerse dentro del
                 flex en vez de empujar la foto fuera de la tarjeta. */}
             <div className="min-w-0">
-              <p className="inline-flex rounded-full border border-gold-300/40 bg-gold-400/[0.07] px-5 py-2 text-[13px] font-semibold uppercase tracking-[0.16em] text-gold-200 shadow-[0_0_24px_rgba(227,170,53,0.15)]">
+              <p className="inline-flex rounded-full border border-gold-300/40 bg-gold-400/[0.07] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-gold-200">
                 {role}
               </p>
 
-              <h3 className="mt-6 font-serif text-4xl tracking-tight text-white sm:text-5xl lg:text-7xl">
+              <h3 className="mt-3 font-serif text-2xl tracking-tight text-white sm:text-3xl">
                 {name}
               </h3>
 
-              <p className="mt-4 text-lg text-slate-300 sm:text-2xl">
+              <p className="mt-1.5 text-sm text-slate-300 sm:text-base">
                 Responsable de{" "}
                 <span className="font-serif italic text-gold-300">
                   The Chosen
@@ -104,10 +112,12 @@ export function ChosenLeaderCard({
 
               <div
                 aria-hidden="true"
-                className="mt-7 h-0.5 w-16 rounded-full bg-gradient-to-r from-gold-400 to-gold-500/20"
+                className="mt-4 h-0.5 w-12 rounded-full bg-gradient-to-r from-gold-400 to-gold-500/20"
               />
 
-              <p className="mt-7 max-w-[37rem] whitespace-pre-line text-base leading-[2] text-slate-300 lg:text-[17px] lg:leading-[38px]">
+              {/* El interlineado era de 38px sobre texto de 17px: más del
+                  doble. Se veía aireado pero estiraba el bloque entero. */}
+              <p className="mt-4 max-w-[34rem] whitespace-pre-line text-sm leading-6 text-slate-300">
                 {description}
               </p>
             </div>
@@ -115,20 +125,23 @@ export function ChosenLeaderCard({
 
           {/* La invitación a sumarse. Centrada y al pie: cierra la tarjeta con
               la única acción que ofrece. */}
-          <div className="mt-12 border-t border-white/10 pt-10 lg:mt-14">
-            <div className="flex flex-col items-center gap-6 text-center lg:flex-row lg:justify-center lg:gap-10 lg:text-left">
+          <div className="mt-6 border-t border-white/10 pt-5">
+            {/* Pasa a fila desde `sm` y no desde `lg`: apilado son cuatro
+                bloques uno abajo del otro, y era la mitad del alto de la
+                tarjeta en celular. */}
+            <div className="flex flex-col items-center gap-3 text-center sm:flex-row sm:justify-center sm:gap-5 sm:text-left">
               <span
                 aria-hidden="true"
-                className="grid h-[84px] w-[84px] shrink-0 place-items-center rounded-full border border-gold-300/40 text-gold-300"
+                className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-gold-300/40 text-gold-300"
               >
                 <GroupIcon />
               </span>
 
               <div className="min-w-0">
-                <p className="font-serif text-xl text-white sm:text-2xl">
+                <p className="font-serif text-base text-white sm:text-lg">
                   ¿Querés que tu hijo o hija se sume?
                 </p>
-                <p className="mt-1.5 text-base leading-7 text-slate-400">
+                <p className="mt-1 text-xs leading-5 text-slate-400">
                   Si te interesa colaborar como voluntario, escribinos y te
                   ponemos en contacto con el equipo.
                 </p>
@@ -136,12 +149,12 @@ export function ChosenLeaderCard({
 
               <span
                 aria-hidden="true"
-                className="hidden h-16 w-px shrink-0 bg-white/10 lg:block"
+                className="hidden h-10 w-px shrink-0 bg-white/10 sm:block"
               />
 
               <Link
                 href="/contacto"
-                className="group inline-flex shrink-0 items-center gap-3 rounded-full border border-gold-300/50 px-8 py-3.5 text-[13px] font-semibold uppercase tracking-[0.14em] text-gold-200 transition hover:border-gold-200/80 hover:bg-gold-400/10"
+                className="group inline-flex shrink-0 items-center gap-2 rounded-full border border-gold-300/50 px-5 py-2.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-gold-200 transition hover:border-gold-200/80 hover:bg-gold-400/10"
               >
                 Ponete en contacto
                 <svg
