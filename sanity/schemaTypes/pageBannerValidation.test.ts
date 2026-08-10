@@ -9,9 +9,12 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  SECTION_KEYS_BY_ROUTE,
+  allowedSectionKeys,
   duplicatedSectionKeys,
   faqHeadingWithoutQuestions,
   questionsWithoutFaqHeading,
+  sectionKeyNotUsedByRoute,
 } from "./pageBannerValidation";
 
 const LABELS = [
@@ -71,6 +74,99 @@ describe("faqHeadingWithoutQuestions", () => {
     expect(faqHeadingWithoutQuestions([faqHeading], undefined)).toContain(
       "al menos una pregunta",
     );
+  });
+});
+
+describe("allowedSectionKeys", () => {
+  it("da las claves que cada página dibuja de verdad", () => {
+    expect(allowedSectionKeys("/quienes-somos")).toEqual(["main", "values"]);
+    expect(allowedSectionKeys("/cultos")).toEqual(["main", "faq"]);
+    expect(allowedSectionKeys("/noticias")).toEqual(["main"]);
+    expect(allowedSectionKeys("/eventos")).toEqual(["main"]);
+  });
+
+  it("no habilita ninguna en las páginas con títulos escritos en el código", () => {
+    expect(allowedSectionKeys("/capellanes")).toEqual([]);
+    expect(allowedSectionKeys("/the-chosen")).toEqual([]);
+    expect(allowedSectionKeys("/contacto")).toEqual([]);
+  });
+
+  it("una ruta desconocida no habilita nada, en vez de romperse", () => {
+    expect(allowedSectionKeys("/inventada")).toEqual([]);
+    expect(allowedSectionKeys(undefined)).toEqual([]);
+    expect(allowedSectionKeys(42)).toEqual([]);
+  });
+
+  it("las 7 rutas del sitio están contempladas", () => {
+    // Si mañana se agrega una página y se olvidan de este mapa, la ruta nueva
+    // no habilitaría ninguna clave y el campo quedaría oculto sin explicación.
+    expect(Object.keys(SECTION_KEYS_BY_ROUTE).sort()).toEqual([
+      "/capellanes",
+      "/contacto",
+      "/cultos",
+      "/eventos",
+      "/noticias",
+      "/quienes-somos",
+      "/the-chosen",
+    ]);
+  });
+
+  it("solo usa claves que existen", () => {
+    const validas = new Set(LABELS.map((l) => l.value));
+    for (const claves of Object.values(SECTION_KEYS_BY_ROUTE)) {
+      for (const clave of claves) expect(validas.has(clave)).toBe(true);
+    }
+  });
+});
+
+describe("sectionKeyNotUsedByRoute", () => {
+  it("acepta las claves que esa página sí dibuja", () => {
+    expect(sectionKeyNotUsedByRoute([main], "/noticias", LABELS)).toBe(true);
+    expect(
+      sectionKeyNotUsedByRoute([main, { key: "values" }], "/quienes-somos", LABELS),
+    ).toBe(true);
+    expect(sectionKeyNotUsedByRoute([main, faqHeading], "/cultos", LABELS)).toBe(true);
+  });
+
+  it("rechaza una clave que esa página no lee: se cargaría y no se vería", () => {
+    // "Valores" solo lo dibuja /quienes-somos.
+    const mensaje = sectionKeyNotUsedByRoute([{ key: "values" }], "/noticias", LABELS);
+    expect(mensaje).toContain("Valores");
+    // El mensaje dice cuáles SÍ sirven, no solo que está mal.
+    expect(mensaje).toContain("Principal");
+  });
+
+  it("rechaza las preguntas frecuentes fuera de cultos", () => {
+    expect(sectionKeyNotUsedByRoute([faqHeading], "/eventos", LABELS)).toContain(
+      "Preguntas frecuentes",
+    );
+  });
+
+  it("en una página sin encabezados avisa que no se va a ver nada", () => {
+    // Es el caso real de /capellanes y /the-chosen, que quedaron con una
+    // sección "main" cargada que no se dibuja en ningún lado.
+    const mensaje = sectionKeyNotUsedByRoute([main], "/capellanes", LABELS);
+    expect(mensaje).toContain("no muestra encabezados");
+    expect(mensaje).toContain("Principal");
+  });
+
+  it("nombra la clave sobrante una sola vez aunque esté cargada dos veces", () => {
+    const mensaje = sectionKeyNotUsedByRoute(
+      [{ key: "values" }, { key: "values" }],
+      "/noticias",
+      LABELS,
+    ) as string;
+
+    expect(mensaje.split("Valores")).toHaveLength(2);
+  });
+
+  it("acepta cuando no hay secciones cargadas", () => {
+    expect(sectionKeyNotUsedByRoute([], "/contacto", LABELS)).toBe(true);
+    expect(sectionKeyNotUsedByRoute(undefined, "/contacto", LABELS)).toBe(true);
+  });
+
+  it("ignora las secciones que todavía no tienen clave elegida", () => {
+    expect(sectionKeyNotUsedByRoute([{}], "/noticias", LABELS)).toBe(true);
   });
 });
 

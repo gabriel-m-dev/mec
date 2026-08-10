@@ -6,9 +6,11 @@ import {
 } from "sanity";
 
 import {
+  allowedSectionKeys,
   duplicatedSectionKeys,
   faqHeadingWithoutQuestions,
   questionsWithoutFaqHeading,
+  sectionKeyNotUsedByRoute,
 } from "./pageBannerValidation";
 
 const PAGE_BANNER_ROUTE_OPTIONS = [
@@ -48,6 +50,20 @@ function hiddenUnlessChaplaincy({
   document,
 }: ConditionalPropertyCallbackContext): boolean {
   return (document as { route?: string } | undefined)?.route !== CHAPLAINCY_ROUTE;
+}
+
+/**
+ * Oculta los encabezados de sección en las páginas que no los dibujan.
+ *
+ * Mismo criterio que las dos funciones de arriba. `/capellanes`, `/the-chosen`
+ * y `/contacto` tienen sus títulos escritos en el código —son la estructura de
+ * la página, no su contenido—, así que ofrecer el campo ahí solo lleva a
+ * cargar algo que no se muestra en ningún lado.
+ */
+function hiddenWhenRouteHasNoSections({
+  document,
+}: ConditionalPropertyCallbackContext): boolean {
+  return allowedSectionKeys((document as { route?: string } | undefined)?.route).length === 0;
 }
 
 /**
@@ -152,14 +168,27 @@ export const pageBanner = defineType({
       title: "Secciones",
       type: "array",
       description: "Encabezados de las secciones de contenido de esta página.",
+      // No se ofrece en las páginas que no los dibujan.
+      hidden: hiddenWhenRouteHasNoSections,
       // Cada página busca su encabezado con `.find(s => s.key === "...")`, así
       // que dos secciones con la misma "Sección" dejan a la segunda muerta: no
       // se muestra en ningún lado y no hay ninguna pista de por qué.
       validation: (Rule) =>
         Rule.custom((sections, context) => {
-          const faqs = (context.document as { faqs?: unknown[] } | undefined)?.faqs;
+          const document = context.document as
+            | { faqs?: unknown[]; route?: string }
+            | undefined;
 
-          const orphanHeading = faqHeadingWithoutQuestions(sections, faqs);
+          // Primero la clave que esa página no dibuja: es el error más caro,
+          // porque el encabezado se carga, se publica y no aparece nunca.
+          const claveInservible = sectionKeyNotUsedByRoute(
+            sections,
+            document?.route,
+            PAGE_SECTION_KEY_OPTIONS,
+          );
+          if (claveInservible !== true) return claveInservible;
+
+          const orphanHeading = faqHeadingWithoutQuestions(sections, document?.faqs);
           if (orphanHeading !== true) return orphanHeading;
 
           return duplicatedSectionKeys(sections, PAGE_SECTION_KEY_OPTIONS);
