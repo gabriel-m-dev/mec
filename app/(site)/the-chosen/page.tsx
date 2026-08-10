@@ -76,31 +76,6 @@ export default async function TheChosenPage() {
         />
       )}
 
-      {leader && (
-        <section className="bg-white/[0.03] py-24 sm:py-28">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <h2 className="font-serif text-4xl tracking-tight text-white sm:text-5xl">
-              Equipo de The Chosen
-            </h2>
-            <div
-              aria-hidden="true"
-              className="mt-5 h-0.5 w-[6.75rem] rounded-full bg-gradient-to-r from-gold-400 to-gold-500/30"
-            />
-            <div className="mt-12">
-              <ChosenLeaderCard
-                name={leader.name}
-                role={leader.role}
-                description={leader.description}
-                image={
-                  leader.image ? urlForImage(leader.image).url() : undefined
-                }
-                imageAlt={leader.imageAlt}
-              />
-            </div>
-          </div>
-        </section>
-      )}
-
       {recent.length > 0 && (
         <section className="py-20 sm:py-24">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -153,6 +128,40 @@ export default async function TheChosenPage() {
                   href={galleryHref(activity)}
                 />
               ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/*
+        Va al final, después de las actividades: primero se muestra QUÉ hace
+        el grupo y recién después quién lo coordina, que es también donde
+        tiene sentido la invitación a sumarse con la que cierra la tarjeta.
+
+        Sin tinte de fondo a propósito. Las secciones alternan fondo, y
+        "Actividades próximas" —la de arriba— ya lo lleva: repetirlo acá
+        dejaría dos bloques teñidos pegados y se leerían como uno solo.
+      */}
+      {leader && (
+        <section className="py-20 sm:py-24">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <h2 className="font-serif text-3xl tracking-tight text-white sm:text-4xl">
+              Equipo de The Chosen
+            </h2>
+            <div
+              aria-hidden="true"
+              className="mt-5 h-0.5 w-[6.75rem] rounded-full bg-gradient-to-r from-gold-400 to-gold-500/30"
+            />
+            <div className="mt-10">
+              <ChosenLeaderCard
+                name={leader.name}
+                role={leader.role}
+                description={leader.description}
+                image={
+                  leader.image ? urlForImage(leader.image).url() : undefined
+                }
+                imageAlt={leader.imageAlt}
+              />
             </div>
           </div>
         </section>
