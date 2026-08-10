@@ -28,3 +28,7 @@ public/images/redise*.png
 
 # Carpeta de herramientas locales.
 public/images/.atl/
+
+# Copias de seguridad del contenido: megabytes de fotos, y contenido de la
+# iglesia que no tiene por que vivir en un repositorio publico.
+backups/
