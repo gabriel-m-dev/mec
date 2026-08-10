@@ -74,10 +74,11 @@ const VARIANTS = {
     cta: "mt-4 px-5 py-2.5 text-xs sm:mt-5 sm:text-sm",
     dots: "mt-5",
     showArrows: true,
-    // Va debajo del hero, fuera de la primera pantalla: para cuando alguien
-    // baja, la entrada ya pasó. Se deja corta para que no quede a medias si
-    // llega scrolleado desde otra página.
-    neighborsDelayMs: 400,
+    // Se dispara al ENTRAR EN PANTALLA y no por tiempo: esta variante va
+    // debajo del hero, fuera de la primera pantalla, así que cualquier
+    // temporizador ya venció mucho antes de que alguien llegue scrolleando y
+    // la entrada pasaba donde nadie la ve.
+    neighborsEntrance: { on: "view" },
     // Va SIEMPRE debajo del hero, o sea fuera de la primera pantalla: pedirla
     // con prioridad la ponía a competir con la imagen de fondo del hero, que
     // es la que de verdad decide el LCP.
@@ -97,10 +98,11 @@ const VARIANTS = {
     dots: "mt-3",
     // La tarjeta solo existe en celular, donde las flechas nunca se muestran.
     showArrows: false,
-    // Las vecinas esperan a que la del medio TERMINE de entrar. El hero mete
-    // el carrusel a los 0.52s y la animación dura 0.9s, así que recién a los
-    // 1.42s la del medio está en su lugar. Entrar antes las pisaría.
-    neighborsDelayMs: 1450,
+    // Por tiempo, no por pantalla: esta variante ya está a la vista al cargar,
+    // y lo que hay que esperar no es que aparezca sino que la del medio
+    // TERMINE de entrar. El hero mete el carrusel a los 0.52s y la animación
+    // dura 0.9s, así que recién a los 1.42s está en su lugar.
+    neighborsEntrance: { on: "timer", delayMs: 1450 },
     // Esta sí entra en la primera pantalla: va adentro del hero.
     priorityFirstSlide: true,
   },
@@ -174,6 +176,8 @@ export function HomeCarousel({
   const [neighborsIn, setNeighborsIn] = useState(false);
   const [paused, setPaused] = useState(false);
   const touchStartX = useRef<number | null>(null);
+  /** Para saber cuándo el carrusel entra en pantalla. Ver el efecto de entrada. */
+  const sectionRef = useRef<HTMLElement | null>(null);
 
   const { index, animated } = view;
 
@@ -208,14 +212,52 @@ export function HomeCarousel({
    * ocurre deslizando más rápido de lo que tarda en asentarse, y es preferible
    * a quedarse en blanco.
    */
-  // Las vecinas entran desde los costados una vez que la del medio terminó de
-  // aparecer. Con "reducir movimiento" no esperan ni se desplazan: están desde
-  // el arranque.
+  /*
+    Cuándo entran las vecinas desde los costados. Depende de dónde vive el
+    carrusel:
+
+    - En el hero (celular) ya está a la vista al cargar, así que se espera por
+      TIEMPO a que la del medio termine su propia entrada.
+    - Debajo del hero (escritorio) está fuera de la primera pantalla, así que
+      se espera a que ENTRE EN PANTALLA. Con un temporizador la entrada ocurría
+      donde nadie la ve y al llegar scrolleando ya estaba todo puesto.
+
+    Con "reducir movimiento" no se espera nada: las vecinas están desde el
+    arranque, sin desplazarse.
+  */
   useEffect(() => {
-    const delay = reduceMotion ? 0 : styles.neighborsDelayMs;
-    const timer = window.setTimeout(() => setNeighborsIn(true), delay);
-    return () => window.clearTimeout(timer);
-  }, [reduceMotion, styles.neighborsDelayMs]);
+    if (reduceMotion) {
+      setNeighborsIn(true);
+      return;
+    }
+
+    const entrance = styles.neighborsEntrance;
+
+    if (entrance.on === "timer") {
+      const timer = window.setTimeout(() => setNeighborsIn(true), entrance.delayMs);
+      return () => window.clearTimeout(timer);
+    }
+
+    const node = sectionRef.current;
+    // Sin nodo o sin soporte, no se le esconde contenido a nadie: se muestra.
+    if (!node || typeof IntersectionObserver !== "function") {
+      setNeighborsIn(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        setNeighborsIn(true);
+        // Es una entrada, no un efecto que se repita al subir y bajar.
+        observer.disconnect();
+      },
+      { threshold: 0.25 },
+    );
+
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [reduceMotion, styles.neighborsEntrance]);
 
   const go = useCallback(
     (direction: 1 | -1) => {
@@ -293,6 +335,7 @@ export function HomeCarousel({
 
   return (
     <section
+      ref={sectionRef}
       aria-roledescription="carrusel"
       aria-label="Destacados"
       // `min-w-0` para que el componente sea seguro adentro de una grilla o un
