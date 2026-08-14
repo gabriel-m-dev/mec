@@ -76,10 +76,11 @@ export function SiteHeader() {
               )}
             </AnimatePresence>
 
-            {/* El nombre completo, solo desde `sm`, donde sí hay ancho para
-                una línea. En móvil lo reemplaza la sigla de arriba. */}
-            <p className="hidden text-[11px] uppercase leading-normal tracking-[0.3em] text-gold-300/90 sm:block">
-              Ministerio Evangélico Cristiano
+            {/* El eslogan, solo desde `sm`, donde sí hay ancho para una
+                línea. En móvil lo reemplaza la sigla animada de arriba.
+                Misma tipografía en los dos casos: font-serif itálica. */}
+            <p className="hidden font-serif text-[11px] italic leading-normal tracking-[0.08em] text-gold-300/90 sm:block">
+              Cristo poder y sabiduría de Dios
             </p>
           </div>
         </Link>
