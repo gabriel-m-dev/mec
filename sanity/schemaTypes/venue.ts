@@ -23,7 +23,6 @@ export const venue = defineType({
       title: "Texto alternativo de la imagen",
       type: "string",
       description: "Describe la imagen para lectores de pantalla y accesibilidad.",
-      validation: (Rule) => Rule.required(),
     }),
   ],
   preview: {

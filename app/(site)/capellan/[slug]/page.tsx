@@ -87,7 +87,7 @@ export default async function ChaplainPage({
             <div className="relative aspect-[4/3] w-full overflow-hidden sm:aspect-[16/9]">
               <Image
                 src={urlForImage(chaplain.image).width(1440).url()}
-                alt={chaplain.imageAlt}
+                alt={chaplain.imageAlt ?? ""}
                 fill
                 priority
                 sizes="(min-width: 576px) 576px, 100vw"

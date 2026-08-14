@@ -79,7 +79,7 @@ export default async function NewsItemPage({
       <div className="relative h-[42vh] min-h-[16rem] w-full sm:h-[52vh]">
         <Image
           src={urlForImage(news.image).width(1800).height(900).fit("crop").url()}
-          alt={news.imageAlt}
+          alt={news.imageAlt ?? ""}
           fill
           priority
           sizes="100vw"

@@ -6,7 +6,7 @@ type VenueCardProps = {
   address: string;
   schedule: string;
   image: string;
-  imageAlt: string;
+  imageAlt?: string;
 };
 
 export function VenueCard({ name, address, schedule, image, imageAlt }: VenueCardProps) {
@@ -15,7 +15,7 @@ export function VenueCard({ name, address, schedule, image, imageAlt }: VenueCar
       <div className="relative h-64 w-full sm:h-72 lg:h-80">
         <Image
           src={image}
-          alt={imageAlt}
+          alt={imageAlt ?? ""}
           fill
           sizes="(min-width: 1024px) 45vw, 100vw"
           className="object-cover"

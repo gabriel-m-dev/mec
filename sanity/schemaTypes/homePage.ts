@@ -105,7 +105,6 @@ export const homePage = defineType({
           name: "imageAlt",
           title: "Texto alternativo de la imagen",
           type: "string",
-          validation: (Rule) => Rule.required(),
         }),
       ],
     }),

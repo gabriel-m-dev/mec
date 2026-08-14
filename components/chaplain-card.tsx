@@ -8,7 +8,7 @@ type ChaplainCardProps = {
   /** Opcional: sin número, la tarjeta no dibuja la placa. */
   badgeNumber?: string;
   image: string;
-  imageAlt: string;
+  imageAlt?: string;
   /**
    * La página propia del capellán. Sin slug cargado no hay página, así que
    * la tarjeta no enlaza en vez de llevar a un 404 — pasa con los capellanes
@@ -31,7 +31,7 @@ export function ChaplainCard({
       <div className="relative aspect-[3/4] w-full overflow-hidden">
         <Image
           src={image}
-          alt={imageAlt}
+          alt={imageAlt ?? ""}
           fill
           sizes="(min-width: 1024px) 30vw, 45vw"
           className="object-cover transition duration-500 group-hover:scale-105"

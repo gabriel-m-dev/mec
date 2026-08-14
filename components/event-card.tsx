@@ -7,7 +7,7 @@ type EventCardProps = {
   title: string;
   description: string;
   image: string;
-  imageAlt: string;
+  imageAlt?: string;
   /** Dirección de la galería. Sin fotos cargadas no se pasa y la tarjeta no enlaza. */
   href?: string;
 };
@@ -26,7 +26,7 @@ export function EventCard({
       <div className="relative aspect-[4/5] w-full overflow-hidden">
         <Image
           src={image}
-          alt={imageAlt}
+          alt={imageAlt ?? ""}
           fill
           sizes="(min-width: 768px) 30vw, 90vw"
           className="object-cover transition duration-500 group-hover:scale-105"

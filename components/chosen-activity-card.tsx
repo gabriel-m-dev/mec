@@ -7,7 +7,7 @@ type ChosenActivityCardProps = {
   time?: string;
   place?: string;
   image: string;
-  imageAlt: string;
+  imageAlt?: string;
   /** Si ya pasó, el pie dice "Ver las fotos"; si no, "Más información". */
   isPast?: boolean;
   /** Dirección de la galería. Sin fotos cargadas no se pasa y no enlaza. */
@@ -43,7 +43,7 @@ export function ChosenActivityCard({
     <article className="group relative aspect-[4/3] h-full overflow-hidden rounded-[1.5rem] border border-white/10 shadow-luxe transition hover:-translate-y-1 hover:border-gold-300/25">
       <Image
         src={image}
-        alt={imageAlt}
+        alt={imageAlt ?? ""}
         fill
         sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 90vw"
         className="object-cover transition duration-500 group-hover:scale-105"

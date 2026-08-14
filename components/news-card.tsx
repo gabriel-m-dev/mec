@@ -6,7 +6,7 @@ type NewsCardProps = {
   title: string;
   summary: string;
   image: string;
-  imageAlt: string;
+  imageAlt?: string;
   /**
    * La página de la noticia. Sin dirección cargada no hay página, así que se
    * cae a la lista en vez de enlazar a un 404.
@@ -43,7 +43,7 @@ export function NewsCard({
       <div className="relative w-2/5 shrink-0 overflow-hidden">
         <Image
           src={image}
-          alt={imageAlt}
+          alt={imageAlt ?? ""}
           fill
           // La foto es 2/5 de la tarjeta. En celular la tarjeta ocupa el ancho
           // entero; desde `lg` la grilla la parte en dos columnas.

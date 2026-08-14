@@ -17,7 +17,7 @@ export type CarouselSlide = {
   title: string;
   description: string;
   image: string;
-  imageAlt: string;
+  imageAlt?: string;
   href: string;
   /** Texto del botón. Por defecto "Ir". */
   cta?: string;
@@ -422,7 +422,7 @@ export function HomeCarousel({
                   >
                     <Image
                       src={slide.image}
-                      alt={slide.imageAlt}
+                      alt={slide.imageAlt ?? ""}
                       fill
                       sizes={styles.imageSizes}
                       priority={styles.priorityFirstSlide && position === startIndex}

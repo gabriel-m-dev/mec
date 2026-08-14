@@ -67,7 +67,7 @@ export interface Venue {
   _type: "venue";
   name: string;
   image: SanityImageSource;
-  alt: string;
+  alt?: string;
 }
 
 export interface ChosenLeader {
@@ -95,7 +95,7 @@ export interface ChosenActivity {
   /** Solo si NO es en la iglesia. Opcional. */
   place?: string;
   image: SanityImageSource;
-  imageAlt: string;
+  imageAlt?: string;
   /** `_type` incluido: es lo que escriben el Studio y las migraciones. */
   slug?: { _type?: "slug"; current: string };
   gallery?: GalleryImage[];
@@ -123,7 +123,7 @@ export interface Chaplain {
   /** Opcional, formato "YYYY-MM-DD". Solo se ve en la página individual. */
   expiryDate?: string;
   image: SanityImageSource;
-  imageAlt: string;
+  imageAlt?: string;
 }
 
 export interface ChaplaincyActivity {
@@ -155,7 +155,7 @@ export interface FeaturedItem {
   title: string;
   description: string;
   image: SanityImageSource;
-  imageAlt: string;
+  imageAlt?: string;
   /** Solo los eventos lo tienen. */
   slug?: string;
   /** Solo un evento con fotos tiene página propia. */
@@ -179,7 +179,7 @@ export interface LiveStream {
   url: string;
   cta?: string;
   image: SanityImageSource;
-  imageAlt: string;
+  imageAlt?: string;
 }
 
 export interface GalleryImage {
@@ -198,7 +198,7 @@ export interface Event {
   title: string;
   description: string;
   image: SanityImageSource;
-  imageAlt: string;
+  imageAlt?: string;
   /** `_type` incluido: es lo que escriben el Studio y las migraciones. */
   slug?: { _type?: "slug"; current: string };
   gallery?: GalleryImage[];
@@ -229,7 +229,7 @@ export interface NewsItem {
   /** El cuerpo. Opcional: sin él la página muestra portada, título y resumen. */
   body?: PortableTextBlock[];
   image: SanityImageSource;
-  imageAlt: string;
+  imageAlt?: string;
 }
 
 export interface PageSection {
