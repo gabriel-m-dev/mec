@@ -1,4 +1,3 @@
-import { NavProgressBar } from "@/components/nav-progress-bar";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { ViewTransitions } from "@/components/view-transitions";
@@ -16,10 +15,6 @@ export default function SiteLayout({
           Va acá y no en el layout raíz por lo mismo que el botón de WhatsApp:
           el Studio cuelga del raíz y no tiene por qué heredar esto. */}
       <ViewTransitions />
-      {/* La barrita dorada arriba de la pantalla mientras carga la página
-          siguiente. Mismo criterio que `ViewTransitions`: no en el layout
-          raíz para que el Studio no la herede. */}
-      <NavProgressBar />
       <SiteHeader />
       {children}
       <SiteFooter />
