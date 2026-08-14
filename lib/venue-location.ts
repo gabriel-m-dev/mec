@@ -23,14 +23,15 @@ export const VENUE_LOCATION = {
    * dependen de que Google interprete bien el texto. Para sacarlas: click
    * derecho sobre el punto en Google Maps, el primer ítem del menú.
    */
-  query: "Av. Vergara 2500, Hurlingham, Provincia de Buenos Aires",
+  query:
+    "Vigo 2595 (esq. Eva Perón, ex Bustamante), William Morris, Hurlingham",
   /** 16 ≈ manzana individual. Subir para acercar, bajar para mostrar el barrio. */
   zoom: 16,
   /**
    * Ubicación de relleno hasta que el cliente confirme la real.
    * Poner en `false` al cargar la definitiva.
    */
-  isPlaceholder: true,
+  isPlaceholder: false,
 } as const;
 
 /** URL del iframe del mapa. Sin clave de API. */

@@ -172,12 +172,6 @@ export default async function ContactoPage() {
                 </p>
                 <p className="mt-3 font-serif text-2xl text-white">{venue?.name}</p>
                 <p className="mt-2 text-lg leading-8 text-slate-200">{siteSettings?.address}</p>
-                <p className="mt-3 text-sm leading-7 text-slate-300">
-                  A 10 minutos del centro, con estacionamiento disponible en
-                  las inmediaciones y parada de colectivo a pocas cuadras. Si
-                  venís por primera vez, nuestro equipo de bienvenida te va a
-                  estar esperando en la entrada.
-                </p>
               </div>
             </div>
             <div className="relative">
