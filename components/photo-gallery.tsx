@@ -177,7 +177,12 @@ export function PhotoGallery({
       >
         {current && (
           <div
-            className="relative flex h-full w-full flex-col"
+            // `touch-none`: sin esto, el gesto de deslizar el dedo lo agarra
+            // el navegador ANTES que este componente —como paneo nativo— y se
+            // ve un scroll horizontal chico antes de que dispare `go()`. El
+            // swipe lo maneja JS con los handlers de abajo, no hace falta el
+            // gesto nativo del navegador.
+            className="relative flex h-full w-full touch-none flex-col"
             onTouchStart={onTouchStart}
             onTouchEnd={onTouchEnd}
           >
