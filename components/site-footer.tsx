@@ -66,7 +66,7 @@ export async function SiteFooter() {
             </Link>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1.5">
             {socialLinks.map((social) => {
               const SocialIcon = socialIcons[social.icon];
               return (
@@ -76,7 +76,7 @@ export async function SiteFooter() {
                   aria-label={social.name}
                   className="grid h-9 w-9 place-items-center rounded-full text-gold-200 transition hover:text-gold-100"
                 >
-                  <SocialIcon className="h-4 w-4" />
+                  <SocialIcon className="h-6 w-6" />
                 </Link>
               );
             })}

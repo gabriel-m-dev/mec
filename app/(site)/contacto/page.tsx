@@ -133,7 +133,7 @@ export default async function ContactoPage() {
                       </a>
                     </p>
                   )}
-                  <div className="flex items-center gap-3 pt-1">
+                  <div className="flex items-center gap-1.5 pt-1">
                     {(siteSettings?.socialLinks ?? []).map((social) => {
                       const SocialIcon = socialIcons[social.icon];
                       return (
@@ -143,7 +143,7 @@ export default async function ContactoPage() {
                           aria-label={social.name}
                           className="grid h-10 w-10 place-items-center rounded-full text-gold-200 transition hover:text-gold-100"
                         >
-                          <SocialIcon className="h-5 w-5" />
+                          <SocialIcon className="h-7 w-7" />
                         </Link>
                       );
                     })}
