@@ -18,6 +18,17 @@ export const chaplain = defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
+      name: "slug",
+      title: "Dirección de la página",
+      type: "slug",
+      description:
+        "Se genera sola a partir del nombre y después queda fija: es la dirección que va en el QR de este capellán, así que si cambiara, el QR ya impreso dejaría de funcionar.",
+      options: { source: "name", maxLength: 96 },
+      // Mismo criterio que noticias y eventos: se congela apenas tiene valor.
+      readOnly: ({ value }) => Boolean(value),
+      validation: (Rule) => Rule.required(),
+    }),
+    defineField({
       name: "badgeNumber",
       title: "Número de placa",
       type: "string",

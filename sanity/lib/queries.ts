@@ -26,6 +26,11 @@ export const chosenActivityBySlugQuery = /* groq */ `*[_type == "chosenActivity"
 
 export const chaplainsQuery = /* groq */ `*[_type == "chaplain"] | order(_createdAt asc)`;
 
+export const chaplainSlugsQuery = /* groq */ `*[_type == "chaplain" && defined(slug.current)].slug.current`;
+
+/** Parametrizada por `$slug`. Devuelve null si no existe. */
+export const chaplainBySlugQuery = /* groq */ `*[_type == "chaplain" && slug.current == $slug][0]`;
+
 export const chaplaincyActivitiesQuery = /* groq */ `*[_type == "chaplaincyActivity"] | order(_createdAt asc)`;
 
 export const eventsQuery = /* groq */ `*[_type == "event"] | order(_createdAt asc)`;

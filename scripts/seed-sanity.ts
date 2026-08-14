@@ -536,6 +536,7 @@ async function main() {
       _type: "chaplain",
       name: chaplain.name,
       role: chaplain.role,
+      slug: { _type: "slug", current: slugify(chaplain.name) },
       description: chaplain.description,
       image,
       imageAlt: chaplain.imageAlt,

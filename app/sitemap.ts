@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 import { getSiteUrl } from "@/lib/site-url";
 import { fetchContent } from "@/sanity/lib/fetch";
 import {
+  chaplainSlugsQuery,
   chosenActivitySlugsWithGalleryQuery,
   eventSlugsWithGalleryQuery,
   newsItemSlugsQuery,
@@ -25,13 +26,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   // Misma query que usa `generateStaticParams` de la galería, para que el
   // sitemap no pueda listar una página que no existe ni omitir una que sí.
-  const [eventSlugs, chosenSlugs, newsSlugs] = await Promise.all([
+  const [eventSlugs, chosenSlugs, newsSlugs, chaplainSlugs] = await Promise.all([
     fetchContent<string[]>(eventSlugsWithGalleryQuery, SANITY_TAGS.event),
     fetchContent<string[]>(
       chosenActivitySlugsWithGalleryQuery,
       SANITY_TAGS.chosenActivity,
     ),
     fetchContent<string[]>(newsItemSlugsQuery, SANITY_TAGS.newsItem),
+    fetchContent<string[]>(chaplainSlugsQuery, SANITY_TAGS.chaplain),
   ]);
 
   return [
@@ -55,6 +57,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     })),
     ...newsSlugs.map((slug) => ({
       url: `${url}/noticias/${slug}`,
+      lastModified,
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    })),
+    ...chaplainSlugs.map((slug) => ({
+      url: `${url}/capellan/${slug}`,
       lastModified,
       changeFrequency: "monthly" as const,
       priority: 0.6,

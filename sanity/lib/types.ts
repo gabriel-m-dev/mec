@@ -106,6 +106,8 @@ export interface Chaplain {
   _type: "chaplain";
   name: string;
   role: string;
+  /** `_type` incluido: es lo que escriben el Studio y las migraciones. */
+  slug?: { _type?: "slug"; current: string };
   description: string;
   /**
    * Opcional: los capellanes ya cargados no lo tienen y la tarjeta lo omite

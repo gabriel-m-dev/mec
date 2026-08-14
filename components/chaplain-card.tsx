@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 type ChaplainCardProps = {
   name: string;
@@ -8,6 +9,12 @@ type ChaplainCardProps = {
   badgeNumber?: string;
   image: string;
   imageAlt: string;
+  /**
+   * La página propia del capellán. Sin slug cargado no hay página, así que
+   * la tarjeta no enlaza en vez de llevar a un 404 — pasa con los capellanes
+   * cargados antes de este campo, hasta que se les corra la migración.
+   */
+  slug?: string;
 };
 
 export function ChaplainCard({
@@ -17,8 +24,9 @@ export function ChaplainCard({
   badgeNumber,
   image,
   imageAlt,
+  slug,
 }: ChaplainCardProps) {
-  return (
+  const card = (
     <article className="group overflow-hidden rounded-[1.75rem] border border-white/10 bg-white/4 shadow-luxe transition hover:-translate-y-1 hover:border-gold-300/25">
       <div className="relative aspect-[3/4] w-full overflow-hidden">
         <Image
@@ -58,5 +66,16 @@ export function ChaplainCard({
         <p className="text-sm leading-7 text-slate-300">{description}</p>
       </div>
     </article>
+  );
+
+  if (!slug) return card;
+
+  return (
+    <Link
+      href={`/capellan/${slug}`}
+      className="block rounded-[1.75rem] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-300"
+    >
+      {card}
+    </Link>
   );
 }

@@ -27,6 +27,7 @@
     "migrate:datos-institucionales": "tsx scripts/migrate-datos-institucionales.ts",
     "migrate:chosen-slugs": "tsx scripts/migrate-chosen-slugs.ts",
     "migrate:news-slugs": "tsx scripts/migrate-news-slugs.ts",
+    "migrate:chaplain-slugs": "tsx scripts/migrate-chaplain-slugs.ts",
     "backup": "tsx scripts/backup-dataset.ts",
     "clean:sections": "tsx scripts/clean-unused-sections.ts"
   },
