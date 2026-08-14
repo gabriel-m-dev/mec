@@ -61,7 +61,7 @@ export default async function ChaplainPage({
   return (
     <main className="relative overflow-hidden bg-ink-950">
       <section className="py-24 sm:py-28">
-        <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-xl px-4 sm:px-6 lg:px-8">
           <Link
             href="/capellanes"
             className="inline-flex items-center gap-2 text-sm text-gold-300/90 transition hover:text-gold-200"
@@ -76,7 +76,7 @@ export default async function ChaplainPage({
                 alt={chaplain.imageAlt}
                 fill
                 priority
-                sizes="(min-width: 768px) 768px, 100vw"
+                sizes="(min-width: 576px) 576px, 100vw"
                 className="object-cover"
               />
               <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(2,5,12,0)_55%,rgba(2,5,12,0.85)_100%)]" />
