@@ -79,7 +79,7 @@ export function SiteHeader() {
             {/* El eslogan, solo desde `sm`, donde sí hay ancho para una
                 línea. En móvil lo reemplaza la sigla animada de arriba.
                 Misma tipografía en los dos casos: font-serif itálica. */}
-            <p className="hidden font-serif text-[11px] italic leading-normal tracking-[0.08em] text-gold-300/90 sm:block">
+            <p className="hidden font-serif text-[15px] italic leading-normal tracking-[0.08em] text-gold-300/90 sm:block">
               Cristo poder y sabiduría de Dios
             </p>
           </div>
