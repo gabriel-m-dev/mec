@@ -8,6 +8,35 @@
 
 html {
   scroll-behavior: smooth;
+  /* Firefox: ancho + color del riel y del pulgar. */
+  scrollbar-width: thin;
+  scrollbar-color: #c88a14 #07111d;
+}
+
+/*
+  Barra de scroll a medida (Chrome, Safari, Edge — Firefox usa las
+  propiedades de arriba). Mismos colores que el resto del sitio: el pulgar en
+  degradé dorado (`gold-300` a `gold-500`) y el riel en `ink-900`.
+
+  El `border` del pulgar es del mismo color que el riel: no es un borde
+  visible, es lo que angosta el pulgar sin tocar el ancho total de la barra.
+*/
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #07111d;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #f0c76b, #c88a14);
+  border-radius: 9999px;
+  border: 2px solid #07111d;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #f8dea0, #e3aa35);
 }
 
 /*
