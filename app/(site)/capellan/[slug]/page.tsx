@@ -99,20 +99,20 @@ export default async function ChaplainPage({
               {/* Ficha de datos, al pie de la tarjeta: lo que un QR necesita
                   entregar de un vistazo. Cada línea es opcional salvo el
                   nombre — sin el dato, esa fila no se dibuja. */}
-              <dl className="mt-8 space-y-3 border-t border-white/10 pt-6 text-sm">
+              <dl className="mt-8 space-y-4 border-t border-white/10 pt-6 text-base">
                 <div className="flex flex-wrap gap-x-2">
-                  <dt className="font-semibold text-white">Nombre completo:</dt>
+                  <dt className="font-semibold uppercase tracking-wide text-white">Nombre completo:</dt>
                   <dd className="text-slate-300">{chaplain.name}</dd>
                 </div>
                 {chaplain.badgeNumber && (
                   <div className="flex flex-wrap gap-x-2">
-                    <dt className="font-semibold text-white">Nro de placa:</dt>
+                    <dt className="font-semibold uppercase tracking-wide text-white">Nro de placa:</dt>
                     <dd className="text-slate-300 tabular-nums">{chaplain.badgeNumber}</dd>
                   </div>
                 )}
                 {chaplain.email && (
                   <div className="flex flex-wrap gap-x-2">
-                    <dt className="font-semibold text-white">Gmail:</dt>
+                    <dt className="font-semibold uppercase tracking-wide text-white">Gmail:</dt>
                     <dd className="text-slate-300">
                       <a href={`mailto:${chaplain.email}`} className="hover:text-gold-200">
                         {chaplain.email}
@@ -122,7 +122,7 @@ export default async function ChaplainPage({
                 )}
                 {chaplain.phone && (
                   <div className="flex flex-wrap gap-x-2">
-                    <dt className="font-semibold text-white">Teléfono:</dt>
+                    <dt className="font-semibold uppercase tracking-wide text-white">Teléfono:</dt>
                     <dd className="text-slate-300">
                       <a href={`tel:${chaplain.phone}`} className="hover:text-gold-200">
                         {chaplain.phone}
