@@ -74,7 +74,7 @@ export async function SiteFooter() {
                   key={social.name}
                   href={social.href}
                   aria-label={social.name}
-                  className="grid h-9 w-9 place-items-center rounded-full border border-gold-300/30 bg-gold-400/10 text-gold-200 transition hover:border-gold-300/70 hover:bg-gold-400/20"
+                  className="grid h-9 w-9 place-items-center rounded-full text-gold-200 transition hover:text-gold-100"
                 >
                   <SocialIcon className="h-4 w-4" />
                 </Link>
