@@ -1,6 +1,6 @@
 "use client";
 
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -10,6 +10,8 @@ import { navItems } from "@/lib/content";
 export function SiteHeader() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname();
+  const shouldReduceMotion = useReducedMotion();
+  const isHome = pathname === "/";
 
   // Negro neutro y no `ink-950`: ese color es #02050c, con el canal azul seis
   // veces el rojo, y a 75% de opacidad teñía de azul todo lo que pasaba por
@@ -41,7 +43,7 @@ export function SiteHeader() {
             priority
             className="h-14 w-auto"
           />
-          <div>
+          <div className="flex items-center gap-2 sm:block">
             {/* En móvil la sigla es TODO el texto de la marca: entre el logo y
                 el botón del menú hay unos 200px, y ahí el nombre completo
                 entraba solo partido en dos renglones de 9px. Una sigla de una
@@ -49,6 +51,31 @@ export function SiteHeader() {
             <p className="text-lg font-semibold uppercase tracking-[0.28em] text-white sm:text-sm">
               MEC
             </p>
+
+            {/* El eslogan, solo en móvil y solo fuera de la home: en la home
+                ya lo dice el hero, grande y con su propia entrada. Acá entra
+                animado al lado de la sigla, como si saliera del logo, y
+                desaparece del mismo modo al volver a "/". Desde `sm` el
+                renglón de abajo ya muestra el nombre completo, así que este
+                no hace falta. */}
+            <AnimatePresence>
+              {!isHome && (
+                <motion.p
+                  key="header-slogan"
+                  initial={{ width: 0, opacity: 0, x: -6 }}
+                  animate={{ width: "auto", opacity: 1, x: 0 }}
+                  exit={{ width: 0, opacity: 0, x: -6 }}
+                  transition={{
+                    duration: shouldReduceMotion ? 0 : 0.35,
+                    ease: "easeOut",
+                  }}
+                  className="overflow-hidden whitespace-nowrap text-[11px] italic tracking-[0.03em] text-gold-300/90 sm:hidden"
+                >
+                  Cristo poder y sabiduría de Dios
+                </motion.p>
+              )}
+            </AnimatePresence>
+
             {/* El nombre completo, solo desde `sm`, donde sí hay ancho para
                 una línea. En móvil lo reemplaza la sigla de arriba. */}
             <p className="hidden text-[11px] uppercase leading-normal tracking-[0.3em] text-gold-300/90 sm:block">
