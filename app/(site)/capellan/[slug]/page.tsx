@@ -92,14 +92,45 @@ export default async function ChaplainPage({
             </div>
 
             <div className="p-6 sm:p-8">
-              {chaplain.badgeNumber && (
-                <p className="mb-4 inline-flex rounded-full border border-gold-300/25 bg-gold-400/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-gold-200 tabular-nums">
-                  Placa N.º {chaplain.badgeNumber}
-                </p>
-              )}
               <p className="whitespace-pre-line text-base leading-8 text-slate-300">
                 {chaplain.description}
               </p>
+
+              {/* Ficha de datos, al pie de la tarjeta: lo que un QR necesita
+                  entregar de un vistazo. Cada línea es opcional salvo el
+                  nombre — sin el dato, esa fila no se dibuja. */}
+              <dl className="mt-8 space-y-3 border-t border-white/10 pt-6 text-sm">
+                <div className="flex flex-wrap gap-x-2">
+                  <dt className="font-semibold text-white">Nombre completo:</dt>
+                  <dd className="text-slate-300">{chaplain.name}</dd>
+                </div>
+                {chaplain.badgeNumber && (
+                  <div className="flex flex-wrap gap-x-2">
+                    <dt className="font-semibold text-white">Nro de placa:</dt>
+                    <dd className="text-slate-300 tabular-nums">{chaplain.badgeNumber}</dd>
+                  </div>
+                )}
+                {chaplain.email && (
+                  <div className="flex flex-wrap gap-x-2">
+                    <dt className="font-semibold text-white">Gmail:</dt>
+                    <dd className="text-slate-300">
+                      <a href={`mailto:${chaplain.email}`} className="hover:text-gold-200">
+                        {chaplain.email}
+                      </a>
+                    </dd>
+                  </div>
+                )}
+                {chaplain.phone && (
+                  <div className="flex flex-wrap gap-x-2">
+                    <dt className="font-semibold text-white">Teléfono:</dt>
+                    <dd className="text-slate-300">
+                      <a href={`tel:${chaplain.phone}`} className="hover:text-gold-200">
+                        {chaplain.phone}
+                      </a>
+                    </dd>
+                  </div>
+                )}
+              </dl>
             </div>
           </div>
 

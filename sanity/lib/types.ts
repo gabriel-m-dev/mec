@@ -114,6 +114,10 @@ export interface Chaplain {
    * cuando falta. Es texto porque puede traer ceros a la izquierda o letras.
    */
   badgeNumber?: string;
+  /** Opcional: sin dato, la ficha no dibuja esa línea. */
+  email?: string;
+  /** Opcional: sin dato, la ficha no dibuja esa línea. */
+  phone?: string;
   image: SanityImageSource;
   imageAlt: string;
 }
