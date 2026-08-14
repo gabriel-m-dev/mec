@@ -45,7 +45,7 @@ export const chaplain = defineType({
     }),
     defineField({
       name: "email",
-      title: "Gmail",
+      title: "Email",
       type: "email",
       description:
         "Opcional. Se muestra en la ficha del capellán. Sin dato, esa línea no se dibuja.",

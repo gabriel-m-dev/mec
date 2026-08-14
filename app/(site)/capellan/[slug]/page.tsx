@@ -112,7 +112,7 @@ export default async function ChaplainPage({
                 )}
                 {chaplain.email && (
                   <div className="flex flex-wrap gap-x-2">
-                    <dt className="font-semibold uppercase tracking-wide text-white">Gmail:</dt>
+                    <dt className="font-semibold uppercase tracking-wide text-white">Email:</dt>
                     <dd className="text-slate-300">
                       <a href={`mailto:${chaplain.email}`} className="hover:text-gold-200">
                         {chaplain.email}
