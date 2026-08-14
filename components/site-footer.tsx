@@ -34,7 +34,7 @@ export async function SiteFooter() {
     // espacio en vez de que el botón esquive.
     <footer className="border-t border-white/8 pb-24 pt-10">
       <div className="mx-auto flex max-w-7xl flex-col gap-6 px-4 text-sm text-slate-400 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8">
-        <div>
+        <div className="text-center lg:text-left">
           <p>© {new Date().getFullYear()} MEC. Todos los derechos reservados.</p>
 
           {/* El lema, como en el membrete institucional de la iglesia. */}
