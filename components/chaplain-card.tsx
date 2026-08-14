@@ -33,7 +33,7 @@ export function ChaplainCard({
           src={image}
           alt={imageAlt}
           fill
-          sizes="(min-width: 1024px) 30vw, 90vw"
+          sizes="(min-width: 1024px) 30vw, 45vw"
           className="object-cover transition duration-500 group-hover:scale-105"
         />
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(2,5,12,0)_28%,rgba(2,5,12,0.55)_66%,rgba(2,5,12,0.95)_100%)]" />

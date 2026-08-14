@@ -174,7 +174,7 @@ export default async function CapellaniaPage() {
               <h2 className="font-serif text-3xl tracking-tight text-white sm:text-4xl">
                 Quiénes acompañan
               </h2>
-              <div className="mt-10 grid gap-5 lg:grid-cols-3">
+              <div className="mt-10 grid grid-cols-2 gap-5 lg:grid-cols-3">
                 {chaplains.map((chaplain) => (
                   <ChaplainCard
                     key={chaplain._id}
