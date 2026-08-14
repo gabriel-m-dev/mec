@@ -58,6 +58,22 @@ export const chaplain = defineType({
         "Opcional. Tal como se quiere mostrar (con espacios o guiones). Sin dato, esa línea no se dibuja.",
     }),
     defineField({
+      name: "issueDate",
+      title: "Fecha de alta",
+      type: "date",
+      options: { dateFormat: "DD/MM/YYYY" },
+      description:
+        "Opcional. Solo se ve en la página propia del capellán, no en la lista. Sin dato, esa línea no se dibuja.",
+    }),
+    defineField({
+      name: "expiryDate",
+      title: "Fecha de vencimiento",
+      type: "date",
+      options: { dateFormat: "DD/MM/YYYY" },
+      description:
+        "Opcional. Solo se ve en la página propia del capellán, no en la lista. Sin dato, esa línea no se dibuja.",
+    }),
+    defineField({
       name: "description",
       title: "Descripción",
       type: "text",

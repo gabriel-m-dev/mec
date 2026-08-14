@@ -118,6 +118,10 @@ export interface Chaplain {
   email?: string;
   /** Opcional: sin dato, la ficha no dibuja esa línea. */
   phone?: string;
+  /** Opcional, formato "YYYY-MM-DD". Solo se ve en la página individual. */
+  issueDate?: string;
+  /** Opcional, formato "YYYY-MM-DD". Solo se ve en la página individual. */
+  expiryDate?: string;
   image: SanityImageSource;
   imageAlt: string;
 }

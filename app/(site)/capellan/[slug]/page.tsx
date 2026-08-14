@@ -11,6 +11,20 @@ import type { Chaplain } from "@/sanity/lib/types";
 
 type Params = { slug: string };
 
+/**
+ * Sanity guarda la fecha como "YYYY-MM-DD". `new Date(...)` la interpreta en
+ * UTC, así que formatear en la zona local del servidor podría correrla un
+ * día para atrás (Argentina es UTC-3). `timeZone: "UTC"` fija eso.
+ */
+function formatDate(value: string): string {
+  return new Date(value).toLocaleDateString("es-AR", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    timeZone: "UTC",
+  });
+}
+
 async function getChaplain(slug: string): Promise<Chaplain | null> {
   return fetchContent<Chaplain | null>(chaplainBySlugQuery, SANITY_TAGS.chaplain, {
     slug,
@@ -128,6 +142,18 @@ export default async function ChaplainPage({
                         {chaplain.phone}
                       </a>
                     </dd>
+                  </div>
+                )}
+                {chaplain.issueDate && (
+                  <div className="flex flex-wrap gap-x-2">
+                    <dt className="font-semibold uppercase tracking-wide text-white">Fecha de alta:</dt>
+                    <dd className="text-slate-300 tabular-nums">{formatDate(chaplain.issueDate)}</dd>
+                  </div>
+                )}
+                {chaplain.expiryDate && (
+                  <div className="flex flex-wrap gap-x-2">
+                    <dt className="font-semibold uppercase tracking-wide text-white">Fecha de vencimiento:</dt>
+                    <dd className="text-slate-300 tabular-nums">{formatDate(chaplain.expiryDate)}</dd>
                   </div>
                 )}
               </dl>
