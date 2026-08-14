@@ -69,7 +69,7 @@ export function SiteHeader() {
                     duration: shouldReduceMotion ? 0 : 0.35,
                     ease: "easeOut",
                   }}
-                  className="overflow-hidden whitespace-nowrap text-[11px] italic tracking-[0.03em] text-gold-300/90 sm:hidden"
+                  className="overflow-hidden whitespace-nowrap font-serif text-[11px] italic tracking-[0.08em] text-gold-300/90 sm:hidden"
                 >
                   Cristo poder y sabiduría de Dios
                 </motion.p>
