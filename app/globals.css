@@ -2,15 +2,43 @@
 @tailwind components;
 @tailwind utilities;
 
+/*
+  Paleta del sitio, en un solo lugar. `tailwind.config.ts` apunta a estas
+  mismas variables (ver `colors.ink`/`colors.gold` ahí), así que las clases
+  `bg-ink-950`, `text-gold-300/90`, etc. y el CSS de acá abajo salen de la
+  misma fuente. Para recolorear el sitio alcanza con cambiar un valor acá —
+  no hay que tocar componentes ni el config de Tailwind.
+
+  Van como CANALES RGB separados por espacio ("2 5 12", no "#02050c") y NO
+  como color final: es lo que le permite a Tailwind construir
+  `rgb(var(--gold-300) / 50%)` para las clases con modificador de opacidad
+  como `bg-ink-950/50` o `text-gold-300/90`, que se usan por todo el sitio.
+  Con la variable guardando un color ya armado (`#02050c`), esas clases con
+  `/opacidad` no se pueden construir y Tailwind directamente no genera la
+  regla — se probó y así se rompía media página.
+*/
 :root {
   color-scheme: dark;
+
+  --ink-950: 2 5 12;
+  --ink-925: 4 10 18;
+  --ink-900: 7 17 29;
+  --ink-800: 15 28 45;
+
+  --gold-50: 255 249 236;
+  --gold-100: 253 240 202;
+  --gold-200: 248 222 160;
+  --gold-300: 240 199 107;
+  --gold-400: 227 170 53;
+  --gold-500: 200 138 20;
+  --gold-600: 168 109 16;
 }
 
 html {
   scroll-behavior: smooth;
   /* Firefox: ancho + color del riel y del pulgar. */
   scrollbar-width: thin;
-  scrollbar-color: #a86d10 #07111d;
+  scrollbar-color: rgb(var(--gold-600)) rgb(var(--ink-900));
 }
 
 /*
@@ -27,17 +55,17 @@ html {
 }
 
 ::-webkit-scrollbar-track {
-  background: #07111d;
+  background: rgb(var(--ink-900));
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #c88a14, #a86d10);
+  background: linear-gradient(180deg, rgb(var(--gold-500)), rgb(var(--gold-600)));
   border-radius: 9999px;
-  border: 2px solid #07111d;
+  border: 2px solid rgb(var(--ink-900));
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #e3aa35, #c88a14);
+  background: linear-gradient(180deg, rgb(var(--gold-400)), rgb(var(--gold-500)));
 }
 
 /*
@@ -71,8 +99,13 @@ html {
 body {
   min-height: 100vh;
   background:
-    radial-gradient(circle at top, rgba(227, 170, 53, 0.08), transparent 35%),
-    linear-gradient(180deg, #02050c 0%, #040a12 45%, #02050c 100%);
+    radial-gradient(circle at top, rgb(var(--gold-400) / 0.08), transparent 35%),
+    linear-gradient(
+      180deg,
+      rgb(var(--ink-950)) 0%,
+      rgb(var(--ink-925)) 45%,
+      rgb(var(--ink-950)) 100%
+    );
 }
 
 * {
@@ -80,7 +113,7 @@ body {
 }
 
 ::selection {
-  background: rgba(240, 199, 107, 0.35);
+  background: rgb(var(--gold-300) / 0.35);
   color: #fff;
 }
 
